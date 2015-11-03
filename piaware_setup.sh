@@ -9,9 +9,11 @@ echo "-----------------------------------------------------"
 echo -e "\033[33m"
 echo "ADSBexchange.com is a co-op of ADS-B/Mode S/MLAT feeders from around the world."
 echo "This script will setup your current PiAware installation to share your data with ADS-B Exchange as well."
-echo "Please note that PiAware is required to be installed in order to feed ADS-B Exchange."
+echo "PiAware is required to be installed in order to use this script to setup the feed to ADS-B Exchange."
 echo ""
-echo "http://www.adsbexchange.com"
+echo "https://github.com/jprochazka/adsb-exchange"
+echo "http://www.adsbexchange.com/how-to-feed/"
+echo "http://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/"
 echo -e "\033[37m"
 read -p "Continue setup? [Y/n] " CONTINUE
 
@@ -21,33 +23,9 @@ if [[ ! $CONTINUE =~ ^[Yy]$ ]]; then
     exit 0
 fi
 
-## SPECIFY THE DIRECTORY TO PLACE ADS-B EXCHANGE MAINTAINANCE SCRIPT
+## ASSIGN THE SCRIPTDIR VARIABLE WHICH SHOULD BE THE DIRECTORY CONTAINING THIS SCRIPT
 
-echo -e "\033[33m"
-echo "Please specify a directory in which to download the ADS-B Exchange maintainance script."
-echo "This directory will be created for you if it does not already exist."
-echo -e "\033[37m"
-
-NOBUILDDIR="true"
-while [[ $NOBUILDDIR == 'true' ]]
-do
-    read -p "Directory Path: [$PWD/adsb-exchange] " BUILDDIR
-    if [[ $BUILDDIR == '' ]]; then
-        BUILDDIR="$PWD/adsb-exchange"
-    fi
-    if [ ! -d "$BUILDDIR" ]; then
-        echo ""
-        mkdir -p $BUILDDIR
-    fi
-    if [ -d "$BUILDDIR" ]; then
-        NOBUILDDIR="false"
-    else
-        echo "Please make sure the path specified is valid and you have permission to write to it."
-        echo -e "\033[37m"
-    fi
-done
-
-cd $BUILDDIR
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 ## CONFIGURE PIAWARE TO FEED ADS-B EXCHANGE
 
@@ -63,40 +41,33 @@ COMMAND=`sudo piaware-config -mlatResultsFormat "${CLEANFORMAT} beast,connect,fe
 $COMMAND
 sudo piaware-config -restart
 
-## DOWNLOAD THE ADS-B EXCHANGE MAINTAINANCE SCRIPT
-
-echo -e "\033[33m"
-echo "Downloading ADS-B Exchange maintainance script..."
-echo -e "\033[37m"
-mkdir $BUILDDIR/
-wget http://bucket.adsbexchange.com/adsbexchange-maint.sh -O $BUILDDIR/adsbexchange-maint.sh
-
 ## SET PERMISSIONS ON THE ADS-B EXCHANGE MAINTAINANCE SCRIPT
 
 echo -e "\033[33mSetting permissions on the ADS-B Exchange maintainance script..."
 echo -e "\033[37m"
-sudo chmod 755 $BUILDDIR/adsbexchange-maint.sh
+sudo chmod 755 $SCRIPTDIR/adsbexchange-maint.sh
 
 ## ADD ADS-B EXCHANGE MAINTAINANCE SCRIPT TO RC.LOCAL
 
-if ! grep -Fxq "${BUILDDIR}/adsbexchange-maint.sh &" /etc/rc.local; then
+if ! grep -Fxq "${SCRIPTDIR}/adsbexchange-maint.sh &" /etc/rc.local; then
     echo -e "\033[33mAdding ADS-B Exchange maintainance script startup command to rc.local..."
     echo -e "\033[37m"
     lnum=($(sed -n '/exit 0/=' /etc/rc.local))
-    ((lnum>0)) && sudo sed -i "${lnum[$((${#lnum[@]}-1))]}i ${BUILDDIR}/adsbexchange-maint.sh &\n" /etc/rc.local
+    ((lnum>0)) && sudo sed -i "${lnum[$((${#lnum[@]}-1))]}i ${SCRIPTDIR}/adsbexchange-maint.sh &\n" /etc/rc.local
 fi
 
 ## RUN THE ADS-B EXCHANGE MAINTAINANCE SCRIPT
 
 echo -e "\033[33mRunning ADS-B Exchange maintainance script..."
 echo -e "\033[37m"
-sudo $BUILDDIR/adsbexchange-maint.sh start &
+sudo $SCRIPTDIR/adsbexchange-maint.sh start &
 
 ## DISPLAY SETUP COMPLETE MESSAGE
 
 echo -e "\033[33m"
 echo "Configuration of the ADS-B Exchange feed is now complete."
 echo "Please look over the output generated to be sure no errors were encountered."
+echo "Also make sure to leave the files and folders contained here in place."
 echo -e "\033[37m"
 read -p "Press enter to exit this script..." CONTINUE
 echo ""
