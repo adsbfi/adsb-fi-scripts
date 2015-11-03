@@ -11,7 +11,7 @@ This setup script aids in setting up your current PiAware based feeder to feed A
 Running the following commands will download and execute the script.
 
     sudo apt-get install git wget
-    git clone https://gist.github.com/e3bf06a77f334ad99ad4.git
+    git clone https://github.com/jprochazka/adsb-exchange_setup.git
     cd adsb-exchange_setup
     chmod 755 adsb-exchange_setup.sh 
     ./adsb-exchange_setup.sh
