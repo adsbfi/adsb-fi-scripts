@@ -35,8 +35,7 @@ echo -e "\033[37m"
 MLATRESULTFORMAT=`sudo piaware-config -show | grep mlatResultsFormat`
 ORIGINALFORMAT=`sed 's/mlatResultsFormat //g' <<< $MLATRESULTFORMAT`
 CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $ORIGINALFORMAT`
-CLEANFORMAT=`sed 's/}//g' <<< $CLEANFORMAT`
-CLEANFORMAT=`sed 's/{//g' <<< $CLEANFORMAT`
+CLEANFORMAT=`sed 's/[{}]//g' <<< $CLEANFORMAT`
 COMMAND=`sudo piaware-config -mlatResultsFormat "${CLEANFORMAT} beast,connect,feed.adsbexchange.com:30005"`
 $COMMAND
 sudo piaware-config -restart
