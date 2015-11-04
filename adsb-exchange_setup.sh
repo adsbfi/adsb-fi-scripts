@@ -58,7 +58,6 @@ MLATRESULTFORMAT=`sudo piaware-config -show | grep mlatResultsFormat`
 ORIGINALFORMAT=`sed 's/mlatResultsFormat //g' <<< $MLATRESULTFORMAT`
 CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $ORIGINALFORMAT`
 CLEANFORMAT=`sed 's/}//g' <<< $CLEANFORMAT`
-CLEANFORMAT=`sed 's/{//g' <<< $CLEANFORMAT`
 COMMAND=`sudo piaware-config -mlatResultsFormat "${CLEANFORMAT} beast,connect,feed.adsbexchange.com:30005"`
 $COMMAND
 sudo piaware-config -restart
@@ -68,7 +67,6 @@ sudo piaware-config -restart
 echo -e "\033[33m"
 echo "Downloading ADS-B Exchange maintainance script..."
 echo -e "\033[37m"
-mkdir $BUILDDIR/
 wget http://bucket.adsbexchange.com/adsbexchange-maint.sh -O $BUILDDIR/adsbexchange-maint.sh
 
 ## SET PERMISSIONS ON THE ADS-B EXCHANGE MAINTAINANCE SCRIPT
