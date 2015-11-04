@@ -68,7 +68,6 @@ sudo piaware-config -restart
 echo -e "\033[33m"
 echo "Downloading ADS-B Exchange maintainance script..."
 echo -e "\033[37m"
-mkdir $BUILDDIR/
 wget http://bucket.adsbexchange.com/adsbexchange-maint.sh -O $BUILDDIR/adsbexchange-maint.sh
 
 ## SET PERMISSIONS ON THE ADS-B EXCHANGE MAINTAINANCE SCRIPT
