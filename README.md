@@ -1,4 +1,4 @@
-# ADS-B Exchange Setup Script :airplane:
+# ADS-B Exchange Setup Scripts :airplane:
 
 Feeding ADSBexchange.com is quick and easy. There are various options depending on what kind of feeder/receiver you use,
 and your desired level of customization. This script aids in setting up your current PiAware or Dump1090 based feeder to
