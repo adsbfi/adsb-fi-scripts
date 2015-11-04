@@ -30,7 +30,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo -e "\033[33mSetting permissions on the ADS-B Exchange maintainance script..."
 echo -e "\033[37m"
-sudo chmod 755 $SCRIPTDIR/adsbexchange-maint.sh
+chmod 755 $SCRIPTDIR/adsbexchange-maint.sh
 
 ## ADD ADS-B EXCHANGE MAINTAINANCE SCRIPT TO RC.LOCAL
 
@@ -55,7 +55,7 @@ fi
 
 echo -e "\033[33mRunning ADS-B Exchange maintainance script..."
 echo -e "\033[37m"
-sudo $SCRIPTDIR/adsbexchange-maint.sh start &
+sudo $SCRIPTDIR/adsbexchange-maint.sh &
 
 ## DISPLAY SETUP COMPLETE MESSAGE
 
