@@ -14,4 +14,4 @@ SCRIPTDIR=${PWD}
 clear
 echo "Executing piaware_setup.sh..."
 chmod 755 piaware_setup.sh
-SCRIPTDIR/piaware_setup.sh
+$SCRIPTDIR/piaware_setup.sh
