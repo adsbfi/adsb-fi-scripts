@@ -32,8 +32,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo -e "\033[33m"
 echo "Adding the ADS-B Exchange feed to PiAware's configuration..."
 echo -e "\033[37m"
-MLATRESULTFORMAT=`sudo piaware-config -show | grep mlatResultsFormat`
-ORIGINALFORMAT=`sed 's/mlatResultsFormat //g' <<< $MLATRESULTFORMAT`
+ORIGINALFORMAT=`sudo piaware-config -show | sed -n 's/.*{\(.*\)}.*/\1/p'`
 CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $ORIGINALFORMAT`
 CLEANFORMAT=`sed 's/[{}]//g' <<< $CLEANFORMAT`
 COMMAND=`sudo piaware-config -mlatResultsFormat "${CLEANFORMAT} beast,connect,feed.adsbexchange.com:30005"`
