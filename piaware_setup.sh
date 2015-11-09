@@ -31,12 +31,15 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo -e "\033[33m"
 echo "Adding the ADS-B Exchange feed to PiAware's configuration..."
-echo -e "\033[37m"
 ORIGINALFORMAT=`sudo piaware-config -show | sed -n 's/.*{\(.*\)}.*/\1/p'`
 CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $ORIGINALFORMAT`
 COMMAND=`sudo piaware-config -mlatResultsFormat "${CLEANFORMAT} beast,connect,feed.adsbexchange.com:30005"`
 $COMMAND
+echo -e "\033[33m"
+echo "Restarting PiAware so new configuration takes effect..."
+echo -e "\033[37m"
 sudo piaware-config -restart
+echo ""
 
 ## SET PERMISSIONS ON THE ADS-B EXCHANGE MAINTAINANCE SCRIPT
 
@@ -59,8 +62,9 @@ echo -e "\033[33mKilling any adsbexchange-maint.sh processes currently running..
 PIDS=`ps -efww | grep -w "adsbexchange-maint.sh" | awk -vpid=$$ '$2 != pid { print $2 }'`
 if [ ! -z "$PIDS" ]; then
     echo -e "\033[37m"
+    sudo kill $PIDS
+    sleep 5
     sudo kill -9 $PIDS
-    echo ""
 fi
 
 ## RUN THE ADS-B EXCHANGE MAINTAINANCE SCRIPT
@@ -71,8 +75,7 @@ sudo $SCRIPTDIR/adsbexchange-maint.sh &
 
 ## DISPLAY SETUP COMPLETE MESSAGE
 
-echo -e "\033[33m"
-echo "Configuration of the ADS-B Exchange feed is now complete."
+echo -e "\033[33mConfiguration of the ADS-B Exchange feed is now complete."
 echo "Please look over the output generated to be sure no errors were encountered."
 echo "Also make sure to leave the files and folders contained here in place."
 echo -e "\033[37m"
