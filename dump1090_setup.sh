@@ -47,6 +47,8 @@ echo -e "\033[33mKilling any adsbexchange-maint.sh processes currently running..
 PIDS=`ps -efww | grep -w "adsbexchange-maint.sh" | awk -vpid=$$ '$2 != pid { print $2 }'`
 if [ ! -z "$PIDS" ]; then
     echo -e "\033[37m"
+    sudo kill $PIDS
+    sleep 5
     sudo kill -9 $PIDS
     echo ""
 fi
