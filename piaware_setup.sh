@@ -33,7 +33,7 @@ echo -e "\033[33m"
 echo "Adding the ADS-B Exchange feed to PiAware's configuration..."
 ORIGINALFORMAT=`sudo piaware-config -show | sed -n 's/.*{\(.*\)}.*/\1/p'`
 CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $ORIGINALFORMAT`
-`sudo piaware-config -mlatResultsFormat "${CLEANFORMAT} beast,connect,feed.adsbexchange.com:30005"`
+sudo piaware-config -mlatResultsFormat "${CLEANFORMAT} beast,connect,feed.adsbexchange.com:30005"
 echo -e "\033[33m"
 echo "Restarting PiAware so new configuration takes effect..."
 echo -e "\033[37m"
