@@ -105,11 +105,16 @@ your feeders data with ADS-B Exchange. It is recommeded
 that FlightAware's PiAware software be installed in order
 to feed accurate "MLAT" data but is not required.
 
-Press Enter to continue setup.
+Would you like to continue setup?
 EOF
 
 # Display the welcome message box.
-whiptail --title "ADS-B Exchange Setup Script" --msgbox "$WELCOME" 17 65
+whiptail --title "ADS-B Exchange Setup Script" --yesno "$WELCOME" 16 65
+CHOICE=$?
+
+if [ $CHOICE = 1 ]; then
+    exit 0
+fi
 
 # Check if the PiAware package is installed.
 if [ $(dpkg-query -W -f='${STATUS}' $1 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
@@ -128,10 +133,14 @@ Setup is now complete.
 Your feeder should now be feeding data to ADS-B Exchange.
 Thanks again for choosing to share your data with ADS-B Exchange!
 
-Press Enter to exit setup.
+If you have questions or encountered any issues while using this
+script feel free to post them to one of the following places.
+
+https://github.com/jprochazka/adsb-exchange
+http://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/
 EOF
 
 # Display the thank you message box.
-whiptail --title "ADS-B Exchange Setup Script" --msgbox "$THANKS" 10 70
+whiptail --title "ADS-B Exchange Setup Script" --msgbox "$THANKS" 16 73
 
 exit 0
