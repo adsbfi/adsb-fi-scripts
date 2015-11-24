@@ -12,16 +12,7 @@ Running the following commands will download the contents of this repository.
     sudo apt-get install git
     git clone https://github.com/jprochazka/adsb-exchange.git
     cd adsb-exchange
-
-If you have FlightAware's PiAware installed...
-
-    chmod 755 piaware_setup.sh
-    ./piaware_setup.sh
-    
-If you are running a FlightRadar24 feeder or only dump1090...
-
-    chmod 755 dump1090_setup.sh
-    ./dump1090_setup.sh
+    sudo ./setup.sh
     
 **After completing the setup do not delete this repository.**
 
