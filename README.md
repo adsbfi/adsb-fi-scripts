@@ -12,6 +12,7 @@ Running the following commands will download the contents of this repository.
     sudo apt-get install git
     git clone https://github.com/jprochazka/adsb-exchange.git
     cd adsb-exchange
+    chmod -x setup.sh
     sudo ./setup.sh
     
 **After completing the setup do not delete this repository.**
