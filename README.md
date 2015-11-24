@@ -18,6 +18,11 @@ Running the following commands will download the contents of this repository.
 
 The file adsbexchange-maint.sh script resides in this folder containing a clone of this repository. The path to execute this script after a reboot has been set to this location. Deleting this folder will result in the adsbexchange-maint.sh script not being executed thus not enabling your feeder to feed ADS-B Exchange.
 
+**no_dialogs.sh**
+
+The file "no_dialogs.sh" can used in place of "setup.sh" to set up your receiver.  
+The only difference between the two files is "no_dialogs.sh" does not use Whiptail dialogs.
+
 ### Reporting Issues
 
 Feel free to report any issues you encounter either in this repositories issue tracker or the ADS-B Exchange Setup Script
@@ -25,4 +30,3 @@ topic located in the ADS-B Exchange forums.
 
 https://github.com/jprochazka/adsb-exchange_setup/issues  
 http://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/
-
