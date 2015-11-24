@@ -1,6 +1,10 @@
 #!/bin/bash
 
-clear
+# Check if user is using sudo or is logged in a root.
+if [ "$(id -u)" != "0" ]; then
+    echo "This script must be ran using sudo or as root."
+    exit 1
+fi
 
 # Set a variable containing the path to this script.
 SCRIPTPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -11,8 +15,9 @@ SCRIPTPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Configure FlightAware's PiAware software.
 function ConfigurePiAware() {
     # Retreive and clean the current PiAware mlatResultFormat setting.
-    ORIGINALFORMAT=`sudo piaware-config -show | sed -n 's/.*{\(.*\)}.*/\1/p'`
-    CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $ORIGINALFORMAT`
+    ORIGINALFORMAT=`sudo piaware-config -show | grep mlatResultsFormat | sed 's/mlatResultsFormat //g'`
+    MLATRESULTS=`sed 's/[{}]//g' <<< $ORIGINALFORMAT`
+    CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $MLATRESULTS`
     for ((i = 0 ; i <= 33 ; i+=1)); do
         sleep 0.01
         echo $i
@@ -72,7 +77,12 @@ function SetupNetcat() {
     fi
 
     # Execute the ADS-B maintainance script.
-    sudo $SCRIPTPATH/adsbexchange-maint.sh &
+
+    # NOTE:
+    # Executing the script here is causing display issues after the script completes.
+    # For now I have moved the line which executes adsbexchange-maint.sh after the whiptail guage.
+
+    #sudo $SCRIPTPATH/adsbexchange-maint.sh &
     for ((i = 90 ; i <= 100 ; i+=1)); do
         sleep 0.01
         echo $i
@@ -103,23 +113,25 @@ whiptail --title "ADS-B Exchange Setup Script" --msgbox "$WELCOME" 17 65
 
 # Check if the PiAware package is installed.
 if [ $(dpkg-query -W -f='${STATUS}' $1 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
-    # PiAware does not appear to be installed.
-    {
-        ConfigurePiAware
-    } > >(whiptail --gauge "Configuring PiAware to send MLAT data to ADS-B Exchange..." 6 65 0)
+    # PiAware appear to be installed.
+    ConfigurePiAware > >(whiptail --title "ADS-B Exchange Setup Script" --gauge "\nConfiguring PiAware to send MLAT data to ADS-B Exchange..." 7 65 0)
 fi
 
 # Setup the Netcat script.
-SetupNetcat > >(whiptail --title "ADS-B Exchange Setup Script" --gauge "Setting up and executing the ADS-B Exchange Netcat script..." 6 65 0)
+SetupNetcat > >(whiptail --title "ADS-B Exchange Setup Script" --gauge "\nSetting up and executing the ADS-B Exchange Netcat script..." 7 65 0)
+sudo $SCRIPTPATH/adsbexchange-maint.sh &
 
 # Thank you text.
 read -d '' THANKS <<"EOF"
 Setup is now complete.
 
 Your feeder should now be feeding data to ADS-B Exchange.
+Thanks again for choosing to share your data with ADS-B Exchange!
 
 Press Enter to exit setup.
 EOF
 
 # Display the thank you message box.
-whiptail --title "ADS-B Exchange Setup Script" --msgbox "$THANKS" 17 65
+whiptail --title "ADS-B Exchange Setup Script" --msgbox "$THANKS" 10 70
+
+exit 0
