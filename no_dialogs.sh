@@ -19,12 +19,12 @@ function ConfigurePiAware() {
     # Retreive and clean the current PiAware mlatResultFormat setting.
     echo -e "\033[33m"
     echo "Adding the ADS-B Exchange feed to PiAware's configuration..."
-    ORIGINALFORMAT=`sudo piaware-config -show | grep mlatResultsFormat | sed 's/mlatResultsFormat //g'`
-    MLATRESULTS=`sed 's/[{}]//g' <<< $ORIGINALFORMAT`
-    CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $MLATRESULTS`
+    ORIGINALFORMAT="`sudo piaware-config -show mlat-results-format`"
+    CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $ORIGINALFORMAT`
+    FINALFORMAT="${CLEANFORMAT} beast,connect,feed.adsbexchange.com:30005"
 
     # Set the new PiAware mlatResultFormat setting.
-    sudo piaware-config -mlatResultsFormat "${CLEANFORMAT} beast,connect,feed.adsbexchange.com:30005"
+    sudo piaware-config  mlat-results-format "${FINALFORMAT}"
 
     # Restart PiAware.
     echo ""

@@ -15,16 +15,18 @@ SCRIPTPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Configure FlightAware's PiAware software.
 function ConfigurePiAware() {
     # Retreive and clean the current PiAware mlatResultFormat setting.
-    ORIGINALFORMAT=`sudo piaware-config -show | grep mlatResultsFormat | sed 's/mlatResultsFormat //g'`
-    MLATRESULTS=`sed 's/[{}]//g' <<< $ORIGINALFORMAT`
-    CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $MLATRESULTS`
+
+    ORIGINALFORMAT="`sudo piaware-config -show mlat-results-format`"
+    CLEANFORMAT=`sed 's/ beast,connect,feed.adsbexchange.com:30005//g' <<< $ORIGINALFORMAT`
+    FINALFORMAT="${CLEANFORMAT} beast,connect,feed.adsbexchange.com:30005"
+
     for ((i = 0 ; i <= 33 ; i+=1)); do
         sleep 0.01
         echo $i
     done
 
     # Set the new PiAware mlatResultFormat setting.
-    sudo piaware-config -mlatResultsFormat "${CLEANFORMAT} beast,connect,feed.adsbexchange.com:30005"
+    sudo piaware-config  mlat-results-format "${FINALFORMAT}"
     for ((i = 33 ; i <= 66 ; i+=1)); do
         sleep 0.01
         echo $i
