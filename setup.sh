@@ -44,7 +44,12 @@ function ConfigurePiAware() {
 
 # Setup the Netcat script and execute it.
 function SetupNetcat() {
-    # Set permissions on teh file adsbexchange-maint.sh.
+    # Check if netcat is installed and if not install it.
+    if [ $(dpkg-query -W -f='${STATUS}' netcat 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+        sudo apt-get install netcat
+    fi
+    
+    # Set permissions on the file adsbexchange-maint.sh.
     chmod 755 $SCRIPTPATH/adsbexchange-maint.sh
     for ((i = 0 ; i <= 20 ; i+=1)); do
         sleep 0.01
