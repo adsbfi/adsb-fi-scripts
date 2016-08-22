@@ -46,7 +46,7 @@ function ConfigurePiAware() {
 function SetupNetcat() {
     # Check if netcat is installed and if not install it.
     if [ $(dpkg-query -W -f='${STATUS}' netcat 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install netcat
+        sudo apt-get install -y netcat
     fi
     
     # Set permissions on the file adsbexchange-maint.sh.
