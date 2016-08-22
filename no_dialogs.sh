@@ -41,7 +41,7 @@ function SetupNetcat() {
         echo -e "\033[33m"
         echo "Installing the Netcat package..."
         echo -e "\033[37m"
-        sudo apt-get install netcat
+        sudo apt-get install -y netcat
     fi
     
     # Set permissions on the file adsbexchange-maint.sh.
