@@ -35,7 +35,16 @@ function ConfigurePiAware() {
 
 # Setup the Netcat script and execute it.
 function SetupNetcat() {
-    # Set permissions on teh file adsbexchange-maint.sh.
+    # Check if netcat is installed and if not install it.
+    printf "\033[33mChecking if the package $1 is installed..."
+    if [ $(dpkg-query -W -f='${STATUS}' netcat 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+        echo -e "\033[33m"
+        echo "Installing the Netcat package..."
+        echo -e "\033[37m"
+        sudo apt-get install netcat
+    fi
+    
+    # Set permissions on the file adsbexchange-maint.sh.
     chmod 755 $SCRIPTPATH/adsbexchange-maint.sh
 
     # Add the ADS-B maintainance script to the file /etc/rc.local.
