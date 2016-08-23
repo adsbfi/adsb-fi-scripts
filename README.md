@@ -1,6 +1,6 @@
 # ADS-B Exchange Setup Scripts :airplane:
 
-The following scripts make Feeding ADSBexchange.com quick and easy. These scripts aids in setting up your current ADS-B receiver to feed ADS-B Exchange. 
+These scripts aids in setting up your current ADS-B receiver to feed ADS-B Exchange. 
 
 ### Obtaining And Using The Scripts
 
