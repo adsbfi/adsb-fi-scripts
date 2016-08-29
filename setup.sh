@@ -42,10 +42,11 @@ fi
 echo -e "\033[33m"
 echo "Checking for packages needed to run this script..."
 
-if [ $(dpkg-query -W -f='$STATUS' curl 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+if [ $(dpkg-query -W -f='${STATUS}' curl 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
     echo "Installing the curl package..."
     echo -e "\033[37m"
-    sudo apt-get install -y build-essential >> $LOGFILE
+    sudo apt-get update
+    sudo apt-get install -y curl
 fi
 echo -e "\033[37m"
 
@@ -65,10 +66,16 @@ if [ $CONTINUESETUP = 1 ]; then
     exit 0
 fi
 
-ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "ADS-B Exchange User Name" --inputbox "Please enter your ADS-B Exchange user name." 8 78 3>&1 1>&2 2>&3)
-RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Latitude" --inputbox "Enter your receivers latitude." 8 78 3>&1 1>&2 2>&3)
-RECEIVERLONGITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longitude" --inputbox "Enter your recivers longitude." 8 78 3>&1 1>&2 2>&3)
-RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longitude" --inputbox "Enter your recivers atitude." 8 78 "`curl -s https://maps.googleapis.com/maps/api/elevation/json?locations=$RECEIVERLATITUDE,$RECEIVERLONGITUDE | python -c "import json,sys;obj=json.load(sys.stdin);print obj['results'][0]['elevation'];"`" 3>&1 1>&2 2>&3)
+ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "ADS-B Exchange User Name" --nocancel --inputbox "Please enter your ADS-B Exchange user name.\n\nIf you have more than one receiver, this username should be unique.\nExample: \"username-01\", \"username-02\", etc." 11 78 3>&1 1>&2 2>&3)
+RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Latitude" --nocancel --inputbox "Enter your receivers latitude." 8 78 3>&1 1>&2 2>&3)
+RECEIVERLONGITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longitude" --nocancel --inputbox "Enter your recivers longitude." 8 78 3>&1 1>&2 2>&3)
+RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longitude" --nocancel --inputbox "Enter your recivers atitude." 8 78 "`curl -s https://maps.googleapis.com/maps/api/elevation/json?locations=$RECEIVERLATITUDE,$RECEIVERLONGITUDE | python -c "import json,sys;obj=json.load(sys.stdin);print obj['results'][0]['elevation'];"`" 3>&1 1>&2 2>&3)
+
+whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" --yesno "We are now ready to begin setting up your receiver to feed ADS-B Exchange.\n\nDo you wish to proceed?" 9 78
+CONTINUESETUP=$?
+if [ $CONTINUESETUP = 1 ]; then
+    exit 0
+fi
 
 ## BEGIN SETUP
 
@@ -90,22 +97,23 @@ RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longi
     echo "--------------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
 
+
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
-    if [ $(dpkg-query -W -f='$STATUS' build-essential 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    if [ $(dpkg-query -W -f='${STATUS}' build-essential 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
         sudo apt-get install -y build-essential >> $LOGFILE
     fi
 
     echo 10
     sleep 0.25
 
-    if [ $(dpkg-query -W -f='$STATUS' debhelper 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    if [ $(dpkg-query -W -f='${STATUS}' debhelper 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
         sudo apt-get install -y debhelper >> $LOGFILE
     fi
 
     echo 16
     sleep 0.25
 
-    if [ $(dpkg-query -W -f='$STATUS' python3-dev 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    if [ $(dpkg-query -W -f='${STATUS}' python3-dev 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
         sudo apt-get install -y python3-dev >> $LOGFILE
     fi
 
