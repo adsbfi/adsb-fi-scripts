@@ -37,6 +37,18 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
+## CHECK FOR PACKAGES NEEDED BY THIS SCRIPT
+
+echo -e "\033[33m"
+echo "Checking for packages needed to run this script..."
+
+if [ $(dpkg-query -W -f='$STATUS' curl 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    echo "Installing the curl package..."
+    echo -e "\033[37m"
+    sudo apt-get install -y build-essential >> $LOGFILE
+fi
+echo -e "\033[37m"
+
 ## ASSIGN VARIABLES
 
 LOGDIRECTORY="$PWD/logs"
