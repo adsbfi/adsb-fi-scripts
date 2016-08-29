@@ -256,7 +256,7 @@ EOF
     echo 100
     sleep 0.25
 
-} | whiptail --backtitle "$BACKTITLETEXT" --title "Setting Up ADS-B Exchange Feed"  --gauge "\nSetting up your receiver to feed ADS-B Exchange.\nThis may take some time depending on the amount of packages which need to be installed..." 9 70 0
+} | whiptail --backtitle "$BACKTITLETEXT" --title "Setting Up ADS-B Exchange Feed"  --gauge "\nSetting up your receiver to feed ADS-B Exchange.\n\nThis may take some time depending on how many packages need to be installed..." 9 75 0
 
 ## SETUP COMPLETE
 
