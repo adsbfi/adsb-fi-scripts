@@ -100,28 +100,28 @@ fi
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
     if [ $(dpkg-query -W -f='${STATUS}' build-essential 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install -y build-essential >> $LOGFILE
+        sudo apt-get install -y build-essential >> $LOGFILE  2>&1
     fi
 
     echo 10
     sleep 0.25
 
     if [ $(dpkg-query -W -f='${STATUS}' debhelper 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install -y debhelper >> $LOGFILE
+        sudo apt-get install -y debhelper >> $LOGFILE  2>&1
     fi
 
     echo 16
     sleep 0.25
 
     if [ $(dpkg-query -W -f='${STATUS}' python3-dev 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install -y python3-dev >> $LOGFILE
+        sudo apt-get install -y python3-dev >> $LOGFILE  2>&1
     fi
 
     echo 22
     sleep 0.25
 
     if [ $(dpkg-query -W -f='${STATUS}' netcat 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install -y netcat >> $LOGFILE
+        sudo apt-get install -y netcat >> $LOGFILE  2>&1
     fi
 
     echo 28
@@ -256,7 +256,7 @@ EOF
     echo 100
     sleep 0.25
 
-} | whiptail --backtitle "$BACKTITLETEXT" --title "Setting Up ADS-B Exchange Feed"  --gauge "Setting up your receiver to feed ADS-B Exchange..." 6 50 0
+} | whiptail --backtitle "$BACKTITLETEXT" --title "Setting Up ADS-B Exchange Feed"  --gauge "\nSetting up your receiver to feed ADS-B Exchange.\nThis may take some time depending on the amount of packages which need to be installed..." 7 70 0
 
 ## SETUP COMPLETE
 
