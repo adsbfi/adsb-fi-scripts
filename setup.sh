@@ -113,6 +113,10 @@ fi
     echo 16
     sleep 0.25
 
+    if [ $(dpkg-query -W -f='${STATUS}' python 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+        sudo apt-get install -y python >> $LOGFILE  2>&1
+    fi
+    
     if [ $(dpkg-query -W -f='${STATUS}' python3-dev 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
         sudo apt-get install -y python3-dev >> $LOGFILE  2>&1
     fi
