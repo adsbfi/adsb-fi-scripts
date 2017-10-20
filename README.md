@@ -20,5 +20,5 @@ The script creates two files, one named adsbexchange-mlat_maint.sh and another n
 
 Feel free to report any issues you encounter to one of the following locations:
 
-https://www.adsbreceiver.net/forums/forum/ads-b-exchange-setup-scripts/  
+http://adsbreceiver.net/forum/cat/ads-b-exchange-setup-script/ 
 https://github.com/jprochazka/adsb-exchange_setup/issues  
