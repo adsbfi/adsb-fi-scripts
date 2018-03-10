@@ -7,7 +7,7 @@ These scripts aid in setting up your current ADS-B receiver to feed ADS-B Exchan
 Running the following commands will download the contents of this repository and begin setup.
 
     sudo apt-get install git
-    git clone https://github.com/jprochazka/adsb-exchange.git
+    git clone https://github.com/adsbxchange/adsb-exchange.git
     cd adsb-exchange
     chmod +x setup.sh
     sudo ./setup.sh
