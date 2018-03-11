@@ -46,7 +46,7 @@ if [ $(dpkg-query -W -f='${STATUS}' curl 2>/dev/null | grep -c "ok installed") -
     echo "Installing the curl package..."
     echo -e "\033[37m"
     sudo apt-get update
-    sudo apt-get install -y curl socat
+    sudo apt-get install -y curl
 fi
 echo -e "\033[37m"
 
@@ -126,8 +126,8 @@ fi
     echo 22
     sleep 0.25
 
-    if [ $(dpkg-query -W -f='${STATUS}' netcat 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install -y netcat >> $LOGFILE  2>&1
+    if [ $(dpkg-query -W -f='${STATUS}' socat 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+        sudo apt-get install -y socat >> $LOGFILE  2>&1
     fi
 
     echo 28
