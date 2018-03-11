@@ -224,7 +224,8 @@ EOF
 while true
   do
     sleep 30
-    /bin/nc 127.0.0.1 30005 | /bin/nc feed.adsbexchange.com $RECEIVERPORT
+    #/bin/nc 127.0.0.1 30005 | /bin/nc feed.adsbexchange.com $RECEIVERPORT
+    /bin/socat -u TCP:localhost:30005 TCP:feed.adsbexchange.com:$RECEIVERPORT
   done
 EOF
 
