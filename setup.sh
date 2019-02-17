@@ -5,7 +5,7 @@
 #####################################################################################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                                   #
-# Copyright (c) 2015-2016 Joseph A. Prochazka                                       #
+# Copyright (c) 2018 ADSBx                                    #
 #                                                                                   #
 # Permission is hereby granted, free of charge, to any person obtaining a copy      #
 # of this software and associated documentation files (the "Software"), to deal     #
@@ -146,7 +146,7 @@ fi
         git checkout tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
     else
         # Download a copy of the mlat-client repository since the repository does not exist locally.
-        git clone https://github.com/mutability/mlat-client.git >> $LOGFILE 2>&1
+        git clone https://github.com/adsbxchange/mlat-client.git >> $LOGFILE 2>&1
         cd mlat-client >> $LOGFILE 2>&1
         git checkout tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
     fi
