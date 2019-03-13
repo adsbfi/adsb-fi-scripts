@@ -46,7 +46,7 @@ if [ $(dpkg-query -W -f='${STATUS}' curl 2>/dev/null | grep -c "ok installed") -
     echo "Installing the curl package..."
     echo -e "\033[37m"
     sudo apt-get update
-    sudo apt-get install -y curl
+    sudo apt-get install -y curl debhelper
 fi
 echo -e "\033[37m"
 
