@@ -262,6 +262,8 @@ EOF
 
     # Execute the netcat maintenance script.
     sudo nohup $PWD/adsbexchange-netcat_maint.sh > /dev/null 2>&1 & >> $LOGFILE
+    # reload systemd daemons
+    sudo systemctl daemon-reload
     echo 100
     sleep 0.25
 
