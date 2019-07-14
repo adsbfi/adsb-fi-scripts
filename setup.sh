@@ -166,7 +166,8 @@ fi
     echo " CREATE AND CONFIGURE MLAT-CLIENT STARTUP SCRIPTS" >> $LOGFILE
     echo "------------------------------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
-
+    
+    $DSBEXCHANGEUSERNAME="$(echo -e "${ADSBEXCHANGEUSERNAME}" | tr -d '[:space:]')"
     # Create the mlat-client maintenance script.
     tee adsbexchange-mlat_maint.sh > /dev/null <<EOF
 #!/bin/sh
