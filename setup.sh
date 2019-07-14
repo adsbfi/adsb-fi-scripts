@@ -167,7 +167,7 @@ fi
     echo "------------------------------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
     
-    $DSBEXCHANGEUSERNAME="$(echo -e "${ADSBEXCHANGEUSERNAME}" | tr -d '[:space:]')"
+    ADSBEXCHANGEUSERNAME="$(echo -e "${ADSBEXCHANGEUSERNAME}" | tr -d '[:space:]')"
     # Create the mlat-client maintenance script.
     tee adsbexchange-mlat_maint.sh > /dev/null <<EOF
 #!/bin/sh
