@@ -66,10 +66,18 @@ if [ $CONTINUESETUP = 1 ]; then
     exit 0
 fi
 
-ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name for the feeder to be shown on MLAT matrix.\n\nIf you have more than one receiver, this name should be unique.\nExample: \"feedername-01\", \"feedername-02\", etc." 12 78 3>&1 1>&2 2>&3)
-RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Latitude" --nocancel --inputbox "\nEnter your receivers latitude in decimal degrees." 9 78 3>&1 1>&2 2>&3)
-RECEIVERLONGITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longitude" --nocancel --inputbox "\nEnter your recivers longitude in decimal degrees." 9 78 3>&1 1>&2 2>&3)
+ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name for the feeder to be shown on MLAT matrix.\n\nIf you have more than one receiver, this name should be unique.\nText and Numbers only - everything else will be removed.\nExample: \"feedername-01\", \"feedername-02\", etc." 12 78 3>&1 1>&2 2>&3)
+
+until [[$RECEIVERLATTITUDE -le 90 -a -ge -90]]; do
+    RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Latitude" --nocancel --inputbox "\nEnter your receivers latitude in decimal degrees." 9 78 3>&1 1>&2 2>&3)
+done
+
+until [[$RECEIVERLONGITUDE -le 180 -a -ge -180]]; do
+    RECEIVERLONGITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longitude" --nocancel --inputbox "\nEnter your recivers longitude in decimal degrees." 9 78 3>&1 1>&2 2>&3)
+done
+
 RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Altitude" --nocancel --inputbox "\nEnter your recivers altitude in meters > 0m (optional suffix m for meters or ft for feet)." 9 78 3>&1 1>&2 2>&3)
+
 RECEIVERPORT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Feed Port" --nocancel --inputbox "\nChange only if you were assigned a custom feed port.\nFor most all users it is required this port remain set to port 30005." 10 78 "30005" 3>&1 1>&2 2>&3)
 
 
