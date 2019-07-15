@@ -68,12 +68,18 @@ fi
 
 ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name for the feeder to be shown on MLAT matrix.\n\nIf you have more than one receiver, this name should be unique.\nText and Numbers only - everything else will be removed.\nExample: \"feedername-01\", \"feedername-02\", etc." 12 78 3>&1 1>&2 2>&3)
 
-until [[$RECEIVERLATITUDE -le 90 -a -ge -90]]; do
-    RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Latitude" --nocancel --inputbox "\nEnter your receivers latitude in decimal degrees." 9 78 3>&1 1>&2 2>&3)
+#((-90 <= RECEIVERLATITUDE <= 90))
+LAT_OK=0
+until [ $LAT_OK -eq 1 ]; do
+    RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Latitude ${RECEIVERLATITUDE}" --nocancel --inputbox "\nEnter your receivers latitude in decimal degrees." 9 78 3>&1 1>&2 2>&3)
+    LAT_OK=`awk -v LAT="$RECEIVERLATITUDE" 'BEGIN {printf (LAT<90 && LAT>-90 ? "1" : "0")}'`
 done
 
-until [[$RECEIVERLONGITUDE -le 180 -a -ge -180]]; do
-    RECEIVERLONGITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longitude" --nocancel --inputbox "\nEnter your recivers longitude in decimal degrees." 9 78 3>&1 1>&2 2>&3)
+#((-180<= RECEIVERLONGITUDE <= 180))
+LON_OK=0
+until [ $LON_OK -eq 1 ]; do
+    RECEIVERLONGITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longitude ${RECEIVERLONGITUDE}" --nocancel --inputbox "\nEnter your receivers longitude in decimal degrees." 9 78 3>&1 1>&2 2>&3)
+    LON_OK=`awk -v LAT="$RECEIVERLONGITUDE" 'BEGIN {printf (LAT<180 && LAT>-180 ? "1" : "0")}'`
 done
 
 RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Altitude" --nocancel --inputbox "\nEnter your recivers altitude in meters > 0m (optional suffix m for meters or ft for feet)." 9 78 3>&1 1>&2 2>&3)
