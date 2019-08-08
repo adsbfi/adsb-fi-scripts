@@ -242,7 +242,7 @@ while true
     #/bin/nc 127.0.0.1 30005 | /bin/nc feed.adsbexchange.com $RECEIVERPORT
     if ping -q -c 1 -W 1 feed.adsbexchange.com >/dev/null 2>&1
         then
-            /usr/bin/socat -u TCP:localhost:30005 TCP:feed.adsbexchange.com:$RECEIVERPORT
+            socat -u TCP:localhost:30005 TCP:feed.adsbexchange.com:$RECEIVERPORT
     fi
   done
 EOF
