@@ -184,7 +184,7 @@ fi
     NOSPACENAME="$(echo -e "${ADSBEXCHANGEUSERNAME}" | tr -dc '[a-zA-Z0-9]_\-')"
     # Create the mlat-client maintenance script.
     tee adsbexchange-mlat_maint.sh > /dev/null <<EOF
-#!/bin/sh
+#!/bin/bash
 while true
   do
     sleep 30
@@ -235,7 +235,7 @@ EOF
 
     # Create the netcat maintenance script.
     tee adsbexchange-netcat_maint.sh > /dev/null <<EOF
-#!/bin/sh
+#!/bin/bash
 while true
   do
     sleep 30
