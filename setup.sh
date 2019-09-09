@@ -184,7 +184,7 @@ fi
     NOSPACENAME="$(echo -e "${ADSBEXCHANGEUSERNAME}" | tr -dc '[a-zA-Z0-9]_\-')"
     # Create the mlat-client maintenance script.
     tee adsbexchange-mlat_maint.sh > /dev/null <<EOF
-#!/bin/sh
+#!/bin/bash
 while true
   do
     sleep 30
@@ -238,8 +238,8 @@ EOF
     sudo cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system
 
     sudo tee /etc/default/adsbexchange > /dev/null <<EOF
-RECEIVERPORT=$RECEIVERPORT
-EOF
+    RECEIVERPORT=$RECEIVERPORT
+    EOF
 
     echo 76
     sleep 0.25
@@ -284,6 +284,6 @@ EOF
 ## SETUP COMPLETE
 
 # Display the thank you message box.
-whiptail --title "ADS-B Exchange Setup Script" --msgbox "\nSetup is now complete.\n\nYour feeder should now be feeding data to ADS-B Exchange.\nThanks again for choosing to share your data with ADS-B Exchange!\n\nIf you have questions or encountered any issues while using this script feel free to post them to one of the following places.\n\nhttps://github.com/jprochazka/adsb-exchange\nhttp://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/" 17 73
+whiptail --title "ADS-B Exchange Setup Script" --msgbox "\nSetup is now complete.\n\nYour feeder should now be feeding data to ADS-B Exchange.\nThanks again for choosing to share your data with ADS-B Exchange!\n\nIf you have questions or encountered any issues while using this script feel free to post them to one of the following places.\n\nhttp://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/" 17 73
 
 exit 0
