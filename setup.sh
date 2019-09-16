@@ -236,7 +236,7 @@ fi
     RECEIVERLATITUDE="$RECEIVERLATITUDE"
     RECEIVERLONGITUDE="$RECEIVERLONGITUDE"
     RECEIVERALTITUDE="$RECEIVERALTITUDE"
-    RESULTS="beast,connect,localhost:30104"
+    RESULTS="beast,connect,localhost:30104 --results basestation,listen,31003"
     MLATSERVER="feed.adsbexchange.com:31090"
 EOF
 
