@@ -212,10 +212,6 @@ fi
     # Enable adsbexchange-mlat service
     sudo systemctl enable adsbexchange-mlat >> $LOGFILE 2>&1
 
-    # Start or restart adsbexchange-mlat service
-    sudo systemctl restart adsbexchange-mlat >> $LOGFILE 2>&1
-
-
     echo 70
     sleep 0.25
 
@@ -238,6 +234,8 @@ fi
     RECEIVERALTITUDE="$RECEIVERALTITUDE"
     RESULTS="beast,connect,localhost:30104 --results basestation,listen,31003"
     MLATSERVER="feed.adsbexchange.com:31090"
+    INPUT="127.0.0.1:30005"
+    INPUT_TYPE="dump1090"
 EOF
 
     echo 76
@@ -274,6 +272,8 @@ EOF
     # Start or restart adsbexchange-feed service
     sudo systemctl restart adsbexchange-feed  >> $LOGFILE 2>&1
 
+    # Start or restart adsbexchange-mlat service
+    sudo systemctl restart adsbexchange-mlat >> $LOGFILE 2>&1
 
     echo 100
     sleep 0.25
