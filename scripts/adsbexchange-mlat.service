@@ -7,7 +7,7 @@ After=network.target
 [Service]
 EnvironmentFile=/etc/default/adsbexchange
 ExecStart=/usr/bin/mlat-client \
-	--input-type dump1090 --no-udp \
+	--input-type $INPUT_TYPE --no-udp \
 	--input-connect $INPUT \
 	--server $MLATSERVER \
 	--user $USER \

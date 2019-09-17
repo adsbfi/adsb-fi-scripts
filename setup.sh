@@ -235,6 +235,7 @@ fi
     RESULTS="beast,connect,localhost:30104 --results basestation,listen,31003"
     MLATSERVER="feed.adsbexchange.com:31090"
     INPUT="127.0.0.1:30005"
+    INPUT_TYPE="dump1090"
 EOF
 
     echo 76
