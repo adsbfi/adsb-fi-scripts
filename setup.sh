@@ -212,10 +212,6 @@ fi
     # Enable adsbexchange-mlat service
     sudo systemctl enable adsbexchange-mlat >> $LOGFILE 2>&1
 
-    # Start or restart adsbexchange-mlat service
-    sudo systemctl restart adsbexchange-mlat >> $LOGFILE 2>&1
-
-
     echo 70
     sleep 0.25
 
@@ -275,6 +271,8 @@ EOF
     # Start or restart adsbexchange-feed service
     sudo systemctl restart adsbexchange-feed  >> $LOGFILE 2>&1
 
+    # Start or restart adsbexchange-mlat service
+    sudo systemctl restart adsbexchange-mlat >> $LOGFILE 2>&1
 
     echo 100
     sleep 0.25
