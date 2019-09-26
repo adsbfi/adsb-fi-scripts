@@ -23,10 +23,12 @@ cat /etc/default/adsbexchange
 ### Systemd Status
 
 systemctl status adsbexchange-mlat
+
 systemctl status adsbexchange-feed
 
 ### Restart
 
 sudo systemctl restart adsbexchange-feed
+
 sudo systemctl restart adsbexchange-mlat
 
