@@ -115,37 +115,19 @@ fi
 
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
-    if [ $(dpkg-query -W -f='${STATUS}' build-essential 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install -y build-essential >> $LOGFILE  2>&1
-    fi
 
-    echo 10
-    sleep 0.25
+	required_packages="build-essential debhelper python python3-dev socat ntp"
+	progress=4
 
-    if [ $(dpkg-query -W -f='${STATUS}' debhelper 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install -y debhelper >> $LOGFILE  2>&1
-    fi
-
-    echo 16
-    sleep 0.25
-
-    if [ $(dpkg-query -W -f='${STATUS}' python 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install -y python >> $LOGFILE  2>&1
-    fi
-    
-    if [ $(dpkg-query -W -f='${STATUS}' python3-dev 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install -y python3-dev >> $LOGFILE  2>&1
-    fi
-
-    echo 22
-    sleep 0.25
-
-    if [ $(dpkg-query -W -f='${STATUS}' socat 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        sudo apt-get install -y socat >> $LOGFILE  2>&1
-    fi
-
-    echo 28
-    sleep 0.25
+	for package in $required_packages
+	do
+		if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			sudo apt-get install -y $package >> $LOGFILE  2>&1
+		fi
+		progress=$((progress+4))
+		echo $progress
+		sleep 0.25
+	done
 
     echo "" >> $LOGFILE
     echo " BUILD AND INSTALL MLAT-CLIENT" >> $LOGFILE
@@ -232,7 +214,7 @@ fi
     RECEIVERLATITUDE="$RECEIVERLATITUDE"
     RECEIVERLONGITUDE="$RECEIVERLONGITUDE"
     RECEIVERALTITUDE="$RECEIVERALTITUDE"
-    RESULTS="beast,connect,localhost:30104 --results basestation,listen,31003"
+    RESULTS="--results beast,connect,localhost:30104 --results basestation,listen,31003"
     MLATSERVER="feed.adsbexchange.com:31090"
     INPUT="127.0.0.1:30005"
     INPUT_TYPE="dump1090"
