@@ -22,9 +22,9 @@ cat /etc/default/adsbexchange
 
 ### Systemd Status
 
-systemctl status adsbexchange-mlat
+sudo systemctl status adsbexchange-mlat
 
-systemctl status adsbexchange-feed
+sudo systemctl status adsbexchange-feed
 
 ### Restart
 
