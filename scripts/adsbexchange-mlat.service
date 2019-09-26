@@ -14,7 +14,7 @@ ExecStart=/usr/bin/mlat-client \
 	--lat $RECEIVERLATITUDE \
 	--lon $RECEIVERLONGITUDE \
 	--alt $RECEIVERALTITUDE \
-	--results $RESULTS
+	$RESULTS
 Type=simple
 Restart=on-failure
 RestartSec=30
