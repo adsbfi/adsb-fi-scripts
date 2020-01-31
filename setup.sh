@@ -27,6 +27,21 @@
 #                                                                                   #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+## REFUSE INSTALLATION ON ADSBX IMAGE
+
+if [ -f /boot/adsb-config.txt ]; then
+    echo --------
+    echo "You are using the adsbx image, the feed setup script does not need to be installed."
+    echo "You should already be feeding, check here: https://adsbexchange.com/myip/"
+    echo "If the feed isn't working, check/correct the configuration using nano:"
+    echo --------
+    echo "sudo nano /boot/adsb-config.txt"
+    echo --------
+    echo "Hint for using nano: Ctrl-X to exit, Y(yes) and Enter to save."
+    echo --------
+    echo "Exiting."
+    exit 1
+fi
 
 ## CHECK IF SCRIPT WAS RAN USING SUDO
 
