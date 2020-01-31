@@ -17,18 +17,27 @@ Running the following commands will download the contents of this repository and
 ### Checking status
 
 ### Display MLAT config
-
+```
 cat /etc/default/adsbexchange
+```
 
 ### Systemd Status
-
+```
 sudo systemctl status adsbexchange-mlat
 
 sudo systemctl status adsbexchange-feed
+```
 
 ### Restart
-
+```
 sudo systemctl restart adsbexchange-feed
 
 sudo systemctl restart adsbexchange-mlat
+```
 
+### If you encounter issues, please supply these logs on the forum (last 20 lines for each is sufficient):
+
+```
+sudo journalctl -u adsbexchange-feed --no-pager
+sudo journalctl -u adsbexchange-mlat --no-pager
+```

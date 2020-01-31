@@ -81,14 +81,20 @@ if [ $CONTINUESETUP = 1 ]; then
     exit 0
 fi
 
-ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name for the feeder to be shown on MLAT matrix.\n\nIf you have more than one receiver, this name should be unique.\nText and Numbers only - everything else will be removed.\nExample: \"feedername-01\", \"feedername-02\", etc." 12 78 3>&1 1>&2 2>&3)
+ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name for the feeder to be shown on MLAT matrix.\n\nThis name MUST be unique.\nText and Numbers only - everything else will be removed.\nExample: \"william-london-01\", \"william-jersey-02\", etc." 12 78 3>&1 1>&2 2>&3)
+
+whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" \
+    --msgbox "For MLAT the precise location of your antenna is required.\
+    \n\nA small error of 15m/45ft will cause issues with MLAT!\
+    \n\nTo get your location, use any online map service or this website: https://www.mapcoordinates.net/en" 12 78
 
 #((-90 <= RECEIVERLATITUDE <= 90))
 LAT_OK=0
 until [ $LAT_OK -eq 1 ]; do
-    RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Latitude ${RECEIVERLATITUDE}" --nocancel --inputbox "\nEnter your receivers latitude in degrees with 5 decimal places.\n(Example: 32.36291)" 12 78 3>&1 1>&2 2>&3)
+    RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Latitude ${RECEIVERLATITUDE}" --nocancel --inputbox "\nEnter your receivers precise latitude in degrees with 5 decimal places.\n(Example: 32.36291)" 12 78 3>&1 1>&2 2>&3)
     LAT_OK=`awk -v LAT="$RECEIVERLATITUDE" 'BEGIN {printf (LAT<90 && LAT>-90 ? "1" : "0")}'`
 done
+
 
 #((-180<= RECEIVERLONGITUDE <= 180))
 LON_OK=0
