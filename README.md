@@ -4,7 +4,11 @@ These scripts aid in setting up your current ADS-B receiver to feed ADS-B Exchan
 
 ### Obtaining And Using The Scripts
 
-Running the following commands will download the contents of this repository and begin setup.
+```
+sudo bash -c "$(wget -nv -O - https://raw.githubusercontent.com/adsbxchange/adsb-exchange/master/install.sh)"
+```
+
+Alternatively running the following commands will download the contents of this repository and begin setup.
 
     sudo apt-get install git
     git clone https://github.com/adsbxchange/adsb-exchange.git
@@ -40,4 +44,11 @@ sudo systemctl restart adsbexchange-mlat
 ```
 sudo journalctl -u adsbexchange-feed --no-pager
 sudo journalctl -u adsbexchange-mlat --no-pager
+```
+
+### Removal / disabling the services:
+
+```
+sudo systemctl disable --now adsbexchange-feed
+sudo systemctl disable --now adsbexchange-mlat
 ```
