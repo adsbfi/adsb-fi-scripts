@@ -155,16 +155,22 @@ fi
     echo "-----------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
 
+    CURRENT_DIR=$PWD
+
     # Check if the mlat-client git repository already exists.
-    if [ -d mlat-client ] && [ -d mlat-client/.git ]; then
+    INSTALL_DIR=/usr/local/bin/adsb-exchange
+    MLAT_DIR=$INSTALL_DIR/mlat-client
+    mkdir -p $INSTALL_DIR
+    if [ -d $MLAT_DIR ] && [ -d $MLAT_DIR/.git ]; then
         # If the mlat-client repository exists update the source code contained within it.
-        cd mlat-client >> $LOGFILE
-        git pull >> $LOGFILE 2>&1
-        git checkout tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
+        cd $MLAT_DIR >> $LOGFILE
+        git fetch >> $LOGFILE 2>&1
+        git reset --hard tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
     else
         # Download a copy of the mlat-client repository since the repository does not exist locally.
-        git clone https://github.com/adsbxchange/mlat-client.git >> $LOGFILE 2>&1
-        cd mlat-client >> $LOGFILE 2>&1
+        rm -rf $MLAT_DIR
+        git clone --depth 1 https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
+        cd $MLAT_DIR >> $LOGFILE 2>&1
         git checkout tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
     fi
 
@@ -175,6 +181,8 @@ fi
     dpkg-buildpackage -b -uc >> $LOGFILE 2>&1
     cd .. >> $LOGFILE
     sudo dpkg -i mlat-client_${MLATCLIENTVERSION}*.deb >> $LOGFILE 2>&1
+
+    cd $CURRENT_DIR
 
     echo 40
     sleep 0.25
