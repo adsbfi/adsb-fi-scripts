@@ -81,7 +81,7 @@ if [ $CONTINUESETUP = 1 ]; then
     exit 0
 fi
 
-ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name for the feeder to be shown on MLAT matrix.\n\nThis name MUST be unique.\nText and Numbers only - everything else will be removed.\nExample: \"william-london-01\", \"william-jersey-02\", etc." 12 78 3>&1 1>&2 2>&3)
+ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name for the feeder to be shown on the MLAT matrix (http://adsbx.org/sync)\n\nThis name MUST be unique, for this reason a random number is automatically added at the end.\nText and Numbers only - everything else will be removed.\nExample: \"william34-london\", \"william34-jersey\", etc." 12 78 3>&1 1>&2 2>&3)
 
 whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" \
     --msgbox "For MLAT the precise location of your antenna is required.\
@@ -103,9 +103,9 @@ until [ $LON_OK -eq 1 ]; do
     LON_OK=`awk -v LAT="$RECEIVERLONGITUDE" 'BEGIN {printf (LAT<180 && LAT>-180 ? "1" : "0")}'`
 done
 
-RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Altitude above sea level (antenna position)" --nocancel --inputbox "\nEnter your receivers altitude in meters above sea level\n(optional suffix m for meters or ft for feet)\n(negative altitudes need to be entered in meters without a suffix)." 12 78 3>&1 1>&2 2>&3)
+RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Altitude above sea level (at the antenna):" --nocancel --inputbox "\nEnter your antennas altitude above sea level in ft or m like this: 255ft or 78m (no space!))\n(negative altitudes need to be entered in meters without a suffix)." 12 78 3>&1 1>&2 2>&3)
 
-RECEIVERPORT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Feed Port" --nocancel --inputbox "\nChange only if you were assigned a custom feed port.\nFor most all users it is required this port remain set to port 30005." 10 78 "30005" 3>&1 1>&2 2>&3)
+#RECEIVERPORT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Feed Port" --nocancel --inputbox "\nChange only if you were assigned a custom feed port.\nFor most all users it is required this port remain set to port 30005." 10 78 "30005" 3>&1 1>&2 2>&3)
 
 
 whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" --yesno "We are now ready to begin setting up your receiver to feed ADS-B Exchange.\n\nDo you wish to proceed?" 9 78
@@ -155,16 +155,22 @@ fi
     echo "-----------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
 
+    CURRENT_DIR=$PWD
+
     # Check if the mlat-client git repository already exists.
-    if [ -d mlat-client ] && [ -d mlat-client/.git ]; then
+    INSTALL_DIR=/usr/local/bin/adsb-exchange
+    MLAT_DIR=$INSTALL_DIR/mlat-client
+    mkdir -p $INSTALL_DIR
+    if [ -d $MLAT_DIR ] && [ -d $MLAT_DIR/.git ]; then
         # If the mlat-client repository exists update the source code contained within it.
-        cd mlat-client >> $LOGFILE
-        git pull >> $LOGFILE 2>&1
-        git checkout tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
+        cd $MLAT_DIR >> $LOGFILE
+        git fetch >> $LOGFILE 2>&1
+        git reset --hard tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
     else
         # Download a copy of the mlat-client repository since the repository does not exist locally.
-        git clone https://github.com/adsbxchange/mlat-client.git >> $LOGFILE 2>&1
-        cd mlat-client >> $LOGFILE 2>&1
+        rm -rf $MLAT_DIR
+        git clone --depth 1 https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
+        cd $MLAT_DIR >> $LOGFILE 2>&1
         git checkout tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
     fi
 
@@ -175,6 +181,8 @@ fi
     dpkg-buildpackage -b -uc >> $LOGFILE 2>&1
     cd .. >> $LOGFILE
     sudo dpkg -i mlat-client_${MLATCLIENTVERSION}*.deb >> $LOGFILE 2>&1
+
+    cd $CURRENT_DIR
 
     echo 40
     sleep 0.25
@@ -230,15 +238,15 @@ fi
     sudo cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system
 
     sudo tee /etc/default/adsbexchange > /dev/null <<EOF
-    RECEIVERPORT="$RECEIVERPORT"
-    USER="$NOSPACENAME"
+    INPUT="127.0.0.1:30005"
+    USER="${NOSPACENAME}_$((RANDOM % 90 + 10))"
     RECEIVERLATITUDE="$RECEIVERLATITUDE"
     RECEIVERLONGITUDE="$RECEIVERLONGITUDE"
     RECEIVERALTITUDE="$RECEIVERALTITUDE"
     RESULTS="--results beast,connect,localhost:30104 --results basestation,listen,31003"
     MLATSERVER="feed.adsbexchange.com:31090"
-    INPUT="127.0.0.1:30005"
     INPUT_TYPE="dump1090"
+    SERVERPORT="30005"
 EOF
 
     echo 76
@@ -286,6 +294,6 @@ EOF
 ## SETUP COMPLETE
 
 # Display the thank you message box.
-whiptail --title "ADS-B Exchange Setup Script" --msgbox "\nSetup is now complete.\n\nYour feeder should now be feeding data to ADS-B Exchange.\nThanks again for choosing to share your data with ADS-B Exchange!\n\nIf you have questions or encountered any issues while using this script feel free to post them to one of the following places.\n\nhttp://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/" 17 73
+whiptail --title "ADS-B Exchange Setup Script" --msgbox "\nSetup is now complete.\n\nYou should now be feeding data to ADS-B Exchange. \nCheck here after 5 min: https://adsbexchange.com/myip/ http://adsbx.org/sync\nThanks again for choosing to share your data with ADS-B Exchange!\n\nIf you have questions or encountered any issues while using this script feel free to post them to one of the following places.\n\nhttp://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/" 17 73
 
 exit 0
