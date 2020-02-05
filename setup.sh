@@ -103,7 +103,10 @@ until [ $LON_OK -eq 1 ]; do
     LON_OK=`awk -v LAT="$RECEIVERLONGITUDE" 'BEGIN {printf (LAT<180 && LAT>-180 ? "1" : "0")}'`
 done
 
-RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Altitude above sea level (at the antenna):" --nocancel --inputbox "\nEnter your antennas altitude above sea level in ft or m like this: 255ft or 78m (no space!))\n(negative altitudes need to be entered in meters without a suffix)." 12 78 3>&1 1>&2 2>&3)
+RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Altitude above sea level (at the antenna):" \
+    --nocancel --inputbox "\nEnter your antennas altitude above sea level in feet like this:\n255ft\
+    \nor in meters like this:\n78m\nNo Space between the number and unit!\n\
+    (negative altitudes need to be entered in meters without a suffix)." 12 78 3>&1 1>&2 2>&3)
 
 #RECEIVERPORT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Feed Port" --nocancel --inputbox "\nChange only if you were assigned a custom feed port.\nFor most all users it is required this port remain set to port 30005." 10 78 "30005" 3>&1 1>&2 2>&3)
 
@@ -158,20 +161,20 @@ fi
     CURRENT_DIR=$PWD
 
     # Check if the mlat-client git repository already exists.
-    INSTALL_DIR=/usr/local/bin/adsb-exchange
+    INSTALL_DIR=/usr/local/share/adsb-exchange
     MLAT_DIR=$INSTALL_DIR/mlat-client
     mkdir -p $INSTALL_DIR
     if [ -d $MLAT_DIR ] && [ -d $MLAT_DIR/.git ]; then
         # If the mlat-client repository exists update the source code contained within it.
         cd $MLAT_DIR >> $LOGFILE
-        git fetch >> $LOGFILE 2>&1
+        git fetch --depth 1 origin tag "$MLATCLIENTTAG" >> $LOGFILE 2>&1
         git reset --hard tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
     else
         # Download a copy of the mlat-client repository since the repository does not exist locally.
         rm -rf $MLAT_DIR
-        git clone --depth 1 https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
+        git clone -b $MLATCLIENTTAG --depth 1 https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
         cd $MLAT_DIR >> $LOGFILE 2>&1
-        git checkout tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
+        git reset --hard tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
     fi
 
     echo 34
@@ -179,12 +182,15 @@ fi
 
     # Build and install the mlat-client package.
     dpkg-buildpackage -b -uc >> $LOGFILE 2>&1
+
+    echo 44
+
     cd .. >> $LOGFILE
     sudo dpkg -i mlat-client_${MLATCLIENTVERSION}*.deb >> $LOGFILE 2>&1
 
     cd $CURRENT_DIR
 
-    echo 40
+    echo 54
     sleep 0.25
 
     echo "" >> $LOGFILE
@@ -193,9 +199,6 @@ fi
     echo "" >> $LOGFILE
     
     NOSPACENAME="$(echo -e "${ADSBEXCHANGEUSERNAME}" | tr -dc '[a-zA-Z0-9]_\-')"
-
-    echo 46
-    sleep 0.25
 
     # Remove old method of starting the feed script if present from rc.local
     sudo sed -i -e '/adsbexchange-mlat_maint.sh/d' /etc/rc.local >> $LOGFILE 2>&1
