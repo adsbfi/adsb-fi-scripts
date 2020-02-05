@@ -5,6 +5,6 @@ if ! command -v git; then
     apt-get install -y git
 fi
 rm -rf "$TMP"
-git clone --depth 1 https://github.com/adsbxchange/adsb-exchange.git "$TMP"
+git clone https://github.com/adsbxchange/adsb-exchange.git "$TMP"
 cd "$TMP"
 bash setup.sh
