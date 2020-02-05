@@ -6,7 +6,7 @@ After=network.target
 
 [Service]
 EnvironmentFile=/etc/default/adsbexchange
-ExecStart=/usr/local/bin/adsb-exchange/mlat-client/mlat-client \
+ExecStart=/usr/bin/mlat-client \
 	--input-type $INPUT_TYPE --no-udp \
 	--input-connect $INPUT \
 	--server $MLATSERVER \
