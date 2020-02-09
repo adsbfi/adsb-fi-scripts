@@ -208,6 +208,7 @@ fi
 
 
     # Kill the old adsbexchange-mlat_maint.sh script in case it's still running from a previous install
+    pkill adsbexchange-mlat_maint.sh
     PIDS=`ps -efww | grep -w "adsbexchange-mlat_maint.sh" | awk -vpid=$$ '$2 != pid { print $2 }'`
     if [ ! -z "$PIDS" ]; then
         sudo kill $PIDS >> $LOGFILE 2>&1
@@ -271,6 +272,7 @@ EOF
     sleep 0.25
 
     # Kill the old adsbexchange-netcat_maint.sh script in case it's still running from a previous install
+    pkill adsbexchange-netcat_maint.sh
     PIDS=`ps -efww | grep -w "adsbexchange-netcat_maint.sh" | awk -vpid=$$ '$2 != pid { print $2 }'`
     if [ ! -z "$PIDS" ]; then
         sudo kill $PIDS >> $LOGFILE 2>&1
@@ -279,6 +281,10 @@ EOF
 
     echo 94
     sleep 0.25
+
+    # make sure old feeds are no longer running ... this is a little brute force.
+    pkill -f feed.adsbexchange.com:31090
+    pkill -f feed.adsbexchange.com:30005
 
     # reload systemd daemons
     sudo systemctl daemon-reload
