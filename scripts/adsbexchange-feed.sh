@@ -1,4 +1,8 @@
 #!/bin/sh
+
+trap "kill 0" SIGINT
+trap "kill -2 0" SIGTERM
+
 while sleep 30
 do
 	if ping -q -c 2 -W 5 feed.adsbexchange.com >/dev/null 2>&1
