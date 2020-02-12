@@ -230,13 +230,48 @@ fi
     echo 70
     sleep 0.25
 
-    # SETUP NETCAT TO SEND DUMP1090 DATA TO ADS-B EXCHANGE
+    # SETUP FEEDER TO SEND DUMP1090 DATA TO ADS-B EXCHANGE
 
     echo "" >> $LOGFILE
-    echo " CREATE AND CONFIGURE NETCAT STARTUP SCRIPTS" >> $LOGFILE
+    echo " CREATE AND CONFIGURE FEEDER STARTUP SCRIPTS" >> $LOGFILE
     echo "-------------------------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
+    
+    commands="git gcc make ld"
+    packages="git build-essential"
+    install=""
 
+    for CMD in $commands; do
+	if ! command -v "$CMD" &>/dev/null
+	then
+        install=1
+	fi
+    done
+
+    if [[ -n "$install" ]]
+    then
+	echo "Installing required packages: $packages" >> $LOGFILE
+	apt-get update || true
+	if ! apt-get install -y $packages
+	then
+		echo "Failed to install required packages: $install" >> $LOGFILE
+		echo "Exiting ..." >> $LOGFILE
+		exit 1
+	fi
+	hash -r || true
+    fi
+
+    if ! [ -f /usr/local/share/feed-adsbx ]; then
+	rm -rf /tmp/readsb &>/dev/null || true
+	git clone --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb
+	cd /tmp/readsb
+        apt install -y libncurses5-dev
+	make
+	cp readsb /usr/local/share/feed-adsbx
+        cd /tmp
+	rm -rf /tmp/readsb &>/dev/null || true
+    fi
+    
     mkdir -p /usr/local/bin
     cp $PWD/scripts/adsbexchange-feed.sh /usr/local/bin
     cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system
