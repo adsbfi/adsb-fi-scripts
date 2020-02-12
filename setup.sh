@@ -236,7 +236,11 @@ fi
     echo " CREATE AND CONFIGURE FEEDER STARTUP SCRIPTS" >> $LOGFILE
     echo "-------------------------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
-    
+
+    #save working dir to come back to it
+    SCRIPT_DIR=$PWD
+   
+    #compile readsb
     commands="git gcc make ld"
     packages="git build-essential"
     install=""
@@ -271,7 +275,10 @@ fi
         cd /tmp
 	rm -rf /tmp/readsb &>/dev/null || true
     fi
-    
+    # back to the working dir for install script
+    cd $SCRIPT_DIR
+    #end compile readsb
+
     mkdir -p /usr/local/bin
     cp $PWD/scripts/adsbexchange-feed.sh /usr/local/bin
     cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system
