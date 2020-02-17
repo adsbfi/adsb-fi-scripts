@@ -55,4 +55,7 @@ sudo systemctl status adsbexchange-feed
 ```
 sudo systemctl disable --now adsbexchange-feed
 sudo systemctl disable --now adsbexchange-mlat
+
+
+--adsbx-git-discord
 ```
