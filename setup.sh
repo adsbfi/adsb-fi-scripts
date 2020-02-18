@@ -285,6 +285,7 @@ fi
 
     tee /etc/default/adsbexchange > /dev/null <<EOF
     INPUT="127.0.0.1:30005"
+    REDUCE_INTERVAL="0.5"
     USER="${NOSPACENAME}_$((RANDOM % 90 + 10))"
     RECEIVERLATITUDE="$RECEIVERLATITUDE"
     RECEIVERLONGITUDE="$RECEIVERLONGITUDE"
@@ -292,8 +293,6 @@ fi
     RESULTS="--results beast,connect,localhost:30104 --results basestation,listen,31003"
     MLATSERVER="feed.adsbexchange.com:31090"
     INPUT_TYPE="dump1090"
-    SERVERPORT="30005"
-    SOURCE="--net-connector localhost,30005,beast_in"
     TARGET="--net-connector feed.adsbexchange.com,30005,beast_reduce_out"
     NET_OPTIONS="--net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 0 --net-sbs-port 0 --net-bi-port 0 --net-bo-port 0 --net-ri-port 0"
 EOF
