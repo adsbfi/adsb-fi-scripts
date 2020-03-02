@@ -140,18 +140,18 @@ fi
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-	required_packages="build-essential debhelper python python3-dev socat ntp"
-	progress=4
+    required_packages="build-essential debhelper python python3-dev socat ntp"
+    progress=4
 
-	for package in $required_packages
-	do
-		if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-			apt-get install -y $package >> $LOGFILE  2>&1
-		fi
-		progress=$((progress+4))
-		echo $progress
-		sleep 0.25
-	done
+    for package in $required_packages
+    do
+        if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+            apt-get install -y $package >> $LOGFILE  2>&1
+        fi
+        progress=$((progress+4))
+        echo $progress
+        sleep 0.25
+    done
 
     echo "" >> $LOGFILE
     echo " BUILD AND INSTALL MLAT-CLIENT" >> $LOGFILE
@@ -197,7 +197,7 @@ fi
     echo " CREATE AND CONFIGURE MLAT-CLIENT STARTUP SCRIPTS" >> $LOGFILE
     echo "------------------------------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
-    
+
     NOSPACENAME="$(echo -e "${ADSBEXCHANGEUSERNAME}" | tr -dc '[a-zA-Z0-9]_\-')"
 
     # Remove old method of starting the feed script if present from rc.local
@@ -239,45 +239,45 @@ fi
 
     #save working dir to come back to it
     SCRIPT_DIR=$PWD
-   
+
     #compile readsb
     commands="git gcc make ld"
     packages="git build-essential"
     install=""
 
     for CMD in $commands; do
-	if ! command -v "$CMD" &>/dev/null
-	then
-        install=1
-	fi
+        if ! command -v "$CMD" &>/dev/null
+        then
+            install=1
+        fi
     done
 
     if [[ -n "$install" ]]
     then
-	echo "Installing required packages: $packages" >> $LOGFILE
-	apt-get update || true
-    echo 71
-	if ! apt-get install -y $packages >> $LOGFILE 2>&1
-	then
-		echo "Failed to install required packages: $install" >> $LOGFILE
-		echo "Exiting ..." >> $LOGFILE
-		exit 1
-	fi
-	hash -r || true
+        echo "Installing required packages: $packages" >> $LOGFILE
+        apt-get update || true
+        echo 71
+        if ! apt-get install -y $packages >> $LOGFILE 2>&1
+        then
+            echo "Failed to install required packages: $install" >> $LOGFILE
+            echo "Exiting ..." >> $LOGFILE
+            exit 1
+        fi
+        hash -r || true
     fi
     echo 72
 
     if ! [ -f /usr/local/share/feed-adsbx ]; then
-	rm -rf /tmp/readsb &>/dev/null || true
-	git clone --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
-	cd /tmp/readsb
-    echo 73
-    apt install -y libncurses5-dev >> $LOGFILE 2>&1
-    echo 74
-	make
-	cp readsb /usr/local/share/feed-adsbx
+        rm -rf /tmp/readsb &>/dev/null || true
+        git clone --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
+        cd /tmp/readsb
+        echo 73
+        apt install -y libncurses5-dev >> $LOGFILE 2>&1
+        echo 74
+        make
+        cp readsb /usr/local/share/feed-adsbx
         cd /tmp
-	rm -rf /tmp/readsb &>/dev/null || true
+        rm -rf /tmp/readsb &>/dev/null || true
     fi
     # back to the working dir for install script
     cd $SCRIPT_DIR
@@ -301,8 +301,8 @@ fi
     NET_OPTIONS="--net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 0 --net-sbs-port 0 --net-bi-port 0 --net-bo-port 0 --net-ri-port 0"
 EOF
 
-    echo 76
-    sleep 0.25
+echo 76
+sleep 0.25
 
     # Set permissions on the file adsbexchange-feed.sh.
     chmod +x /usr/local/bin/adsbexchange-feed.sh >> $LOGFILE
