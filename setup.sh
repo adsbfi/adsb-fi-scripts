@@ -256,7 +256,7 @@ fi
     then
 	echo "Installing required packages: $packages" >> $LOGFILE
 	apt-get update || true
-	if ! apt-get install -y $packages
+	if ! apt-get install -y $packages >> $LOGFILE 2>&1
 	then
 		echo "Failed to install required packages: $install" >> $LOGFILE
 		echo "Exiting ..." >> $LOGFILE
@@ -267,9 +267,9 @@ fi
 
     if ! [ -f /usr/local/share/feed-adsbx ]; then
 	rm -rf /tmp/readsb &>/dev/null || true
-	git clone --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb
+	git clone --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
 	cd /tmp/readsb
-        apt install -y libncurses5-dev
+    apt install -y libncurses5-dev >> $LOGFILE 2>&1
 	make
 	cp readsb /usr/local/share/feed-adsbx
         cd /tmp
