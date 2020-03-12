@@ -162,20 +162,19 @@ fi
 
     # Check if the mlat-client git repository already exists.
     INSTALL_DIR=/usr/local/share/adsb-exchange
-    MLAT_DIR=$INSTALL_DIR/mlat-client
+    MLAT_DIR=$INSTALL_DIR/mlat-git
     VENV=$INSTALL_DIR/venv
     mkdir -p $INSTALL_DIR >> $LOGFILE 2>&1
     if [ -d $MLAT_DIR ] && [ -d $MLAT_DIR/.git ]; then
         # If the mlat-client repository exists update the source code contained within it.
         cd $MLAT_DIR >> $LOGFILE
-        git fetch --depth 1 origin tag "$MLATCLIENTTAG" >> $LOGFILE 2>&1
-        git reset --hard tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
+        git fetch >> $LOGFILE 2>&1
+        git reset --hard origin/master >> $LOGFILE 2>&1
     else
         # Download a copy of the mlat-client repository since the repository does not exist locally.
         rm -rf $MLAT_DIR
-        git clone -b $MLATCLIENTTAG --depth 1 https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
+        git clone https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
         cd $MLAT_DIR >> $LOGFILE 2>&1
-        git reset --hard tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
     fi
 
     echo 34
