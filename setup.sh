@@ -140,7 +140,7 @@ fi
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-    required_packages="build-essential debhelper python python3-dev socat ntp"
+    required_packages="build-essential debhelper python python3-dev socat ntp python3-pip python3-virtualenv"
     progress=4
 
     for package in $required_packages
@@ -162,31 +162,36 @@ fi
 
     # Check if the mlat-client git repository already exists.
     INSTALL_DIR=/usr/local/share/adsb-exchange
-    MLAT_DIR=$INSTALL_DIR/mlat-client
-    mkdir -p $INSTALL_DIR
+    MLAT_DIR=$INSTALL_DIR/mlat-git
+    VENV=$INSTALL_DIR/venv
+    mkdir -p $INSTALL_DIR >> $LOGFILE 2>&1
     if [ -d $MLAT_DIR ] && [ -d $MLAT_DIR/.git ]; then
         # If the mlat-client repository exists update the source code contained within it.
         cd $MLAT_DIR >> $LOGFILE
-        git fetch --depth 1 origin tag "$MLATCLIENTTAG" >> $LOGFILE 2>&1
-        git reset --hard tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
+        git fetch >> $LOGFILE 2>&1
+        git reset --hard origin/master >> $LOGFILE 2>&1
     else
         # Download a copy of the mlat-client repository since the repository does not exist locally.
         rm -rf $MLAT_DIR
-        git clone -b $MLATCLIENTTAG --depth 1 https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
+        git clone https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
         cd $MLAT_DIR >> $LOGFILE 2>&1
-        git reset --hard tags/$MLATCLIENTTAG >> $LOGFILE 2>&1
     fi
 
     echo 34
     sleep 0.25
 
     # Build and install the mlat-client package.
-    dpkg-buildpackage -b -uc >> $LOGFILE 2>&1
+    # dpkg-buildpackage -b -uc >> $LOGFILE 2>&1
+    virtualenv -p /usr/bin/python3 $VENV >> $LOGFILE 2>&1
+    source $VENV/bin/activate >> $LOGFILE 2>&1
+    python3 setup.py build >> $LOGFILE 2>&1
+    python3 setup.py install >> $LOGFILE 2>&1
+
 
     echo 44
 
-    cd .. >> $LOGFILE
-    dpkg -i mlat-client_${MLATCLIENTVERSION}*.deb >> $LOGFILE 2>&1
+    #cd .. >> $LOGFILE
+    #dpkg -i mlat-client_${MLATCLIENTVERSION}*.deb >> $LOGFILE 2>&1
 
     cd $CURRENT_DIR
 
