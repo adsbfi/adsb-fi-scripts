@@ -153,6 +153,8 @@ fi
         sleep 0.25
     done
 
+    hash -r
+
     echo "" >> $LOGFILE
     echo " BUILD AND INSTALL MLAT-CLIENT" >> $LOGFILE
     echo "-----------------------------------" >> $LOGFILE
