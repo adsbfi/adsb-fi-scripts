@@ -140,7 +140,7 @@ fi
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-    required_packages="build-essential debhelper python python3-dev socat ntp python3-pip python3-virtualenv"
+    required_packages="build-essential debhelper python python3-dev socat ntp python3-pip python3-virtualenv virtualenv"
     progress=4
 
     for package in $required_packages
