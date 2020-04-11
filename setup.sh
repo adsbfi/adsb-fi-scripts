@@ -56,13 +56,9 @@ fi
 
 echo "Checking for packages needed to run this script..."
 
-# remove previously used folder to avoid confusion
-rm -rf /usr/local/share/adsb-exchange
-IPATH=/usr/local/share/adsbexchange
-mkdir -p $IPATH
-
 ## ASSIGN VARIABLES
 
+IPATH=/usr/local/share/adsbexchange
 LOGDIRECTORY="$PWD/logs"
 
 MLAT_VERSION="3c84da98fca674aabfe562b6bd09e9e399f2a04c"
@@ -118,12 +114,18 @@ fi
 
 {
 
+    # remove previously used folder to avoid confusion
+    rm -rf /usr/local/share/adsb-exchange &>/dev/null
+
     # Make a log directory if it does not already exist.
     if [ ! -d "$LOGDIRECTORY" ]; then
         mkdir $LOGDIRECTORY
     fi
     LOGFILE="$LOGDIRECTORY/image_setup-$(date +%F_%R)"
     touch $LOGFILE
+
+    mkdir -p $IPATH >> $LOGFILE  2>&1
+    cp uninstall.sh $IPATH >> $LOGFILE  2>&1
 
     if ! id -u adsbexchange &>/dev/null
     then
