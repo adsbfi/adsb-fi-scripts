@@ -62,7 +62,7 @@ IPATH=/usr/local/share/adsbexchange
 LOGDIRECTORY="$PWD/logs"
 
 MLAT_VERSION="3c84da98fca674aabfe562b6bd09e9e399f2a04c"
-READSB_VERSION="a6da4024c89a580684280fea35c8a5e1503754be"
+READSB_VERSION="e751b2a1f373b99e4164bfa48aa1ebc9c8d2f388"
 
 ## WHIPTAIL DIALOGS
 
@@ -255,33 +255,44 @@ fi
 
     #save working dir to come back to it
     SCRIPT_DIR=$PWD
+    echo "" >> $LOGFILE
+    echo "" >> $LOGFILE
 
     if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version
     then
+        [ -f $IPATH/readsb_version ] && cat $IPATH/readsb_version >> $LOGFILE
+        echo "" >> $LOGFILE
+
         #compile readsb
         echo 72
 
         rm -rf /tmp/readsb &>/dev/null || true
-        git clone -b adsbx --depth 1 https://github.com/wiedehopf/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
+        git clone --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
         cd /tmp/readsb
         echo 74
-        if make -j3 >> $LOGFILE 2>&1
+        if make -j3 2>> $LOGFILE >/dev/null
         then
-            git rev-parse HEAD > $IPATH/readsb_version 2> $LOGFILE
+            git rev-parse HEAD > $IPATH/readsb_version 2>> $LOGFILE
         fi
-        cp readsb $IPATH/feed-adsbx
+
+        mv $IPATH/feed-adsbx /tmp/old-feed-adsbx &>/dev/null
+        cp readsb $IPATH/feed-adsbx >> $LOGFILE 2>&1
+        rm -f /tmp/old-feed-adsbx &> /dev/null
+
         cd /tmp
         rm -rf /tmp/readsb &>/dev/null || true
+        echo "" >> $LOGFILE
+        echo "" >> $LOGFILE
     fi
 
     # back to the working dir for install script
     cd $SCRIPT_DIR
     #end compile readsb
 
-    cp $PWD/scripts/adsbexchange-feed.sh $IPATH
-    cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system
+    cp $PWD/scripts/adsbexchange-feed.sh $IPATH >> $LOGFILE 2>&1
+    cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system >> $LOGFILE 2>&1
 
-    tee /etc/default/adsbexchange > /dev/null <<EOF
+    tee /etc/default/adsbexchange > /dev/null 2>> $LOGFILE <<EOF
     INPUT="127.0.0.1:30005"
     REDUCE_INTERVAL="0.5"
 
