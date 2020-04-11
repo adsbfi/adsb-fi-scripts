@@ -125,6 +125,11 @@ fi
     LOGFILE="$LOGDIRECTORY/image_setup-$(date +%F_%R)"
     touch $LOGFILE
 
+    if ! id -u adsbexchange &>/dev/null
+    then
+        adduser --system --home $IPATH --no-create-home --quiet adsbexchange >> $LOGFILE  2>&1
+    fi
+
     echo 4
     sleep 0.25
 
@@ -316,11 +321,15 @@ EOF
     # Start or restart adsbexchange-feed service
     systemctl restart adsbexchange-feed  >> $LOGFILE 2>&1
 
+    echo 96
+
     # Start or restart adsbexchange-mlat service
     systemctl restart adsbexchange-mlat >> $LOGFILE 2>&1
 
     echo 100
     sleep 0.25
+
+    cp $LOGFILE $IPATH/lastlog &>/dev/null
 
 } | whiptail --backtitle "$BACKTITLETEXT" --title "Setting Up ADS-B Exchange Feed"  --gauge "\nSetting up your receiver to feed ADS-B Exchange.\nThe setup process may take awhile to complete..." 8 60 0
 

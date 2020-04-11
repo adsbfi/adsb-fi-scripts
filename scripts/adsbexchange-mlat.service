@@ -5,6 +5,7 @@ Wants=network.target
 After=network.target
 
 [Service]
+User=adsbexchange
 EnvironmentFile=/etc/default/adsbexchange
 ExecStart=/usr/local/share/adsbexchange/venv/bin/python3 /usr/local/share/adsbexchange/venv/bin/mlat-client \
 	--input-type $INPUT_TYPE --no-udp \
@@ -16,9 +17,8 @@ ExecStart=/usr/local/share/adsbexchange/venv/bin/python3 /usr/local/share/adsbex
 	--alt $RECEIVERALTITUDE \
 	$RESULTS
 Type=simple
-Restart=on-failure
+Restart=always
 RestartSec=30
-RestartPreventExitStatus=64
 SyslogIdentifier=adsbexchange-mlat
 
 [Install]
