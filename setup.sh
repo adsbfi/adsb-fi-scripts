@@ -54,22 +54,19 @@ fi
 
 ## CHECK FOR PACKAGES NEEDED BY THIS SCRIPT
 
-echo -e "\033[33m"
 echo "Checking for packages needed to run this script..."
 
-if [ $(dpkg-query -W -f='${STATUS}' curl 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-    echo "Installing the curl package..."
-    echo -e "\033[37m"
-    apt-get update
-    apt-get install -y curl
-fi
-echo -e "\033[37m"
+# remove previously used folder to avoid confusion
+rm -rf /usr/local/share/adsb-exchange
+IPATH=/usr/local/share/adsbexchange
+mkdir -p $IPATH
 
 ## ASSIGN VARIABLES
 
 LOGDIRECTORY="$PWD/logs"
-MLATCLIENTVERSION="0.2.10"
-MLATCLIENTTAG="v0.2.10"
+
+MLAT_VERSION="3c84da98fca674aabfe562b6bd09e9e399f2a04c"
+READSB_VERSION="a6da4024c89a580684280fea35c8a5e1503754be"
 
 ## WHIPTAIL DIALOGS
 
@@ -140,17 +137,21 @@ fi
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-    required_packages="build-essential debhelper python python3-dev socat ntp python3-pip python3-virtualenv virtualenv"
+    required_packages="git curl build-essential python3-dev socat ntp python3-pip python3-virtualenv virtualenv libncurses5-dev"
     progress=4
+
+    APT_UPDATED="false"
 
     for package in $required_packages
     do
         if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+            if [[ $APT_UPDATED == "false" ]]; then
+                apt-get update && APT_UPDATE="true"
+            fi
             apt-get install -y $package >> $LOGFILE  2>&1
         fi
-        progress=$((progress+4))
+        progress=$((progress+2))
         echo $progress
-        sleep 0.25
     done
 
     hash -r
@@ -162,43 +163,49 @@ fi
 
     CURRENT_DIR=$PWD
 
-    # Check if the mlat-client git repository already exists.
-    INSTALL_DIR=/usr/local/share/adsb-exchange
-    MLAT_DIR=$INSTALL_DIR/mlat-git
-    VENV=$INSTALL_DIR/venv
-    mkdir -p $INSTALL_DIR >> $LOGFILE 2>&1
-    if [ -d $MLAT_DIR ] && [ -d $MLAT_DIR/.git ]; then
-        # If the mlat-client repository exists update the source code contained within it.
-        cd $MLAT_DIR >> $LOGFILE
-        git fetch >> $LOGFILE 2>&1
-        git reset --hard origin/master >> $LOGFILE 2>&1
-    else
-        # Download a copy of the mlat-client repository since the repository does not exist locally.
-        rm -rf $MLAT_DIR
-        git clone https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
-        cd $MLAT_DIR >> $LOGFILE 2>&1
+    if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version
+    then
+        # Check if the mlat-client git repository already exists.
+        MLAT_DIR=$IPATH/mlat-git
+        VENV=$IPATH/venv
+        mkdir -p $IPATH >> $LOGFILE 2>&1
+        if [ -d $MLAT_DIR ] && [ -d $MLAT_DIR/.git ]; then
+            # If the mlat-client repository exists update the source code contained within it.
+            cd $MLAT_DIR >> $LOGFILE
+            git fetch >> $LOGFILE 2>&1
+            git reset --hard origin/master >> $LOGFILE 2>&1
+        else
+            # Download a copy of the mlat-client repository since the repository does not exist locally.
+            rm -rf $MLAT_DIR
+            git clone https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
+            cd $MLAT_DIR >> $LOGFILE 2>&1
+        fi
+
+        echo 34
+        sleep 0.25
+
+
+        MLAT_FAIL="false"
+        virtualenv -p /usr/bin/python3 $VENV >> $LOGFILE 2>&1 || MLAT_FAIL="true"
+        echo 36
+        source $VENV/bin/activate >> $LOGFILE 2>&1 || MLAT_FAIL="true"
+        echo 38
+        python3 setup.py build >> $LOGFILE 2>&1 || MLAT_FAIL="true"
+        echo 40
+        python3 setup.py install >> $LOGFILE 2>&1 || MLAT_FAIL="true"
+
+        if [[ $MLAT_FAIL == "false" ]]; then
+            git rev-parse HEAD > $IPATH/mlat_version
+        fi
+
     fi
-
-    echo 34
-    sleep 0.25
-
-    # Build and install the mlat-client package.
-    # dpkg-buildpackage -b -uc >> $LOGFILE 2>&1
-    virtualenv -p /usr/bin/python3 $VENV >> $LOGFILE 2>&1
-    source $VENV/bin/activate >> $LOGFILE 2>&1
-    python3 setup.py build >> $LOGFILE 2>&1
-    python3 setup.py install >> $LOGFILE 2>&1
-
 
     echo 44
 
-    #cd .. >> $LOGFILE
-    #dpkg -i mlat-client_${MLATCLIENTVERSION}*.deb >> $LOGFILE 2>&1
-
     cd $CURRENT_DIR
 
-    echo 54
     sleep 0.25
+    echo 54
 
     echo "" >> $LOGFILE
     echo " CREATE AND CONFIGURE MLAT-CLIENT STARTUP SCRIPTS" >> $LOGFILE
@@ -208,14 +215,12 @@ fi
     NOSPACENAME="$(echo -e "${ADSBEXCHANGEUSERNAME}" | tr -dc '[a-zA-Z0-9]_\-')"
 
     # Remove old method of starting the feed script if present from rc.local
-    sed -i -e '/adsbexchange-mlat_maint.sh/d' /etc/rc.local >> $LOGFILE 2>&1
-
-    echo 58
-    sleep 0.25
-
+    if grep -qs -e 'adsbexchange-mlat_maint.sh' /etc/rc.local; then
+        sed -i -e '/adsbexchange-mlat_maint.sh/d' /etc/rc.local >> $LOGFILE 2>&1
+    fi
 
     # Kill the old adsbexchange-mlat_maint.sh script in case it's still running from a previous install
-    pkill adsbexchange-mlat_maint.sh
+    pkill -f adsbexchange-mlat_maint.sh
     PIDS=`ps -efww | grep -w "adsbexchange-mlat_maint.sh" | awk -vpid=$$ '$2 != pid { print $2 }'`
     if [ ! -z "$PIDS" ]; then
         kill $PIDS >> $LOGFILE 2>&1
@@ -227,9 +232,6 @@ fi
 
     # copy adsbexchange-mlat service file
     cp $PWD/scripts/adsbexchange-mlat.service /lib/systemd/system >> $LOGFILE 2>&1
-
-    # reload systemd daemons
-    systemctl daemon-reload
 
     # Enable adsbexchange-mlat service
     systemctl enable adsbexchange-mlat >> $LOGFILE 2>&1
@@ -247,51 +249,29 @@ fi
     #save working dir to come back to it
     SCRIPT_DIR=$PWD
 
-    #compile readsb
-    commands="git gcc make ld"
-    packages="git build-essential"
-    install=""
-
-    for CMD in $commands; do
-        if ! command -v "$CMD" &>/dev/null
-        then
-            install=1
-        fi
-    done
-
-    if [[ -n "$install" ]]
+    if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version
     then
-        echo "Installing required packages: $packages" >> $LOGFILE
-        apt-get update || true
-        echo 71
-        if ! apt-get install -y $packages >> $LOGFILE 2>&1
-        then
-            echo "Failed to install required packages: $install" >> $LOGFILE
-            echo "Exiting ..." >> $LOGFILE
-            exit 1
-        fi
-        hash -r || true
-    fi
-    echo 72
+        #compile readsb
+        echo 72
 
-    if ! [ -f /usr/local/share/feed-adsbx ]; then
         rm -rf /tmp/readsb &>/dev/null || true
-        git clone --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
+        git clone -b adsbx --depth 1 https://github.com/wiedehopf/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
         cd /tmp/readsb
-        echo 73
-        apt install -y libncurses5-dev >> $LOGFILE 2>&1
         echo 74
-        make
-        cp readsb /usr/local/share/feed-adsbx
+        if make -j3 >> $LOGFILE 2>&1
+        then
+            git rev-parse HEAD > $IPATH/readsb_version 2> $LOGFILE
+        fi
+        cp readsb $IPATH/feed-adsbx
         cd /tmp
         rm -rf /tmp/readsb &>/dev/null || true
     fi
+
     # back to the working dir for install script
     cd $SCRIPT_DIR
     #end compile readsb
 
-    mkdir -p /usr/local/bin
-    cp $PWD/scripts/adsbexchange-feed.sh /usr/local/bin
+    cp $PWD/scripts/adsbexchange-feed.sh $IPATH
     cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system
 
     tee /etc/default/adsbexchange > /dev/null <<EOF
@@ -308,17 +288,13 @@ fi
     NET_OPTIONS="--net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 0 --net-sbs-port 0 --net-bi-port 0 --net-bo-port 0 --net-ri-port 0"
 EOF
 
-echo 76
-sleep 0.25
-
-    # Set permissions on the file adsbexchange-feed.sh.
-    chmod +x /usr/local/bin/adsbexchange-feed.sh >> $LOGFILE
-
     echo 82
     sleep 0.25
 
     # Remove old method of starting the feed script if present from rc.local
-    sed -i -e '/adsbexchange-netcat_maint.sh/d' /etc/rc.local >> $LOGFILE 2>&1
+    if grep -qs -e 'adsbexchange-netcat_maint.sh' /etc/rc.local; then
+        sed -i -e '/adsbexchange-netcat_maint.sh/d' /etc/rc.local >> $LOGFILE 2>&1
+    fi
 
     # Enable adsbexchange-feed service
     systemctl enable adsbexchange-feed  >> $LOGFILE 2>&1
@@ -327,7 +303,7 @@ sleep 0.25
     sleep 0.25
 
     # Kill the old adsbexchange-netcat_maint.sh script in case it's still running from a previous install
-    pkill adsbexchange-netcat_maint.sh
+    pkill -f adsbexchange-netcat_maint.sh
     PIDS=`ps -efww | grep -w "adsbexchange-netcat_maint.sh" | awk -vpid=$$ '$2 != pid { print $2 }'`
     if [ ! -z "$PIDS" ]; then
         kill $PIDS >> $LOGFILE 2>&1
@@ -336,13 +312,6 @@ sleep 0.25
 
     echo 94
     sleep 0.25
-
-    # make sure old feeds are no longer running ... this is a little brute force.
-    pkill -f feed.adsbexchange.com:31090
-    pkill -f feed.adsbexchange.com:30005
-
-    # reload systemd daemons
-    systemctl daemon-reload
 
     # Start or restart adsbexchange-feed service
     systemctl restart adsbexchange-feed  >> $LOGFILE 2>&1
@@ -357,7 +326,27 @@ sleep 0.25
 
 ## SETUP COMPLETE
 
+ENDTEXT="
+Setup is now complete.
+
+You should now be feeding data to ADS-B Exchange.
+
+Thanks again for choosing to share your data with ADS-B Exchange!
+
+If you're curious, check your feed status after 5 min:
+
+https://adsbexchange.com/myip/
+http://adsbx.org/sync
+
+If you have questions or encountered any issues while using this script feel free to post them to one of the following places:
+
+http://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/
+https://discord.gg/ErEztqg
+"
+
 # Display the thank you message box.
-whiptail --title "ADS-B Exchange Setup Script" --msgbox "\nSetup is now complete.\n\nYou should now be feeding data to ADS-B Exchange. \nCheck here after 5 min: https://adsbexchange.com/myip/ http://adsbx.org/sync\nThanks again for choosing to share your data with ADS-B Exchange!\n\nIf you have questions or encountered any issues while using this script feel free to post them to one of the following places.\n\nhttp://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/" 17 73
+whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT" 24 73
+
+echo -e "$ENDTEXT"
 
 exit 0

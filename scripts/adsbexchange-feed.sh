@@ -10,7 +10,7 @@ do
 	then
 		echo Connected to feed.adsbexchange.com:30005
 		
-		/usr/local/share/feed-adsbx --net --net-only --quiet \
+		/usr/local/share/adsbexchange/feed-adsbx --net --net-only --quiet \
 		--write-json /run/adsbexchange-feed \
 		--net-beast-reduce-interval $REDUCE_INTERVAL \
 		$TARGET $NET_OPTIONS $SOURCE

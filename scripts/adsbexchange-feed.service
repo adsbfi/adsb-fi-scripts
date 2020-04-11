@@ -7,7 +7,7 @@ After=network.target
 [Service]
 EnvironmentFile=/etc/default/adsbexchange
 RuntimeDirectory=adsbexchange-feed
-ExecStart=/usr/local/bin/adsbexchange-feed.sh
+ExecStart=/usr/local/share/adsbexchange/adsbexchange-feed.sh
 Type=simple
 Restart=on-failure
 RestartSec=30

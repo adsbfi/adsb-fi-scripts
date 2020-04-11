@@ -6,7 +6,7 @@ After=network.target
 
 [Service]
 EnvironmentFile=/etc/default/adsbexchange
-ExecStart=/usr/local/share/adsb-exchange/venv/bin/python3 /usr/local/share/adsb-exchange/venv/bin/mlat-client \
+ExecStart=/usr/local/share/adsbexchange/venv/bin/python3 /usr/local/share/adsbexchange/venv/bin/mlat-client \
 	--input-type $INPUT_TYPE --no-udp \
 	--input-connect $INPUT \
 	--server $MLATSERVER \
