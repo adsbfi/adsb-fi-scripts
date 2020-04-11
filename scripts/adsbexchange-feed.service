@@ -5,12 +5,13 @@ Wants=network.target
 After=network.target
 
 [Service]
+User=adsbexchange
 EnvironmentFile=/etc/default/adsbexchange
-ExecStart=/usr/local/bin/adsbexchange-feed.sh
+RuntimeDirectory=adsbexchange-feed
+ExecStart=/usr/local/share/adsbexchange/adsbexchange-feed.sh
 Type=simple
-Restart=on-failure
+Restart=always
 RestartSec=30
-RestartPreventExitStatus=64
 SyslogIdentifier=adsbexchange-feed
 
 [Install]
