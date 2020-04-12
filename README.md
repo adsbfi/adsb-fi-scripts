@@ -53,7 +53,7 @@ sudo systemctl status adsbexchange-feed
 ### Removal / disabling the services:
 
 ```
-sudo bash -c $(cat /usr/local/share/adsbexchange/uninstall.sh)
+sudo bash /usr/local/share/adsbexchange/uninstall.sh
 ```
 
 If the above doesn't work, you may be using an old version that didn't have the uninstall script, just disable the services and the scripts won't run anymore:
