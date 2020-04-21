@@ -219,7 +219,7 @@ fi
     echo "------------------------------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
 
-    NOSPACENAME="$(echo -e "${ADSBEXCHANGEUSERNAME}" | tr -dc '[a-zA-Z0-9]_\-')"
+    NOSPACENAME="$(echo -n -e "${ADSBEXCHANGEUSERNAME}" | tr -c '[a-zA-Z0-9]_\-' '_')"
 
     # Remove old method of starting the feed script if present from rc.local
     if grep -qs -e 'adsbexchange-mlat_maint.sh' /etc/rc.local; then
@@ -238,6 +238,7 @@ fi
     sleep 0.25
 
     # copy adsbexchange-mlat service file
+    cp $PWD/scripts/adsbexchange-mlat.sh $IPATH >> $LOGFILE 2>&1
     cp $PWD/scripts/adsbexchange-mlat.service /lib/systemd/system >> $LOGFILE 2>&1
 
     # Enable adsbexchange-mlat service
