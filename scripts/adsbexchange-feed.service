@@ -6,7 +6,6 @@ After=network.target
 
 [Service]
 User=adsbexchange
-EnvironmentFile=/etc/default/adsbexchange
 RuntimeDirectory=adsbexchange-feed
 ExecStart=/usr/local/share/adsbexchange/adsbexchange-feed.sh
 Type=simple

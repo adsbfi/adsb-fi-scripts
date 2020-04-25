@@ -6,7 +6,6 @@ After=network.target
 
 [Service]
 User=adsbexchange
-EnvironmentFile=/etc/default/adsbexchange
 ExecStart=/usr/local/share/adsbexchange/adsbexchange-mlat.sh
 Type=simple
 Restart=always
