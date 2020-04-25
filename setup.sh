@@ -98,7 +98,7 @@ done
 
 RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Altitude above sea level (at the antenna):" \
     --nocancel --inputbox "\nEnter your antennas altitude above sea level in feet like this:\n255ft\
-    \nor in meters like this:\n78m\nNo Space between the number and unit!\n\
+    \nor in meters like this:\n78m\n\
     (negative altitudes need to be entered in meters without a suffix)." 12 78 3>&1 1>&2 2>&3)
 
 #RECEIVERPORT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Feed Port" --nocancel --inputbox "\nChange only if you were assigned a custom feed port.\nFor most all users it is required this port remain set to port 30005." 10 78 "30005" 3>&1 1>&2 2>&3)
@@ -219,7 +219,7 @@ fi
     echo "------------------------------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
 
-    NOSPACENAME="$(echo -n -e "${ADSBEXCHANGEUSERNAME}" | tr -c '[a-zA-Z0-9]_\-' '_')"
+    NOSPACENAME="$(echo -n -e "${ADSBEXCHANGEUSERNAME}" | tr -c '[a-zA-Z0-9]_\- ' '_')"
 
     # Remove old method of starting the feed script if present from rc.local
     if grep -qs -e 'adsbexchange-mlat_maint.sh' /etc/rc.local; then
@@ -300,12 +300,15 @@ fi
     # feed name for checking MLAT sync (adsbx.org/sync)
     USER="${NOSPACENAME}_$((RANDOM % 90 + 10))"
 
-    RECEIVERLATITUDE="$RECEIVERLATITUDE"
-    RECEIVERLONGITUDE="$RECEIVERLONGITUDE"
+    LATITUDE="$RECEIVERLATITUDE"
+    LONGITUDE="$RECEIVERLONGITUDE"
 
-    RECEIVERALTITUDE="$RECEIVERALTITUDE"
+    ALTITUDE="$RECEIVERALTITUDE"
 
-    RESULTS="--results beast,connect,localhost:30104 --results basestation,listen,31003"
+    RESULTS="--results beast,connect,localhost:30104"
+    RESULTS2="--results basestation,listen,31003"
+    RESULTS3="--results beast,listen,30157"
+    RESULTS4=""
     INPUT_TYPE="dump1090"
 
     MLATSERVER="feed.adsbexchange.com:31090"
