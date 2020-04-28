@@ -144,7 +144,7 @@ fi
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-    required_packages="git curl build-essential python3-dev socat ntp python3-pip python3-virtualenv virtualenv libncurses5-dev"
+    required_packages="git curl build-essential python3-dev socat ntp python3-pip python3-virtualenv virtualenv libncurses5-dev netcat"
     progress=4
 
     APT_UPDATED="false"

@@ -12,6 +12,11 @@ INPUT_PORT=$(echo $INPUT | cut -d: -f2)
 SOURCE="--net-connector $INPUT_IP,$INPUT_PORT,beast_in"
 MLAT_IN="--net-connector localhost,30157,beast_in"
 
+if ! nc -z "$INPUT_IP" "$INPUT_PORT"; then
+    echo "<3>Could not connect to $INPUT_IP:$INPUT_PORT"
+    exit 1
+fi
+
 /usr/local/share/adsbexchange/feed-adsbx --net --net-only --debug=n --quiet \
     --write-json /run/adsbexchange-feed \
     --net-beast-reduce-interval $REDUCE_INTERVAL \
