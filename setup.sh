@@ -152,9 +152,10 @@ fi
     for package in $required_packages
     do
         if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-            if [[ $APT_UPDATED == "false" ]]; then
-                apt-get update && APT_UPDATE="true"
+            if [[ "$APT_UPDATED" == "false" ]]; then
+                apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
             fi
+            echo Installing $package >> $LOGFILE  2>&1
             apt-get install -y $package >> $LOGFILE  2>&1
         fi
         progress=$((progress+2))

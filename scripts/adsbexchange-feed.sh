@@ -12,10 +12,10 @@ INPUT_PORT=$(echo $INPUT | cut -d: -f2)
 SOURCE="--net-connector $INPUT_IP,$INPUT_PORT,beast_in"
 MLAT_IN="--net-connector localhost,30157,beast_in"
 
-if ! nc -z "$INPUT_IP" "$INPUT_PORT"; then
-    echo "<3>Could not connect to $INPUT_IP:$INPUT_PORT"
-    exit 1
-fi
+while ! nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; do
+    echo "<3>Could not connect to $INPUT_IP:$INPUT_PORT, retry in 30 seconds."
+    sleep 30
+done
 
 /usr/local/share/adsbexchange/feed-adsbx --net --net-only --debug=n --quiet \
     --write-json /run/adsbexchange-feed \
