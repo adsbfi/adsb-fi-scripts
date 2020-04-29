@@ -9,10 +9,11 @@ fi
 
 INPUT_IP=$(echo $INPUT | cut -d: -f1)
 INPUT_PORT=$(echo $INPUT | cut -d: -f2)
-if ! nc -z "$INPUT_IP" "$INPUT_PORT"; then
-    echo "<3>Could not connect to $INPUT_IP:$INPUT_PORT"
-    exit 1
-fi
+
+while ! nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; do
+    echo "<3>Could not connect to $INPUT_IP:$INPUT_PORT, retry in 30 seconds."
+    sleep 30
+done
 
 /usr/local/share/adsbexchange/venv/bin/python3 /usr/local/share/adsbexchange/venv/bin/mlat-client \
 	--input-type "$INPUT_TYPE" --no-udp \
