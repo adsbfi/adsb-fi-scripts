@@ -10,16 +10,6 @@ Use this command to start the setup process:
 sudo bash -c "$(wget -nv -O - https://raw.githubusercontent.com/adsbxchange/adsb-exchange/master/install.sh)"
 ```
 
-Alternatively running the following commands will begin the setup process:
-
-```
-sudo apt-get install git
-sudo rm adsb-exchange -rf
-git clone https://github.com/adsbxchange/adsb-exchange.git
-cd adsb-exchange
-sudo bash setup.sh
-```
-
 ### Checking status
 
 ### Display MLAT config
