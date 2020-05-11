@@ -144,7 +144,7 @@ fi
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-    required_packages="git curl build-essential python3-dev socat ntp python3-pip python3-virtualenv virtualenv libncurses5-dev netcat"
+    required_packages="git curl build-essential python3-dev socat ntp python3-pip python3-virtualenv virtualenv libncurses5-dev netcat uuid-runtime"
     progress=4
 
     APT_UPDATED="false"
@@ -156,13 +156,19 @@ fi
                 apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
             fi
             echo Installing $package >> $LOGFILE  2>&1
-            apt-get install -y $package >> $LOGFILE  2>&1
+            # retry once
+            if ! apt-get install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1; then
+                apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+                apt-get install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1
+            fi
         fi
         progress=$((progress+2))
         echo $progress
     done
 
     hash -r
+
+    bash create-uuid.sh >> $LOGFILE  2>&1
 
     echo "" >> $LOGFILE
     echo " BUILD AND INSTALL MLAT-CLIENT" >> $LOGFILE
