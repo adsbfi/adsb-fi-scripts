@@ -383,9 +383,39 @@ http://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/
 https://discord.gg/ErEztqg
 "
 
-# Display the thank you message box.
-whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT" 24 73
 
-echo -e "$ENDTEXT"
+if ! nc -z 127.0.0.1 30005 && command -v nc &>/dev/null; then
+    ENDTEXT2="
+---------------------
+No data available on port 30005!
+---------------------
+"
+    if [ -f /etc/fr24feed.ini ] || [ -f /etc/rb24.ini ]; then
+        ENDTEXT2+="
+It looks like you are running FR24 or RB24
+This means you will need to install a stand-alone decoder so data are avaible on port 30005!
+
+We recommend using this script to install and configure a stand-alone decoder:
+
+https://github.com/wiedehopf/adsb-scripts/wiki/readsb-script
+---------------------
+"
+    else
+        ENDTEXT2+="
+If you have connected an SDR but not yet installed an ADS-B decoder for it,
+we recommend this script:
+
+https://github.com/wiedehopf/adsb-scripts/wiki/readsb-script
+---------------------
+"
+    fi
+    whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT2" 24 73
+    echo -e "$ENDTEXT2"
+else
+    # Display the thank you message box.
+    whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT" 24 73
+    echo -e "$ENDTEXT"
+fi
+
 
 exit 0
