@@ -154,11 +154,16 @@ fi
         if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
             if [[ "$APT_UPDATED" == "false" ]]; then
                 apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+                if [[ "$APT_UPDATED" == "false" ]]; then
+                    apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+                fi
             fi
             echo Installing $package >> $LOGFILE  2>&1
-            # retry once
+            # retry twice
             if ! apt-get install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1; then
                 apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+                apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+                apt-get install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1
                 apt-get install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1
             fi
         fi
