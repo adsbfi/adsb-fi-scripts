@@ -205,6 +205,7 @@ fi
 
 
         MLAT_FAIL="false"
+        rm "$VENV" -rf
         virtualenv -p /usr/bin/python3 $VENV >> $LOGFILE 2>&1 || MLAT_FAIL="true"
         echo 36
         source $VENV/bin/activate >> $LOGFILE 2>&1 || MLAT_FAIL="true"
