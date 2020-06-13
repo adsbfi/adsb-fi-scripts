@@ -62,7 +62,7 @@ IPATH=/usr/local/share/adsbexchange
 LOGDIRECTORY="$PWD/logs"
 
 MLAT_VERSION="3c84da98fca674aabfe562b6bd09e9e399f2a04c"
-READSB_VERSION="d4e10a5dd49766ac853a656c4006ca091ab156be"
+READSB_VERSION="2fa1868af40a9733fa5cb16ec293e8a986edf68f"
 
 ## WHIPTAIL DIALOGS
 
@@ -322,6 +322,9 @@ fi
     RESULTS2="--results basestation,listen,31003"
     RESULTS3="--results beast,listen,30157"
     RESULTS4=""
+    # add --privacy between the quotes below to disable having the feed name shown on the mlat map
+    # (position is never shown accurately no matter the settings)
+    PRIVACY=""
     INPUT_TYPE="dump1090"
 
     MLATSERVER="feed.adsbexchange.com:31090"

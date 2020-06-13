@@ -23,4 +23,5 @@ done
 	--lat "$LATITUDE" \
 	--lon "$LONGITUDE" \
 	--alt "$ALTITUDE" \
+	$PRIVACY \
 	$RESULTS $RESULTS1 $RESULTS2 $RESULTS3 $RESULTS4
