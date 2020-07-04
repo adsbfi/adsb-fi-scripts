@@ -61,8 +61,8 @@ echo "Checking for packages needed to run this script..."
 IPATH=/usr/local/share/adsbexchange
 LOGDIRECTORY="$PWD/logs"
 
-MLAT_VERSION="3c84da98fca674aabfe562b6bd09e9e399f2a04c"
-READSB_VERSION="2fa1868af40a9733fa5cb16ec293e8a986edf68f"
+MLAT_VERSION="d7bbcef89da516a198c28188e6b44a6c7091735f"
+READSB_VERSION="2685f45d86826af74fa32ad2a2a7a2abdeab6eff"
 
 ## WHIPTAIL DIALOGS
 
@@ -206,7 +206,7 @@ fi
 
         MLAT_FAIL="false"
         rm "$VENV" -rf
-        virtualenv -p /usr/bin/python3 $VENV >> $LOGFILE 2>&1 || MLAT_FAIL="true"
+        /usr/bin/virtualenv -p /usr/bin/python3 $VENV >> $LOGFILE 2>&1 || MLAT_FAIL="true"
         echo 36
         source $VENV/bin/activate >> $LOGFILE 2>&1 || MLAT_FAIL="true"
         echo 38
