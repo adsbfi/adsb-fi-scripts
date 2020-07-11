@@ -145,7 +145,7 @@ fi
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-    required_packages="git curl build-essential python3-dev socat ntp python3-virtualenv virtualenv libncurses5-dev netcat uuid-runtime"
+    required_packages="git curl build-essential python3-dev socat ntp python3-virtualenv libncurses5-dev netcat uuid-runtime"
     progress=4
 
     APT_UPDATED="false"
@@ -207,7 +207,7 @@ fi
 
         MLAT_FAIL="false"
         rm "$VENV" -rf
-        /usr/bin/virtualenv -p /usr/bin/python3 $VENV >> $LOGFILE 2>&1 || MLAT_FAIL="true"
+        /usr/bin/python3 -m venv $VENV >> $LOGFILE 2>&1 || MLAT_FAIL="true"
         echo 36
         source $VENV/bin/activate >> $LOGFILE 2>&1 || MLAT_FAIL="true"
         echo 38
