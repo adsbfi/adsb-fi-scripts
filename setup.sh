@@ -97,9 +97,10 @@ until [ $LON_OK -eq 1 ]; do
 done
 
 RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Altitude above sea level (at the antenna):" \
-    --nocancel --inputbox "\nEnter your antennas altitude above sea level in feet like this:\n255ft\
-    \nor in meters like this:\n78m\n\
-    (negative altitudes need to be entered in meters without a suffix)." 12 78 3>&1 1>&2 2>&3)
+    --nocancel --inputbox "\nEnter your antennas altitude above sea level including the unit:\n\n\
+in feet like this:                   255ft\n\
+or in meters like this:               78m\n\
+(negative altitudes need to be entered in meters without a suffix)." 12 78 3>&1 1>&2 2>&3)
 
 #RECEIVERPORT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Feed Port" --nocancel --inputbox "\nChange only if you were assigned a custom feed port.\nFor most all users it is required this port remain set to port 30005." 10 78 "30005" 3>&1 1>&2 2>&3)
 
