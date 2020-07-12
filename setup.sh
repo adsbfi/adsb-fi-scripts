@@ -205,19 +205,12 @@ fi
         sleep 0.25
 
 
-        MLAT_FAIL="false"
         rm "$VENV" -rf
-        /usr/bin/python3 -m venv $VENV >> $LOGFILE 2>&1 || MLAT_FAIL="true"
-        echo 36
-        source $VENV/bin/activate >> $LOGFILE 2>&1 || MLAT_FAIL="true"
-        echo 38
-        python3 setup.py build >> $LOGFILE 2>&1 || MLAT_FAIL="true"
-        echo 40
-        python3 setup.py install >> $LOGFILE 2>&1 || MLAT_FAIL="true"
-
-        if [[ $MLAT_FAIL == "false" ]]; then
-            git rev-parse HEAD > $IPATH/mlat_version
-        fi
+        /usr/bin/python3 -m venv $VENV >> $LOGFILE 2>&1 && echo 36 \
+            && source $VENV/bin/activate >> $LOGFILE 2>&1 && echo 38 \
+            && python3 setup.py build >> $LOGFILE 2>&1 && echo 40 \
+            && python3 setup.py install >> $LOGFILE 2>&1 \
+            && git rev-parse HEAD > $IPATH/mlat_version
 
     fi
 
