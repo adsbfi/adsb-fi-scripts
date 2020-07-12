@@ -27,6 +27,14 @@
 #                                                                                   #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+function abort() {
+    echo ------------
+    echo "Setup canceled (probably using Esc button)!"
+    echo "Please re-run this setup if this wasn't your intention."
+    echo ------------
+    exit 1
+}
+
 ## REFUSE INSTALLATION ON ADSBX IMAGE
 
 if [ -f /boot/adsb-config.txt ]; then
@@ -69,22 +77,24 @@ READSB_VERSION="2685f45d86826af74fa32ad2a2a7a2abdeab6eff"
 BACKTITLETEXT="ADS-B Exchange Setup Script"
 
 whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" --yesno "Thanks for choosing to share your data with ADS-B Exchange!\n\nADSBexchange.com is a co-op of ADS-B/Mode S/MLAT feeders from around the world. This script will configure your current your ADS-B receiver to share your feeders data with ADS-B Exchange.\n\nWould you like to continue setup?" 13 78
-CONTINUESETUP=$?
-if [ $CONTINUESETUP = 1 ]; then
-    exit 0
-fi
+if [[ $? != 0 ]]; then abort; fi
 
 ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name for the feeder to be shown on the MLAT matrix (http://adsbx.org/sync)\n\nThis name MUST be unique, for this reason a random number is automatically added at the end.\nText and Numbers only - everything else will be removed.\nExample: \"william34-london\", \"william34-jersey\", etc." 12 78 3>&1 1>&2 2>&3)
+
+if [[ $? != 0 ]]; then abort; fi
 
 whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" \
     --msgbox "For MLAT the precise location of your antenna is required.\
     \n\nA small error of 15m/45ft will cause issues with MLAT!\
     \n\nTo get your location, use any online map service or this website: https://www.mapcoordinates.net/en" 12 78
 
+if [[ $? != 0 ]]; then abort; fi
+
 #((-90 <= RECEIVERLATITUDE <= 90))
 LAT_OK=0
 until [ $LAT_OK -eq 1 ]; do
     RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Latitude ${RECEIVERLATITUDE}" --nocancel --inputbox "\nEnter your receivers precise latitude in degrees with 5 decimal places.\n(Example: 32.36291)" 12 78 3>&1 1>&2 2>&3)
+    if [[ $? != 0 ]]; then abort; fi
     LAT_OK=`awk -v LAT="$RECEIVERLATITUDE" 'BEGIN {printf (LAT<90 && LAT>-90 ? "1" : "0")}'`
 done
 
@@ -93,14 +103,31 @@ done
 LON_OK=0
 until [ $LON_OK -eq 1 ]; do
     RECEIVERLONGITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longitude ${RECEIVERLONGITUDE}" --nocancel --inputbox "\nEnter your receivers longitude in degrees with 5 decimal places.\n(Example: -64.71492)" 12 78 3>&1 1>&2 2>&3)
+    if [[ $? != 0 ]]; then abort; fi
     LON_OK=`awk -v LAT="$RECEIVERLONGITUDE" 'BEGIN {printf (LAT<180 && LAT>-180 ? "1" : "0")}'`
 done
 
-RECEIVERALTITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Altitude above sea level (at the antenna):" \
-    --nocancel --inputbox "\nEnter your antennas altitude above sea level including the unit:\n\n\
+until [[ $ALT =~ ^(.*)ft$ ]] || [[ $ALT =~ ^(.*)m$ ]]; do
+    ALT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Altitude above sea level (at the antenna):" \
+        --nocancel --inputbox \
+"\nEnter your receivers altitude above sea level including the unit:\n\n\
 in feet like this:                   255ft\n\
-or in meters like this:               78m\n\
-(negative altitudes need to be entered in meters without a suffix)." 12 78 3>&1 1>&2 2>&3)
+or in meters like this:               78m\n" \
+        12 78 3>&1 1>&2 2>&3)
+    if [[ $? != 0 ]]; then abort; fi
+done
+
+if [[ $ALT =~ ^-(.*)ft$ ]]; then
+        NUM=${BASH_REMATCH[1]}
+        NEW_ALT=`echo "$NUM" "3.28" | awk '{printf "-%0.2f", $1 / $2 }'`
+        ALT=$NEW_ALT
+fi
+if [[ $ALT =~ ^-(.*)m$ ]]; then
+        NEW_ALT="-${BASH_REMATCH[1]}"
+        ALT=$NEW_ALT
+fi
+
+RECEIVERALTITUDE="$ALT"
 
 #RECEIVERPORT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Feed Port" --nocancel --inputbox "\nChange only if you were assigned a custom feed port.\nFor most all users it is required this port remain set to port 30005." 10 78 "30005" 3>&1 1>&2 2>&3)
 
