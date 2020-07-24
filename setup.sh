@@ -212,6 +212,7 @@ fi
 
     if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version
     then
+        echo "Installing mlat-client to virtual environment" >> $LOGFILE
         # Check if the mlat-client git repository already exists.
         MLAT_DIR=$IPATH/mlat-git
         VENV=$IPATH/venv
@@ -233,12 +234,15 @@ fi
 
 
         rm "$VENV" -rf
-        /usr/bin/python3 -m venv $VENV >> $LOGFILE 2>&1 && echo 36 \
-            && source $VENV/bin/activate >> $LOGFILE 2>&1 && echo 38 \
-            && python3 setup.py build >> $LOGFILE 2>&1 && echo 40 \
-            && python3 setup.py install >> $LOGFILE 2>&1 \
+        /usr/bin/python3 -m venv $VENV 2>> $LOGFILE && echo 36 \
+            && source $VENV/bin/activate 2>> $LOGFILE && echo 38 \
+            && python3 setup.py build 2>> $LOGFILE && echo 40 \
+            && python3 setup.py install 2>> $LOGFILE \
             && git rev-parse HEAD > $IPATH/mlat_version
 
+    else
+        echo "mlat-client already installed, git hash:" >> $LOGFILE
+        cat $IPATH/mlat_version >> $LOGFILE
     fi
 
     echo 44
@@ -248,11 +252,6 @@ fi
     sleep 0.25
     echo 54
 
-    echo "" >> $LOGFILE
-    echo " CREATE AND CONFIGURE MLAT-CLIENT STARTUP SCRIPTS" >> $LOGFILE
-    echo "------------------------------------------------------" >> $LOGFILE
-    echo "" >> $LOGFILE
-
     NOSPACENAME="$(echo -n -e "${ADSBEXCHANGEUSERNAME}" | tr -c '[a-zA-Z0-9]_\- ' '_')"
 
     # Remove old method of starting the feed script if present from rc.local
@@ -261,11 +260,11 @@ fi
     fi
 
     # Kill the old adsbexchange-mlat_maint.sh script in case it's still running from a previous install
-    pkill -f adsbexchange-mlat_maint.sh
+    pkill -f adsbexchange-mlat_maint.sh &>/dev/null
     PIDS=`ps -efww | grep -w "adsbexchange-mlat_maint.sh" | awk -vpid=$$ '$2 != pid { print $2 }'`
     if [ ! -z "$PIDS" ]; then
-        kill $PIDS >> $LOGFILE 2>&1
-        kill -9 $PIDS >> $LOGFILE 2>&1
+        kill $PIDS &>/dev/null
+        kill -9 $PIDS &>/dev/null
     fi
 
     echo 64
@@ -284,18 +283,16 @@ fi
     # SETUP FEEDER TO SEND DUMP1090 DATA TO ADS-B EXCHANGE
 
     echo "" >> $LOGFILE
-    echo " CREATE AND CONFIGURE FEEDER STARTUP SCRIPTS" >> $LOGFILE
+    echo " BUILD AND INSTALL FEED CLIENT" >> $LOGFILE
     echo "-------------------------------------------------" >> $LOGFILE
     echo "" >> $LOGFILE
 
     #save working dir to come back to it
     SCRIPT_DIR=$PWD
-    echo "" >> $LOGFILE
-    echo "" >> $LOGFILE
 
     if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version
     then
-        [ -f $IPATH/readsb_version ] && cat $IPATH/readsb_version >> $LOGFILE
+        echo "Compiling / installing the readsb based feed client" >> $LOGFILE
         echo "" >> $LOGFILE
 
         #compile readsb
@@ -318,11 +315,17 @@ fi
         rm -rf /tmp/readsb &>/dev/null || true
         echo "" >> $LOGFILE
         echo "" >> $LOGFILE
+    else
+        echo "Feed client already installed, git hash:" >> $LOGFILE
+        cat $IPATH/readsb_version >> $LOGFILE
     fi
 
     # back to the working dir for install script
     cd $SCRIPT_DIR
     #end compile readsb
+
+    echo "" >> $LOGFILE
+    echo "" >> $LOGFILE
 
     cp $PWD/scripts/adsbexchange-feed.sh $IPATH >> $LOGFILE 2>&1
     cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system >> $LOGFILE 2>&1
@@ -368,11 +371,11 @@ EOF
     sleep 0.25
 
     # Kill the old adsbexchange-netcat_maint.sh script in case it's still running from a previous install
-    pkill -f adsbexchange-netcat_maint.sh
+    pkill -f adsbexchange-netcat_maint.sh &>/dev/null
     PIDS=`ps -efww | grep -w "adsbexchange-netcat_maint.sh" | awk -vpid=$$ '$2 != pid { print $2 }'`
     if [ ! -z "$PIDS" ]; then
-        kill $PIDS >> $LOGFILE 2>&1
-        kill -9 $PIDS >> $LOGFILE 2>&1
+        kill $PIDS &>/dev/null
+        kill -9 $PIDS &>/dev/null
     fi
 
     echo 94
