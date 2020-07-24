@@ -19,6 +19,7 @@ done
 
 /usr/local/share/adsbexchange/feed-adsbx --net --net-only --debug=n --quiet \
     --write-json /run/adsbexchange-feed \
+    --net-bi-port 30154 \
     --net-beast-reduce-interval $REDUCE_INTERVAL \
     $TARGET $NET_OPTIONS $SOURCE $MLAT_IN \
     --lat "$LATITUDE" --lon "$LONGITUDE"
