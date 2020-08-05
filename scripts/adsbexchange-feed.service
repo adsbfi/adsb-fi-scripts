@@ -14,6 +14,7 @@ RestartSec=30
 StartLimitInterval=1
 StartLimitBurst=100
 SyslogIdentifier=adsbexchange-feed
+Nice=-1
 
 [Install]
 WantedBy=default.target
