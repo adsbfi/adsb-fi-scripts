@@ -412,7 +412,7 @@ http://adsbx.org/sync
 
 If you have questions or encountered any issues while using this script feel free to post them to one of the following places:
 
-http://www.adsbexchange.com/forums/topic/ads-b-exchange-setup-script/
+https://www.adsbexchange.com/forum/threads/adsbexchange-setup-scripts.631609/
 https://discord.gg/ErEztqg
 "
 
