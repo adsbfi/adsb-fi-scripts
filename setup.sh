@@ -172,7 +172,8 @@ fi
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-    required_packages="git curl build-essential python3-dev socat ntp python3-venv libncurses5-dev netcat uuid-runtime"
+    required_packages="git curl build-essential python3-dev socat ntp python3-venv \
+        libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
     progress=4
 
     APT_UPDATED="false"
@@ -180,19 +181,15 @@ fi
     for package in $required_packages
     do
         if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-            if [[ "$APT_UPDATED" == "false" ]]; then
-                apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-                if [[ "$APT_UPDATED" == "false" ]]; then
-                    apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-                fi
-            fi
+
+            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+
             echo Installing $package >> $LOGFILE  2>&1
-            # retry twice
-            if ! apt-get install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1; then
-                apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-                apt-get update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-                apt-get install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1
-                apt-get install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1
+            if ! apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1; then
+                # retry
+                apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1
             fi
         fi
         progress=$((progress+2))
