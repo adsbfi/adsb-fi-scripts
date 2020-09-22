@@ -178,23 +178,28 @@ fi
 
     APT_UPDATED="false"
 
-    for package in $required_packages
-    do
-        if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    if command -v apt &>/dev/null; then
+        for package in $required_packages
+        do
+            if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
 
-            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+                [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+                [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+                [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
 
-            echo Installing $package >> $LOGFILE  2>&1
-            if ! apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1; then
-                # retry
-                apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1
+                echo Installing $package >> $LOGFILE  2>&1
+                if ! apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1; then
+                    # retry
+                    apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1
+                fi
             fi
-        fi
-        progress=$((progress+2))
-        echo $progress
-    done
+            progress=$((progress+2))
+            echo $progress
+        done
+    elif command -v yum &>/dev/null; then
+            yum install -y git curl socat ntp python3-virtualenv python3-devel \
+                gcc make ncurses-devel nc uuid zlib-devel zlib >> $LOGFILE  2>&1
+    fi
 
     hash -r
 
