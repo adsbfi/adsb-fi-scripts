@@ -69,8 +69,8 @@ echo "Checking for packages needed to run this script..."
 IPATH=/usr/local/share/adsbexchange
 LOGDIRECTORY="$PWD/logs"
 
-MLAT_VERSION="264b265cb61c6ca0db2f2be6dff715761b5ed24a"
-READSB_VERSION="a335c1a058fe1955455a694280c821dd679e0d41"
+MLAT_VERSION="43a360f34c1f502e3d8071557d435878f3a34ebe"
+READSB_VERSION="61eba196151304a9e0e8a6b3dbaceed2c9fb8822"
 
 ## WHIPTAIL DIALOGS
 
@@ -216,20 +216,14 @@ fi
     then
         echo "Installing mlat-client to virtual environment" >> $LOGFILE
         # Check if the mlat-client git repository already exists.
-        MLAT_DIR=$IPATH/mlat-git
         VENV=$IPATH/venv
         mkdir -p $IPATH >> $LOGFILE 2>&1
-        if [ -d $MLAT_DIR ] && [ -d $MLAT_DIR/.git ]; then
-            # If the mlat-client repository exists update the source code contained within it.
-            cd $MLAT_DIR >> $LOGFILE
-            git fetch >> $LOGFILE 2>&1
-            git reset --hard origin/master >> $LOGFILE 2>&1
-        else
-            # Download a copy of the mlat-client repository since the repository does not exist locally.
-            rm -rf $MLAT_DIR
-            git clone https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
-            cd $MLAT_DIR >> $LOGFILE 2>&1
-        fi
+
+        MLAT_DIR=/tmp/mlat-git
+        # Download a copy of the mlat-client repository since the repository does not exist locally.
+        rm -rf $MLAT_DIR
+        git clone --depth 1 --single-branch https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
+        cd $MLAT_DIR >> $LOGFILE 2>&1
 
         echo 34
         sleep 0.25
@@ -301,7 +295,7 @@ fi
         echo 72
 
         rm -rf /tmp/readsb &>/dev/null || true
-        git clone --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
+        git clone --single-branch --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
         cd /tmp/readsb
         echo 74
         if make -j3 2>> $LOGFILE >/dev/null
