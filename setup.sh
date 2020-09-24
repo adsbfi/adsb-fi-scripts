@@ -69,7 +69,7 @@ echo "Checking for packages needed to run this script..."
 IPATH=/usr/local/share/adsbexchange
 LOGDIRECTORY="$PWD/logs"
 
-MLAT_VERSION="43a360f34c1f502e3d8071557d435878f3a34ebe"
+MLAT_VERSION="ae5fd32bb443ddbb7dd0194b8675988f9fb8800e"
 READSB_VERSION="6e4623aa49785e7113210c5d1da2fb64f244717f"
 
 ## WHIPTAIL DIALOGS
