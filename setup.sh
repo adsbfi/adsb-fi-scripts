@@ -422,13 +422,15 @@ if ! nc -z 127.0.0.1 30005 && command -v nc &>/dev/null; then
 ---------------------
 No data available on port 30005!
 ---------------------
+If your data source is another device / receiver, see the advice here:
+https://github.com/adsbxchange/wiki/wiki/Datasource-other-device
 "
     if [ -f /etc/fr24feed.ini ] || [ -f /etc/rb24.ini ]; then
         ENDTEXT2+="
 It looks like you are running FR24 or RB24
 This means you will need to install a stand-alone decoder so data are avaible on port 30005!
 
-We recommend using this script to install and configure a stand-alone decoder:
+If you have the SDR connected to this device, we recommend using this script to install and configure a stand-alone decoder:
 
 https://github.com/wiedehopf/adsb-scripts/wiki/readsb-script
 ---------------------
