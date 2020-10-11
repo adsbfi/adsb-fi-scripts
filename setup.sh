@@ -172,15 +172,18 @@ fi
 
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-    required_packages="git curl build-essential python3-dev socat ntp python3-venv \
-        libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
+    # only install ntp if chrony isn't running
+    if ! systemctl status chrony >/dev/null; then
+        required_packages="ntp "
+    fi
+
     progress=4
 
     APT_UPDATED="false"
 
     if command -v apt &>/dev/null; then
-        for package in $required_packages
-        do
+        required_packages+="git curl build-essential python3-dev socat python3-venv libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
+        for package in $required_packages; do
             if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
 
                 [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
@@ -197,8 +200,8 @@ fi
             echo $progress
         done
     elif command -v yum &>/dev/null; then
-            yum install -y git curl socat ntp python3-virtualenv python3-devel \
-                gcc make ncurses-devel nc uuid zlib-devel zlib >> $LOGFILE  2>&1
+        required_packages+="git curl socat python3-virtualenv python3-devel gcc make ncurses-devel nc uuid zlib-devel zlib"
+        yum install -y $required_packages >> $LOGFILE  2>&1
     fi
 
     hash -r
