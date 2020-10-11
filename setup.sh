@@ -69,8 +69,8 @@ echo "Checking for packages needed to run this script..."
 IPATH=/usr/local/share/adsbexchange
 LOGDIRECTORY="$PWD/logs"
 
-MLAT_VERSION="ae5fd32bb443ddbb7dd0194b8675988f9fb8800e"
-READSB_VERSION="5633e8df33f7379cc9d7c2a0851b65f69cbb2bd8"
+MLAT_VERSION="fb99090a32e08e85915f729c61c91bdac3c7338b"
+READSB_VERSION="56fe72d07bf0ab7648c1df15d6a08518efa557b6"
 
 ## WHIPTAIL DIALOGS
 
@@ -351,7 +351,7 @@ fi
     INPUT_TYPE="dump1090"
 
     MLATSERVER="feed.adsbexchange.com:31090"
-    TARGET="--net-connector feed.adsbexchange.com,30005,beast_reduce_out"
+    TARGET="--net-connector feed.adsbexchange.com,30004,beast_reduce_out,feed.adsbexchange.com,64004"
     NET_OPTIONS="--net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 0 --net-sbs-port 0 --net-bi-port 30154 --net-bo-port 0 --net-ri-port 0"
 EOF
 
