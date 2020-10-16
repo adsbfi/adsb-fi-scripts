@@ -253,19 +253,6 @@ fi
 
     NOSPACENAME="$(echo -n -e "${ADSBEXCHANGEUSERNAME}" | tr -c '[a-zA-Z0-9]_\- ' '_')"
 
-    # Remove old method of starting the feed script if present from rc.local
-    if grep -qs -e 'adsbexchange-mlat_maint.sh' /etc/rc.local; then
-        sed -i -e '/adsbexchange-mlat_maint.sh/d' /etc/rc.local >> $LOGFILE 2>&1
-    fi
-
-    # Kill the old adsbexchange-mlat_maint.sh script in case it's still running from a previous install
-    pkill -f adsbexchange-mlat_maint.sh &>/dev/null
-    PIDS=`ps -efww | grep -w "adsbexchange-mlat_maint.sh" | awk -vpid=$$ '$2 != pid { print $2 }'`
-    if [ ! -z "$PIDS" ]; then
-        kill $PIDS &>/dev/null
-        kill -9 $PIDS &>/dev/null
-    fi
-
     echo 64
     sleep 0.25
 
@@ -358,28 +345,25 @@ EOF
     echo 82
     sleep 0.25
 
-    # Remove old method of starting the feed script if present from rc.local
-    if grep -qs -e 'adsbexchange-netcat_maint.sh' /etc/rc.local; then
-        sed -i -e '/adsbexchange-netcat_maint.sh/d' /etc/rc.local >> $LOGFILE 2>&1
-    fi
-    if grep -qs -e 'adsbexchange-socat_maint.sh' /etc/rc.local; then
-        sed -i -e '/adsbexchange-socat_maint.sh/d' /etc/rc.local >> $LOGFILE 2>&1
-    fi
-
     # Enable adsbexchange-feed service
     systemctl enable adsbexchange-feed  >> $LOGFILE 2>&1
 
     echo 88
     sleep 0.25
 
-    # Kill the old adsbexchange-netcat_maint.sh script in case it's still running from a previous install
-    pkill -f adsbexchange-netcat_maint.sh &>/dev/null
-    pkill -f adsbexchange-socat_maint.sh &>/dev/null
-    PIDS=`ps -efww | grep -w "adsbexchange-netcat_maint.sh" | awk -vpid=$$ '$2 != pid { print $2 }'`
-    if [ ! -z "$PIDS" ]; then
-        kill $PIDS &>/dev/null
-        kill -9 $PIDS &>/dev/null
-    fi
+    # Remove old method of starting the feed scripts if present from rc.local
+    # Kill the old adsbexchange scripts in case they are still running from a previous install including spawned programs
+    for name in adsbexchange-netcat_maint.sh adsbexchange-socat_maint.sh adsbexchange-mlat_maint.sh; do
+        if grep -qs -e "$name" /etc/rc.local >> $LOGFILE 2>&1; then
+            sed -i -e "/$name/d" /etc/rc.local >> $LOGFILE 2>&1
+        fi
+        PID="$(pgrep -f "$name" 2>/dev/null)"
+        PIDS="$PID $(pgrep -P $PID 2>/dev/null)"
+        if [ ! -z "$PID" ]; then
+            echo killing: $PIDS >> $LOGFILE 2>&1
+            kill -9 $PIDS >> $LOGFILE 2>&1
+        fi
+    done
 
     echo 94
     sleep 0.25
