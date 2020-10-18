@@ -193,6 +193,8 @@ fi
                 echo Installing $package >> $LOGFILE  2>&1
                 if ! apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1; then
                     # retry
+                    apt clean
+                    apt --fix-broken install -y
                     apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1
                 fi
             fi
@@ -233,11 +235,11 @@ fi
 
 
         rm "$VENV" -rf
-        /usr/bin/python3 -m venv $VENV 2>> $LOGFILE && echo 36 \
-            && source $VENV/bin/activate 2>> $LOGFILE && echo 38 \
-            && python3 setup.py build 2>> $LOGFILE && echo 40 \
-            && python3 setup.py install 2>> $LOGFILE \
-            && git rev-parse HEAD > $IPATH/mlat_version
+        /usr/bin/python3 -m venv $VENV >> $LOGFILE 2>&1 && echo 36 \
+            && source $VENV/bin/activate >> $LOGFILE 2>&1 && echo 38 \
+            && python3 setup.py build >> $LOGFILE 2>&1 && echo 40 \
+            && python3 setup.py install >> $LOGFILE 2>&1 \
+            && git rev-parse HEAD > $IPATH/mlat_version 2>> $LOGFILE
 
     else
         echo "mlat-client already installed, git hash:" >> $LOGFILE
@@ -302,8 +304,8 @@ fi
         echo "" >> $LOGFILE
         echo "" >> $LOGFILE
     else
-        echo "Feed client already installed, git hash:" >> $LOGFILE
-        cat $IPATH/readsb_version >> $LOGFILE
+        echo "Feed client already installed, git hash:" >> $LOGFILE 2>&1
+        cat $IPATH/readsb_version >> $LOGFILE 2>&1
     fi
 
     # back to the working dir for install script
