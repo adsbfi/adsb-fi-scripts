@@ -193,9 +193,9 @@ fi
                 echo Installing $package >> $LOGFILE  2>&1
                 if ! apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1; then
                     # retry
-                    apt clean
-                    apt --fix-broken install -y
-                    apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1
+                    apt clean >> $LOGFILE 2>&1
+                    apt --fix-broken install -y >> $LOGFILE 2>&1
+                    apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE 2>&1
                 fi
             fi
             progress=$((progress+2))
