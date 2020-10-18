@@ -290,9 +290,9 @@ fi
         git clone --single-branch --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
         cd /tmp/readsb
         echo 74
-        if make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE >/dev/null
+        if make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE 2>&1
         then
-            git rev-parse HEAD > $IPATH/readsb_version 2>> $LOGFILE
+            git rev-parse HEAD > $IPATH/readsb_version >> $LOGFILE 2>&1
         fi
 
         mv $IPATH/feed-adsbx /tmp/old-feed-adsbx &>/dev/null
