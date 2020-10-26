@@ -292,7 +292,7 @@ fi
         echo 74
         if make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE 2>&1
         then
-            git rev-parse HEAD > $IPATH/readsb_version >> $LOGFILE 2>&1
+            git rev-parse HEAD > $IPATH/readsb_version 2>> $LOGFILE
         fi
 
         mv $IPATH/feed-adsbx /tmp/old-feed-adsbx &>/dev/null
