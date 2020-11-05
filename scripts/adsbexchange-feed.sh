@@ -21,4 +21,5 @@ done
     --write-json /run/adsbexchange-feed \
     --net-beast-reduce-interval $REDUCE_INTERVAL \
     $TARGET $NET_OPTIONS $SOURCE $MLAT_IN \
-    --lat "$LATITUDE" --lon "$LONGITUDE"
+    --lat "$LATITUDE" --lon "$LONGITUDE" \
+    --db-file none
