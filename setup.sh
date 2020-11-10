@@ -323,7 +323,7 @@ fi
     REDUCE_INTERVAL="0.5"
 
     # feed name for checking MLAT sync (adsbx.org/sync)
-    USER="${NOSPACENAME}_$((RANDOM % 90 + 10))"
+    USER="${NOSPACENAME}"
 
     LATITUDE="$RECEIVERLATITUDE"
     LONGITUDE="$RECEIVERLONGITUDE"
