@@ -69,9 +69,6 @@ echo "Checking for packages needed to run this script..."
 IPATH=/usr/local/share/adsbexchange
 LOGDIRECTORY="$PWD/logs"
 
-MLAT_VERSION="84eb4e6903455397c0d3334075c78ef0f7875a2c"
-READSB_VERSION="e091302e845945306bf3be62313fb267e63b1990"
-
 ## WHIPTAIL DIALOGS
 
 BACKTITLETEXT="ADS-B Exchange Setup Script"
@@ -217,6 +214,8 @@ fi
 
     CURRENT_DIR=$PWD
 
+    MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
+    MLAT_VERSION="$(git ls-remote $MLAT_REPO 2>> $LOGFILE | grep HEAD | cut -f1)"
     if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version
     then
         echo "Installing mlat-client to virtual environment" >> $LOGFILE
@@ -227,7 +226,7 @@ fi
         MLAT_DIR=/tmp/mlat-git
         # Download a copy of the mlat-client repository since the repository does not exist locally.
         rm -rf $MLAT_DIR
-        git clone --depth 1 --single-branch https://github.com/adsbxchange/mlat-client.git $MLAT_DIR >> $LOGFILE 2>&1
+        git clone --depth 1 --single-branch $MLAT_REPO $MLAT_DIR >> $LOGFILE 2>&1
         cd $MLAT_DIR >> $LOGFILE 2>&1
 
         echo 34
@@ -278,6 +277,8 @@ fi
     #save working dir to come back to it
     SCRIPT_DIR=$PWD
 
+    READSB_REPO="https://github.com/adsbxchange/readsb.git"
+    READSB_VERSION="$(git ls-remote $READSB_REPO 2>> $LOGFILE | grep HEAD | cut -f1)"
     if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version
     then
         echo "Compiling / installing the readsb based feed client" >> $LOGFILE
@@ -287,7 +288,7 @@ fi
         echo 72
 
         rm -rf /tmp/readsb &>/dev/null || true
-        git clone --single-branch --depth 1 https://github.com/adsbxchange/readsb.git /tmp/readsb  >> $LOGFILE 2>&1
+        git clone --single-branch --depth 1 $READSB_REPO /tmp/readsb  >> $LOGFILE 2>&1
         cd /tmp/readsb
         echo 74
         if make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE 2>&1
