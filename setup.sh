@@ -216,8 +216,7 @@ fi
 
     MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
     MLAT_VERSION="$(git ls-remote $MLAT_REPO 2>> $LOGFILE | grep HEAD | cut -f1)"
-    if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version
-    then
+    if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version; then
         echo "Installing mlat-client to virtual environment" >> $LOGFILE
         # Check if the mlat-client git repository already exists.
         VENV=$IPATH/venv
@@ -279,8 +278,7 @@ fi
 
     READSB_REPO="https://github.com/adsbxchange/readsb.git"
     READSB_VERSION="$(git ls-remote $READSB_REPO 2>> $LOGFILE | grep HEAD | cut -f1)"
-    if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version
-    then
+    if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version; then
         echo "Compiling / installing the readsb based feed client" >> $LOGFILE
         echo "" >> $LOGFILE
 
@@ -296,9 +294,8 @@ fi
             git rev-parse HEAD > $IPATH/readsb_version 2>> $LOGFILE
         fi
 
-        mv $IPATH/feed-adsbx /tmp/old-feed-adsbx &>/dev/null
+        rm -f $IPATH/feed-adsbx
         cp readsb $IPATH/feed-adsbx >> $LOGFILE 2>&1
-        rm -f /tmp/old-feed-adsbx &> /dev/null
 
         cd /tmp
         rm -rf /tmp/readsb &>/dev/null || true
