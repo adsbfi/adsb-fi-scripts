@@ -170,7 +170,7 @@ fi
     # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
     # only install ntp if chrony and ntpsec aren't running
-    if ! systemctl status chrony && ! systemctl status ntpsec &>/dev/null; then
+    if ! systemctl status chrony &>/dev/null && ! systemctl status ntpsec &>/dev/null; then
         required_packages="ntp "
     fi
 
