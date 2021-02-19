@@ -180,24 +180,27 @@ fi
 
     if command -v apt &>/dev/null; then
         required_packages+="git curl build-essential python3-dev socat python3-venv libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
+        APT_INSTALL="false"
         for package in $required_packages; do
             if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-
-                [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-                [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-                [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-
-                echo Installing $package >> $LOGFILE  2>&1
-                if ! apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE  2>&1; then
-                    # retry
-                    apt clean >> $LOGFILE 2>&1
-                    apt --fix-broken install -y >> $LOGFILE 2>&1
-                    apt install --no-install-recommends --no-install-suggests -y $package >> $LOGFILE 2>&1
-                fi
+                APT_INSTALL="true"
             fi
-            progress=$((progress+2))
+            progress=$((progress+1))
             echo $progress
         done
+
+        if [[ "$APT_INSTALL" == "true" ]]; then
+            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
+            echo Installing $packages >> $LOGFILE  2>&1
+            if ! apt install --no-install-recommends --no-install-suggests -y $packages >> $LOGFILE  2>&1; then
+                # retry
+                apt clean >> $LOGFILE 2>&1
+                apt --fix-broken install -y >> $LOGFILE 2>&1
+                apt install --no-install-recommends --no-install-suggests -y $packages >> $LOGFILE 2>&1
+            fi
+        fi
     elif command -v yum &>/dev/null; then
         required_packages+="git curl socat python3-virtualenv python3-devel gcc make ncurses-devel nc uuid zlib-devel zlib"
         yum install -y $required_packages >> $LOGFILE  2>&1
