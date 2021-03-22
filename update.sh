@@ -95,10 +95,7 @@ sleep 0.25
 
 # BUILD AND CONFIGURE THE MLAT-CLIENT PACKAGE
 
-echo "INSTALLING PREREQUISITE PACKAGES"
-echo "--------------------------------------"
-echo ""
-
+echo "Checking and installing prerequesites ..."
 
 # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
@@ -114,8 +111,11 @@ APT_UPDATED="false"
 if command -v apt &>/dev/null; then
     required_packages+="git curl build-essential python3-dev socat python3-venv libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
     APT_INSTALL="false"
+    INSTALLED="$(dpkg-query -W -f='${PACKAGE} ${STATUS}\n')"
     for package in $required_packages; do
-        if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+        #if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+        if ! echo "$INSTALLED" | grep -qs -F -e "$package install ok installed"; then
+            echo $package
             APT_INSTALL="true"
         fi
         progress=$((progress+1))
@@ -141,6 +141,7 @@ fi
 
 hash -r
 
+echo
 bash "$IPATH/git/create-uuid.sh"
 
 CURRENT_DIR=$PWD
