@@ -70,6 +70,12 @@ function getGIT() {
     return 0
 }
 
+REPO="https://github.com/adsbxchange/adsb-exchange.git"
+BRANCH="master"
+if ! [[ -d "$IPATH/git/.git" ]]; then
+    getGIT "$REPO" "$BRANCH" "$IPATH/git"
+fi
+
 # remove previously used folder to avoid confusion
 rm -rf /usr/local/share/adsb-exchange &>/dev/null
 
@@ -137,11 +143,6 @@ hash -r
 
 bash "$IPATH/git/create-uuid.sh"
 
-echo ""
-echo " BUILD AND INSTALL MLAT-CLIENT"
-echo "-----------------------------------"
-echo ""
-
 CURRENT_DIR=$PWD
 
 MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
@@ -171,9 +172,12 @@ if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version; then
         && python3 setup.py install >> $LOGFILE \
         && git rev-parse HEAD > $IPATH/mlat_version
 
+    echo ""
 else
+    echo
     echo "mlat-client already installed, git hash:"
     cat $IPATH/mlat_version
+    echo
 fi
 
 echo 50
@@ -190,11 +194,6 @@ echo 70
 sleep 0.25
 
 # SETUP FEEDER TO SEND DUMP1090 DATA TO ADS-B EXCHANGE
-
-echo ""
-echo " BUILD AND INSTALL FEED CLIENT"
-echo "-------------------------------------------------"
-echo ""
 
 #save working dir to come back to it
 SCRIPT_DIR=$PWD
@@ -225,20 +224,17 @@ if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version; then
 
     rm -f $IPATH/feed-adsbx
     cp readsb $IPATH/feed-adsbx
-
-    echo ""
-    echo ""
+    echo
 else
+    echo
     echo "Feed client already installed, git hash:"
     cat $IPATH/readsb_version
+    echo
 fi
 
 # back to the working dir for install script
 cd $SCRIPT_DIR
 #end compile readsb
-
-echo ""
-echo ""
 
 cp $PWD/scripts/adsbexchange-feed.sh $IPATH
 cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system
