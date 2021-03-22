@@ -70,224 +70,216 @@ function getGIT() {
     return 0
 }
 
-{
+# remove previously used folder to avoid confusion
+rm -rf /usr/local/share/adsb-exchange &>/dev/null
 
-    # remove previously used folder to avoid confusion
-    rm -rf /usr/local/share/adsb-exchange &>/dev/null
+LOGFILE="$IPATH/lastlog"
+rm -f $LOGFILE
+touch $LOGFILE
 
-    LOGFILE="$IPATH/lastlog"
-    rm -f $LOGFILE
-    touch $LOGFILE
+cp uninstall.sh $IPATH
 
-    cp uninstall.sh $IPATH >> $LOGFILE  2>&1
+if ! id -u adsbexchange &>/dev/null
+then
+    adduser --system --home $IPATH --no-create-home --quiet adsbexchange
+fi
 
-    if ! id -u adsbexchange &>/dev/null
-    then
-        adduser --system --home $IPATH --no-create-home --quiet adsbexchange >> $LOGFILE  2>&1
-    fi
+echo 4
+sleep 0.25
 
-    echo 4
-    sleep 0.25
+# BUILD AND CONFIGURE THE MLAT-CLIENT PACKAGE
 
-    # BUILD AND CONFIGURE THE MLAT-CLIENT PACKAGE
-
-    echo "INSTALLING PREREQUISITE PACKAGES" >> $LOGFILE
-    echo "--------------------------------------" >> $LOGFILE
-    echo "" >> $LOGFILE
+echo "INSTALLING PREREQUISITE PACKAGES"
+echo "--------------------------------------"
+echo ""
 
 
-    # Check that the prerequisite packages needed to build and install mlat-client are installed.
+# Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-    # only install ntp if chrony and ntpsec aren't running
-    if ! systemctl status chrony &>/dev/null && ! systemctl status ntpsec &>/dev/null; then
-        required_packages="ntp "
-    fi
+# only install ntp if chrony and ntpsec aren't running
+if ! systemctl status chrony &>/dev/null && ! systemctl status ntpsec &>/dev/null; then
+    required_packages="ntp "
+fi
 
-    progress=4
+progress=4
 
-    APT_UPDATED="false"
+APT_UPDATED="false"
 
-    if command -v apt &>/dev/null; then
-        required_packages+="git curl build-essential python3-dev socat python3-venv libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
-        APT_INSTALL="false"
-        for package in $required_packages; do
-            if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-                APT_INSTALL="true"
-            fi
-            progress=$((progress+1))
-            echo $progress
-        done
-
-        if [[ "$APT_INSTALL" == "true" ]]; then
-            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-            [[ "$APT_UPDATED" == "false" ]] && apt update >> $LOGFILE 2>&1 && APT_UPDATED="true"
-            echo Installing $packages >> $LOGFILE  2>&1
-            if ! apt install --no-install-recommends --no-install-suggests -y $packages >> $LOGFILE  2>&1; then
-                # retry
-                apt clean >> $LOGFILE 2>&1
-                apt --fix-broken install -y >> $LOGFILE 2>&1
-                apt install --no-install-recommends --no-install-suggests -y $packages >> $LOGFILE 2>&1
-            fi
+if command -v apt &>/dev/null; then
+    required_packages+="git curl build-essential python3-dev socat python3-venv libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
+    APT_INSTALL="false"
+    for package in $required_packages; do
+        if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+            APT_INSTALL="true"
         fi
-    elif command -v yum &>/dev/null; then
-        required_packages+="git curl socat python3-virtualenv python3-devel gcc make ncurses-devel nc uuid zlib-devel zlib"
-        yum install -y $required_packages >> $LOGFILE  2>&1
-    fi
-
-    hash -r
-
-    bash "$IPATH/git/create-uuid.sh" >> $LOGFILE  2>&1
-
-    echo "" >> $LOGFILE
-    echo " BUILD AND INSTALL MLAT-CLIENT" >> $LOGFILE
-    echo "-----------------------------------" >> $LOGFILE
-    echo "" >> $LOGFILE
-
-    CURRENT_DIR=$PWD
-
-    MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
-    MLAT_BRANCH="master"
-    MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH 2>> $LOGFILE | cut -f1)"
-    if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version; then
-        echo "Installing mlat-client to virtual environment" >> $LOGFILE
-        # Check if the mlat-client git repository already exists.
-        VENV=$IPATH/venv
-        mkdir -p $IPATH >> $LOGFILE 2>&1
-
-        MLAT_DIR="$IPATH/mlat-client-git"
-
-        # getGIT $REPO $BRANCH $TARGET-DIR
-        getGIT $MLAT_REPO $MLAT_BRANCH $MLAT_DIR >> $LOGFILE 2>&1
-
-        cd $MLAT_DIR >> $LOGFILE 2>&1
-
-        echo 34
-        sleep 0.25
-
-
-        rm "$VENV" -rf
-        /usr/bin/python3 -m venv $VENV >> $LOGFILE 2>&1 && echo 36 \
-            && source $VENV/bin/activate >> $LOGFILE 2>&1 && echo 38 \
-            && python3 setup.py build >> $LOGFILE 2>&1 && echo 40 \
-            && python3 setup.py install >> $LOGFILE 2>&1 \
-            && git rev-parse HEAD > $IPATH/mlat_version 2>> $LOGFILE
-
-    else
-        echo "mlat-client already installed, git hash:" >> $LOGFILE
-        cat $IPATH/mlat_version >> $LOGFILE
-    fi
-
-    echo 50
-    cd $CURRENT_DIR
-
-    # copy adsbexchange-mlat service file
-    cp $PWD/scripts/adsbexchange-mlat.sh $IPATH >> $LOGFILE 2>&1
-    cp $PWD/scripts/adsbexchange-mlat.service /lib/systemd/system >> $LOGFILE 2>&1
-
-    # Enable adsbexchange-mlat service
-    systemctl enable adsbexchange-mlat >> $LOGFILE 2>&1
-
-    echo 70
-    sleep 0.25
-
-    # SETUP FEEDER TO SEND DUMP1090 DATA TO ADS-B EXCHANGE
-
-    echo "" >> $LOGFILE
-    echo " BUILD AND INSTALL FEED CLIENT" >> $LOGFILE
-    echo "-------------------------------------------------" >> $LOGFILE
-    echo "" >> $LOGFILE
-
-    #save working dir to come back to it
-    SCRIPT_DIR=$PWD
-
-    READSB_REPO="https://github.com/adsbxchange/readsb.git"
-    READSB_BRANCH="master"
-    READSB_VERSION="$(git ls-remote $READSB_REPO $READSB_BRANCH 2>> $LOGFILE | cut -f1)"
-    if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version; then
-        echo "Compiling / installing the readsb based feed client" >> $LOGFILE
-        echo "" >> $LOGFILE
-
-        #compile readsb
-        echo 72
-
-        READSB_DIR="$IPATH/readsb-git"
-
-        # getGIT $REPO $BRANCH $TARGET-DIR
-        getGIT $READSB_REPO master $READSB_DIR >> $LOGFILE 2>&1
-
-        cd $READSB_DIR >> $LOGFILE 2>&1
-
-        echo 74
-
-        if make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE 2>&1
-        then
-            git rev-parse HEAD > $IPATH/readsb_version 2>> $LOGFILE
-        fi
-
-        rm -f $IPATH/feed-adsbx
-        cp readsb $IPATH/feed-adsbx >> $LOGFILE 2>&1
-
-        echo "" >> $LOGFILE
-        echo "" >> $LOGFILE
-    else
-        echo "Feed client already installed, git hash:" >> $LOGFILE 2>&1
-        cat $IPATH/readsb_version >> $LOGFILE 2>&1
-    fi
-
-    # back to the working dir for install script
-    cd $SCRIPT_DIR
-    #end compile readsb
-
-    echo "" >> $LOGFILE
-    echo "" >> $LOGFILE
-
-    cp $PWD/scripts/adsbexchange-feed.sh $IPATH >> $LOGFILE 2>&1
-    cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system >> $LOGFILE 2>&1
-
-    echo 82
-    sleep 0.25
-
-    # Enable adsbexchange-feed service
-    systemctl enable adsbexchange-feed  >> $LOGFILE 2>&1
-
-    echo 88
-    sleep 0.25
-
-    # Remove old method of starting the feed scripts if present from rc.local
-    # Kill the old adsbexchange scripts in case they are still running from a previous install including spawned programs
-    for name in adsbexchange-netcat_maint.sh adsbexchange-socat_maint.sh adsbexchange-mlat_maint.sh; do
-        if grep -qs -e "$name" /etc/rc.local >> $LOGFILE 2>&1; then
-            sed -i -e "/$name/d" /etc/rc.local >> $LOGFILE 2>&1
-        fi
-        PID="$(pgrep -f "$name" 2>/dev/null)"
-        if [ ! -z "$PID" ]; then
-            PIDS="$PID $(pgrep -P $PID 2>/dev/null)"
-            echo killing: $PIDS >> $LOGFILE 2>&1
-            kill -9 $PIDS >> $LOGFILE 2>&1
-        fi
+        progress=$((progress+1))
+        echo $progress
     done
 
-    # in case the mlat-client service using /etc/default/mlat-client as config is using adsbexchange as a host, disable the service
-    if grep -qs 'SERVER_HOSTPORT.*feed.adsbexchange.com' /etc/default/mlat-client &>/dev/null; then
-        systemctl disable --now mlat-client >> $LOGFILE 2>&1
+    if [[ "$APT_INSTALL" == "true" ]]; then
+        [[ "$APT_UPDATED" == "false" ]] && apt update && APT_UPDATED="true"
+        [[ "$APT_UPDATED" == "false" ]] && apt update  && APT_UPDATED="true"
+        [[ "$APT_UPDATED" == "false" ]] && apt update  && APT_UPDATED="true"
+        echo Installing $packages
+        if ! apt install --no-install-recommends --no-install-suggests -y $packages; then
+            # retry
+            apt clean
+            apt --fix-broken install -y
+            apt install --no-install-recommends --no-install-suggests -y $packages
+        fi
+    fi
+elif command -v yum &>/dev/null; then
+    required_packages+="git curl socat python3-virtualenv python3-devel gcc make ncurses-devel nc uuid zlib-devel zlib"
+    yum install -y $required_packages
+fi
+
+hash -r
+
+bash "$IPATH/git/create-uuid.sh"
+
+echo ""
+echo " BUILD AND INSTALL MLAT-CLIENT"
+echo "-----------------------------------"
+echo ""
+
+CURRENT_DIR=$PWD
+
+MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
+MLAT_BRANCH="master"
+MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1)"
+if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version; then
+    echo "Installing mlat-client to virtual environment"
+    # Check if the mlat-client git repository already exists.
+    VENV=$IPATH/venv
+    mkdir -p $IPATH
+
+    MLAT_DIR="$IPATH/mlat-client-git"
+
+    # getGIT $REPO $BRANCH $TARGET-DIR
+    getGIT $MLAT_REPO $MLAT_BRANCH $MLAT_DIR
+
+    cd $MLAT_DIR
+
+    echo 34
+    sleep 0.25
+
+
+    rm "$VENV" -rf
+    /usr/bin/python3 -m venv $VENV >> $LOGFILE && echo 36 \
+        && source $VENV/bin/activate >> $LOGFILE && echo 38 \
+        && python3 setup.py build >> $LOGFILE && echo 40 \
+        && python3 setup.py install >> $LOGFILE \
+        && git rev-parse HEAD > $IPATH/mlat_version
+
+else
+    echo "mlat-client already installed, git hash:"
+    cat $IPATH/mlat_version
+fi
+
+echo 50
+cd $CURRENT_DIR
+
+# copy adsbexchange-mlat service file
+cp $PWD/scripts/adsbexchange-mlat.sh $IPATH
+cp $PWD/scripts/adsbexchange-mlat.service /lib/systemd/system
+
+# Enable adsbexchange-mlat service
+systemctl enable adsbexchange-mlat
+
+echo 70
+sleep 0.25
+
+# SETUP FEEDER TO SEND DUMP1090 DATA TO ADS-B EXCHANGE
+
+echo ""
+echo " BUILD AND INSTALL FEED CLIENT"
+echo "-------------------------------------------------"
+echo ""
+
+#save working dir to come back to it
+SCRIPT_DIR=$PWD
+
+READSB_REPO="https://github.com/adsbxchange/readsb.git"
+READSB_BRANCH="master"
+READSB_VERSION="$(git ls-remote $READSB_REPO $READSB_BRANCH | cut -f1)"
+if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version; then
+    echo "Compiling / installing the readsb based feed client"
+    echo ""
+
+    #compile readsb
+    echo 72
+
+    READSB_DIR="$IPATH/readsb-git"
+
+    # getGIT $REPO $BRANCH $TARGET-DIR
+    getGIT $READSB_REPO master $READSB_DIR
+
+    cd $READSB_DIR
+
+    echo 74
+
+    if make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE
+    then
+        git rev-parse HEAD > $IPATH/readsb_version 2>> $LOGFILE
     fi
 
-    echo 94
-    sleep 0.25
+    rm -f $IPATH/feed-adsbx
+    cp readsb $IPATH/feed-adsbx
 
-    # Start or restart adsbexchange-feed service
-    systemctl restart adsbexchange-feed  >> $LOGFILE 2>&1
+    echo ""
+    echo ""
+else
+    echo "Feed client already installed, git hash:"
+    cat $IPATH/readsb_version
+fi
 
-    echo 96
+# back to the working dir for install script
+cd $SCRIPT_DIR
+#end compile readsb
 
-    # Start or restart adsbexchange-mlat service
-    systemctl restart adsbexchange-mlat >> $LOGFILE 2>&1
+echo ""
+echo ""
 
-    echo 100
-    sleep 0.25
+cp $PWD/scripts/adsbexchange-feed.sh $IPATH
+cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system
 
-} | whiptail --backtitle "$BACKTITLETEXT" --title "Installing / updating the software required for the feed client"  --gauge "\nSetting up your receiver to feed ADS-B Exchange.\nThe setup process may take awhile to complete..." 8 60 0
+echo 82
+sleep 0.25
+
+# Enable adsbexchange-feed service
+systemctl enable adsbexchange-feed
+
+echo 88
+sleep 0.25
+
+# Remove old method of starting the feed scripts if present from rc.local
+# Kill the old adsbexchange scripts in case they are still running from a previous install including spawned programs
+for name in adsbexchange-netcat_maint.sh adsbexchange-socat_maint.sh adsbexchange-mlat_maint.sh; do
+    if grep -qs -e "$name" /etc/rc.local; then
+        sed -i -e "/$name/d" /etc/rc.local || true
+    fi
+    if PID="$(pgrep -f "$name" 2>/dev/null)" && PIDS="$PID $(pgrep -P $PID 2>/dev/null)"; then
+        echo killing: $PIDS >> $LOGFILE 2>&1 || true
+        kill -9 $PIDS >> $LOGFILE 2>&1 || true
+    fi
+done
+
+# in case the mlat-client service using /etc/default/mlat-client as config is using adsbexchange as a host, disable the service
+if grep -qs 'SERVER_HOSTPORT.*feed.adsbexchange.com' /etc/default/mlat-client &>/dev/null; then
+    systemctl disable --now mlat-client >> $LOGFILE 2>&1 || true
+fi
+
+echo 94
+
+# Start or restart adsbexchange-feed service
+systemctl restart adsbexchange-feed
+
+echo 96
+
+# Start or restart adsbexchange-mlat service
+systemctl restart adsbexchange-mlat
+
+echo 100
 
 ## SETUP COMPLETE
 
