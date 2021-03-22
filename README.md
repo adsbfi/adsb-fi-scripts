@@ -11,18 +11,26 @@ wget -O /tmp/axfeed.sh https://raw.githubusercontent.com/adsbxchange/adsb-exchan
 sudo bash /tmp/axfeed.sh
 ```
 
-### Checking status
+### Update the feed client without reconfiguring
+```
+wget -O /tmp/axupdate.sh https://raw.githubusercontent.com/adsbxchange/adsb-exchange/master/update.sh
+sudo bash /tmp/axupdate.sh
+```
 
-### Display MLAT config
+### Display the configurtion
 ```
 cat /etc/default/adsbexchange
 ```
 
-### If you encounter issues, please supply these logs on the forum (last 20 lines for each is sufficient):
+### Changing the configuration
+
+This is the same as the initial installation.
+If the client is up to date it should not take as long as the original installation,
+otherwise this will also update the client which will take a moment.
 
 ```
-sudo journalctl -u adsbexchange-feed --no-pager
-sudo journalctl -u adsbexchange-mlat --no-pager
+wget -O /tmp/axfeed.sh https://raw.githubusercontent.com/adsbxchange/adsb-exchange/master/install.sh
+sudo bash /tmp/axfeed.sh
 ```
 
 ### Restart
@@ -30,6 +38,13 @@ sudo journalctl -u adsbexchange-mlat --no-pager
 ```
 sudo systemctl restart adsbexchange-feed
 sudo systemctl restart adsbexchange-mlat
+```
+
+### If you encounter issues, please do a reboot and then supply these logs on the forum (last 20 lines for each is sufficient):
+
+```
+sudo journalctl -u adsbexchange-feed --no-pager
+sudo journalctl -u adsbexchange-mlat --no-pager
 ```
 
 
