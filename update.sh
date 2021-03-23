@@ -46,6 +46,7 @@ if [ -f /boot/adsb-config.txt ]; then
 fi
 
 IPATH=/usr/local/share/adsbexchange
+GIT="$IPATH/git"
 mkdir -p $IPATH
 
 source /etc/default/adsbexchange
@@ -144,23 +145,22 @@ hash -r
 echo
 bash "$IPATH/git/create-uuid.sh"
 
-CURRENT_DIR=$PWD
-
 MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
 MLAT_BRANCH="master"
 MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1)"
-if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version; then
+VENV=$IPATH/venv
+if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version || ! [[ -f "$VENV/bin/mlat-client" ]]; then
+    echo
     echo "Installing mlat-client to virtual environment"
+    echo
     # Check if the mlat-client git repository already exists.
-    VENV=$IPATH/venv
-    mkdir -p $IPATH
 
-    MLAT_DIR="$IPATH/mlat-client-git"
+    MLAT_GIT="$IPATH/mlat-client-git"
 
     # getGIT $REPO $BRANCH $TARGET-DIR
-    getGIT $MLAT_REPO $MLAT_BRANCH $MLAT_DIR
+    getGIT $MLAT_REPO $MLAT_BRANCH $MLAT_GIT
 
-    cd $MLAT_DIR
+    cd $MLAT_GIT
 
     echo 34
     sleep 0.25
@@ -185,8 +185,8 @@ echo 50
 cd $CURRENT_DIR
 
 # copy adsbexchange-mlat service file
-cp $PWD/scripts/adsbexchange-mlat.sh $IPATH
-cp $PWD/scripts/adsbexchange-mlat.service /lib/systemd/system
+cp "$GIT"/scripts/adsbexchange-mlat.sh $IPATH
+cp "$GIT"/scripts/adsbexchange-mlat.service /lib/systemd/system
 
 # Enable adsbexchange-mlat service
 systemctl enable adsbexchange-mlat
@@ -196,35 +196,30 @@ sleep 0.25
 
 # SETUP FEEDER TO SEND DUMP1090 DATA TO ADS-B EXCHANGE
 
-#save working dir to come back to it
-SCRIPT_DIR=$PWD
-
 READSB_REPO="https://github.com/adsbxchange/readsb.git"
 READSB_BRANCH="master"
 READSB_VERSION="$(git ls-remote $READSB_REPO $READSB_BRANCH | cut -f1)"
-if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version; then
+READSB_GIT="$IPATH/readsb-git"
+READSB_BIN="$IPATH/feed-adsbx"
+if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version || ! [[ -f "$READSB_BIN" ]]; then
+    echo
     echo "Compiling / installing the readsb based feed client"
-    echo ""
+    echo
 
     #compile readsb
     echo 72
 
-    READSB_DIR="$IPATH/readsb-git"
-
     # getGIT $REPO $BRANCH $TARGET-DIR
-    getGIT $READSB_REPO master $READSB_DIR
+    getGIT "$READSB_REPO" "$READSB_BRANCH" "$READSB_GIT"
 
-    cd $READSB_DIR
+    cd "$READSB_GIT"
 
     echo 74
 
-    if make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE
-    then
+    if make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE && rm -f "$READSB_BIN" && cp readsb "$READSB_BIN"; then
         git rev-parse HEAD > $IPATH/readsb_version 2>> $LOGFILE
     fi
 
-    rm -f $IPATH/feed-adsbx
-    cp readsb $IPATH/feed-adsbx
     echo
 else
     echo
@@ -237,8 +232,8 @@ fi
 cd $SCRIPT_DIR
 #end compile readsb
 
-cp $PWD/scripts/adsbexchange-feed.sh $IPATH
-cp $PWD/scripts/adsbexchange-feed.service /lib/systemd/system
+cp "$GIT"/scripts/adsbexchange-feed.sh $IPATH
+cp "$GIT"/scripts/adsbexchange-feed.service /lib/systemd/system
 
 echo 82
 sleep 0.25
