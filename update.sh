@@ -113,11 +113,12 @@ if command -v apt &>/dev/null; then
     required_packages+="git curl build-essential python3-dev socat python3-venv libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
     APT_INSTALL="false"
     INSTALLED="$(dpkg-query -W -f='${PACKAGE} ${STATUS}\n')"
+    packages=""
     for package in $required_packages; do
         #if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        if ! echo "$INSTALLED" | grep -qs -F -e "$package install ok installed"; then
-            echo $package
+        if ! echo "$INSTALLED" | grep -qs -E -e "^$package install ok installed"; then
             APT_INSTALL="true"
+            packages+=" $package"
         fi
         progress=$((progress+1))
         echo $progress
@@ -170,7 +171,7 @@ if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version || ! [[ -f "$VENV/bin/mlat-
     /usr/bin/python3 -m venv $VENV >> $LOGFILE && echo 36 \
         && source $VENV/bin/activate >> $LOGFILE && echo 38 \
         && python3 setup.py build >> $LOGFILE && echo 40 \
-        && python3 setup.py install >> $LOGFILE \
+        && python3 setup.py install >> $LOGFILE && echo 46 \
         && git rev-parse HEAD > $IPATH/mlat_version
 
     echo ""
