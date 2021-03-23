@@ -72,9 +72,9 @@ function getGIT() {
 
 REPO="https://github.com/adsbxchange/adsb-exchange.git"
 BRANCH="master"
-if ! [[ -d "$IPATH/git/.git" ]]; then
-    getGIT "$REPO" "$BRANCH" "$IPATH/git"
-fi
+
+getGIT "$REPO" "$BRANCH" "$IPATH/git"
+cd "$IPATH/git"
 
 # remove previously used folder to avoid confusion
 rm -rf /usr/local/share/adsb-exchange &>/dev/null
