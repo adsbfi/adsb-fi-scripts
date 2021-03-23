@@ -2,9 +2,7 @@
 
 These scripts aid in setting up your current ADS-B receiver to feed ADS-B Exchange.
 
-### Obtaining And Using The Scripts
-
-Use this command to start the setup process:
+### Install the adsbexchange feed client
 
 ```
 wget -O /tmp/axfeed.sh https://raw.githubusercontent.com/adsbxchange/adsb-exchange/master/install.sh
@@ -12,12 +10,14 @@ sudo bash /tmp/axfeed.sh
 ```
 
 ### Update the feed client without reconfiguring
+
 ```
 wget -O /tmp/axupdate.sh https://raw.githubusercontent.com/adsbxchange/adsb-exchange/master/update.sh
 sudo bash /tmp/axupdate.sh
 ```
 
 ### Display the configurtion
+
 ```
 cat /etc/default/adsbexchange
 ```
