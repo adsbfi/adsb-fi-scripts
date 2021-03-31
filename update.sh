@@ -84,7 +84,7 @@ LOGFILE="$IPATH/lastlog"
 rm -f $LOGFILE
 touch $LOGFILE
 
-cp uninstall.sh $IPATH
+cp "$IPATH/git/uninstall.sh" "$IPATH"
 
 if ! id -u adsbexchange &>/dev/null
 then
@@ -183,10 +183,9 @@ else
 fi
 
 echo 50
-cd $CURRENT_DIR
 
 # copy adsbexchange-mlat service file
-cp "$GIT"/scripts/adsbexchange-mlat.sh $IPATH
+cp "$GIT"/scripts/adsbexchange-mlat.sh "$IPATH"
 cp "$GIT"/scripts/adsbexchange-mlat.service /lib/systemd/system
 
 # Enable adsbexchange-mlat service
@@ -229,8 +228,6 @@ else
     echo
 fi
 
-# back to the working dir for install script
-cd $SCRIPT_DIR
 #end compile readsb
 
 cp "$GIT"/scripts/adsbexchange-feed.sh $IPATH
