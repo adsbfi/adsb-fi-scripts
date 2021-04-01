@@ -129,7 +129,7 @@ if command -v apt &>/dev/null; then
         [[ "$APT_UPDATED" == "false" ]] && apt update  && APT_UPDATED="true"
         [[ "$APT_UPDATED" == "false" ]] && apt update  && APT_UPDATED="true"
         echo Installing $packages
-        if ! apt install --no-install-recommends --no-install-suggests -y $packages; then
+        if ! apt install --no-install-recommends --no-install-suggests -y $packages &> $LOGFILE; then
             # retry
             apt clean
             apt --fix-broken install -y
@@ -168,13 +168,16 @@ if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version || ! [[ -f "$VENV/bin/mlat-
 
 
     rm "$VENV" -rf
-    /usr/bin/python3 -m venv $VENV >> $LOGFILE && echo 36 \
-        && source $VENV/bin/activate >> $LOGFILE && echo 38 \
-        && python3 setup.py build >> $LOGFILE && echo 40 \
-        && python3 setup.py install >> $LOGFILE && echo 46 \
-        && git rev-parse HEAD > $IPATH/mlat_version
-
-    echo ""
+    /usr/bin/python3 -m venv $VENV >> $LOGFILE
+    echo 36
+    source $VENV/bin/activate >> $LOGFILE
+    echo 38
+    python3 setup.py build >> $LOGFILE
+    echo 40
+    python3 setup.py install >> $LOGFILE
+    echo 46
+    git rev-parse HEAD > $IPATH/mlat_version
+    echo 48
 else
     echo
     echo "mlat-client already installed, git hash:"
@@ -216,9 +219,11 @@ if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version || ! [[ -f "$READSB_BIN
 
     echo 74
 
-    if make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE && rm -f "$READSB_BIN" && cp readsb "$READSB_BIN"; then
-        git rev-parse HEAD > $IPATH/readsb_version 2>> $LOGFILE
-    fi
+    make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE
+    echo 80
+    rm -f "$READSB_BIN"
+    cp readsb "$READSB_BIN"
+    git rev-parse HEAD > $IPATH/readsb_version
 
     echo
 else
