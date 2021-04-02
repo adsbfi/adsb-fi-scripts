@@ -28,7 +28,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 set -e
-trap 'echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
+trap 'echo "------------"; echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
 renice 10 $$ &>/dev/null
 
 if [ "$(id -u)" != "0" ]; then
@@ -164,20 +164,30 @@ if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version || ! [[ -f "$VENV/bin/mlat-
     cd $MLAT_GIT
 
     echo 34
-    sleep 0.25
 
-
-    rm "$VENV" -rf
-    /usr/bin/python3 -m venv $VENV >> $LOGFILE
-    echo 36
-    source $VENV/bin/activate >> $LOGFILE
-    echo 38
-    python3 setup.py build >> $LOGFILE
-    echo 40
-    python3 setup.py install >> $LOGFILE
-    echo 46
-    git rev-parse HEAD > $IPATH/mlat_version
-    echo 48
+    rm "$VENV-backup" -rf
+    mv "$VENV" "$VENV-backup" -f &>/dev/null || true
+    if /usr/bin/python3 -m venv $VENV >> $LOGFILE \
+        && echo 36 \
+        && source $VENV/bin/activate >> $LOGFILE \
+        && echo 38 \
+        && python3 setup.py build >> $LOGFILE \
+        && echo 40 \
+        && python3 setup.py install >> $LOGFILE \
+        && echo 46 \
+        && git rev-parse HEAD > $IPATH/mlat_version \
+        && echo 48 \
+    ; then
+        rm "$VENV-backup" -rf
+    else
+        rm "$VENV" -rf
+        mv "$VENV-backup" "$VENV" &>/dev/null || true
+        echo "--------------------"
+        echo "Installing mlat-client failed, if there was an old version it has been restored."
+        echo "Will continue installation to try and get at least the feed client working."
+        echo "Please repot this error to the adsbexchange forums or discord."
+        echo "--------------------"
+    fi
 else
     echo
     echo "mlat-client already installed, git hash:"
@@ -193,9 +203,11 @@ cp "$GIT"/scripts/adsbexchange-mlat.service /lib/systemd/system
 
 # Enable adsbexchange-mlat service
 systemctl enable adsbexchange-mlat
+echo 60
+# Start or restart adsbexchange-mlat service
+systemctl restart adsbexchange-mlat || true
 
 echo 70
-sleep 0.25
 
 # SETUP FEEDER TO SEND DUMP1090 DATA TO ADS-B EXCHANGE
 
@@ -219,7 +231,7 @@ if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version || ! [[ -f "$READSB_BIN
 
     echo 74
 
-    make -j3 AIRCRAFT_HASH_BITS=12 >> $LOGFILE
+    make -j2 AIRCRAFT_HASH_BITS=12 >> $LOGFILE
     echo 80
     rm -f "$READSB_BIN"
     cp readsb "$READSB_BIN"
@@ -247,6 +259,32 @@ systemctl enable adsbexchange-feed
 echo 88
 sleep 0.25
 
+echo 92
+# Start or restart adsbexchange-feed service
+systemctl restart adsbexchange-feed || true
+echo 94
+
+systemctl is-active adsbexchange-feed || {
+    echo "---------------------------------"
+    journalctl -u adsbexchange-feed | tail -n10
+    echo "---------------------------------"
+    echo "adsbexchange-feed service couldn't be started, please report this error to the adsbexchange forum or discord."
+    echo "Try an copy as much of the output above and include it in your report, thank you!"
+    echo "---------------------------------"
+    exit 1
+}
+
+echo 96
+systemctl is-active adsbexchange-mlat || {
+    echo "---------------------------------"
+    journalctl -u adsbexchange-mlat | tail -n10
+    echo "---------------------------------"
+    echo "adsbexchange-mlat service couldn't be started, please report this error to the adsbexchange forum or discord."
+    echo "Try an copy as much of the output above and include it in your report, thank you!"
+    echo "---------------------------------"
+    exit 1
+}
+
 # Remove old method of starting the feed scripts if present from rc.local
 # Kill the old adsbexchange scripts in case they are still running from a previous install including spawned programs
 for name in adsbexchange-netcat_maint.sh adsbexchange-socat_maint.sh adsbexchange-mlat_maint.sh; do
@@ -264,15 +302,6 @@ if grep -qs 'SERVER_HOSTPORT.*feed.adsbexchange.com' /etc/default/mlat-client &>
     systemctl disable --now mlat-client >> $LOGFILE 2>&1 || true
 fi
 
-echo 94
-
-# Start or restart adsbexchange-feed service
-systemctl restart adsbexchange-feed
-
-echo 96
-
-# Start or restart adsbexchange-mlat service
-systemctl restart adsbexchange-mlat
 
 echo 100
 
