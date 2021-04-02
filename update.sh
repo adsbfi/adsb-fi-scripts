@@ -304,6 +304,8 @@ fi
 
 
 echo 100
+echo "---------------------"
+echo "---------------------"
 
 ## SETUP COMPLETE
 
@@ -356,10 +358,10 @@ https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
 fi
 
 if ! nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; then
-    whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT2" 24 73
+    #whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT2" 24 73
     echo -e "$ENDTEXT2"
 else
     # Display the thank you message box.
-    whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT" 24 73
+    #whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT" 24 73
     echo -e "$ENDTEXT"
 fi
