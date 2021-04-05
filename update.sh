@@ -45,18 +45,6 @@ if [ -f /boot/adsb-config.txt ]; then
     exit 1
 fi
 
-IPATH=/usr/local/share/adsbexchange
-GIT="$IPATH/git"
-mkdir -p $IPATH
-
-source /etc/default/adsbexchange
-if [[ -z "$INPUT" ]] || [[ -z "$USER" ]] || [[ -z "$LATITUDE" ]] || [[ -z "$LONGITUDE" ]] || [[ -z "$ALTITUDE" ]]; then
-    echo "---------------------------------"
-    echo "Please rerun the complete setup, configuration file /etc/default/adsbexchange is not complete!"
-    echo "---------------------------------"
-    exit 1
-fi
-
 function getGIT() {
     # getGIT $REPO $BRANCH $TARGET-DIR
     if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]]; then
@@ -74,8 +62,21 @@ function getGIT() {
 REPO="https://github.com/adsbxchange/adsb-exchange.git"
 BRANCH="master"
 
-getGIT "$REPO" "$BRANCH" "$IPATH/git"
-cd "$IPATH/git"
+IPATH=/usr/local/share/adsbexchange
+GIT="$IPATH/git"
+mkdir -p $IPATH
+
+getGIT "$REPO" "$BRANCH" "$GIT"
+cd "$GIT"
+
+source /etc/default/adsbexchange
+if [[ -z $INPUT ]] || [[ -z $INPUT_TYPE ]] || [[ -z $USER ]] \
+    || [[ -z $LATITUDE ]] || [[ -z $LONGITUDE ]] || [[ -z $ALTITUDE ]] \
+    || [[ -z $MLATSERVER ]] || [[ -z $TARGET ]] || [[ -z $NET_OPTIONS ]]; then
+    bash "$IPATH/git/setup.sh"
+    exit 0
+fi
+
 
 # remove previously used folder to avoid confusion
 rm -rf /usr/local/share/adsb-exchange &>/dev/null
