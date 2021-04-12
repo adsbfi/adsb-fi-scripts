@@ -16,7 +16,7 @@ wget -O /tmp/axupdate.sh https://raw.githubusercontent.com/adsbxchange/adsb-exch
 sudo bash /tmp/axupdate.sh
 ```
 
-### Display the configurtion
+### Display the configuration
 
 ```
 cat /etc/default/adsbexchange
