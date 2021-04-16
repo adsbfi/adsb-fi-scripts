@@ -15,7 +15,7 @@ fi
 
 if ! command -v git &>/dev/null; then
     apt-get update || true
-    apt-get install -y git || true
+    apt-get install -y --no-install-recommends --no-install-suggests git || true
 fi
 
 function getGIT() {
