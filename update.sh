@@ -87,9 +87,11 @@ touch $LOGFILE
 
 cp "$IPATH/git/uninstall.sh" "$IPATH"
 
-if ! id -u adsbexchange &>/dev/null
+USER=adsbexchange
+if ! id -u "${USER}" &>/dev/null
 then
-    adduser --system --home $IPATH --no-create-home --quiet adsbexchange
+    # 2nd syntax is for fedora / centos
+    adduser --system --home "$IPATH" --no-create-home --quiet "$USER" || adduser --system --home-dir "$IPATH" --no-create-home "$USER"
 fi
 
 echo 4
