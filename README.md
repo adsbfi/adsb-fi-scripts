@@ -33,6 +33,10 @@ wget -O /tmp/axfeed.sh https://raw.githubusercontent.com/adsbxchange/adsb-exchan
 sudo bash /tmp/axfeed.sh
 ```
 
+### Other device as a data source (networked standalone receivers):
+
+https://github.com/adsbxchange/wiki/wiki/Datasource-other-device
+
 ### Restart
 
 ```
