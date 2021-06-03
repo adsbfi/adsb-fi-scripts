@@ -16,6 +16,11 @@ wget -O /tmp/axupdate.sh https://raw.githubusercontent.com/adsbxchange/adsb-exch
 sudo bash /tmp/axupdate.sh
 ```
 
+### Check these two URLs to check if your feed is working
+
+- https://www.adsbexchange.com/myip
+- https://map.adsbexchange.com/mlat-map
+
 ### Display the configuration
 
 ```
