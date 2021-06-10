@@ -5,14 +5,14 @@ These scripts aid in setting up your current ADS-B receiver to feed ADS-B Exchan
 ### Install the adsbexchange feed client
 
 ```
-wget -O /tmp/axfeed.sh https://raw.githubusercontent.com/adsbxchange/adsb-exchange/master/install.sh
+curl -L -o /tmp/axfeed.sh https://github.com/adsbxchange/adsb-exchange/raw/master/install.sh
 sudo bash /tmp/axfeed.sh
 ```
 
 ### Update the feed client without reconfiguring
 
 ```
-wget -O /tmp/axupdate.sh https://raw.githubusercontent.com/adsbxchange/adsb-exchange/master/update.sh
+curl -L -o /tmp/axfeed.sh https://github.com/adsbxchange/adsb-exchange/raw/master/update.sh
 sudo bash /tmp/axupdate.sh
 ```
 
@@ -42,7 +42,7 @@ If the client is up to date it should not take as long as the original installat
 otherwise this will also update the client which will take a moment.
 
 ```
-wget -O /tmp/axfeed.sh https://raw.githubusercontent.com/adsbxchange/adsb-exchange/master/install.sh
+curl -L -o /tmp/axfeed.sh https://github.com/adsbxchange/adsb-exchange/raw/master/install.sh
 sudo bash /tmp/axfeed.sh
 ```
 
