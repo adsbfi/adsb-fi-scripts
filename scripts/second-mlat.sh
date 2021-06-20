@@ -1,5 +1,13 @@
 #!/bin/bash
-cat >/lib/systemd/system/adsbexchange-mlat2.service <<"EOF"
+SERVICE="/lib/systemd/system/adsbexchange-mlat2.service"
+
+if [[ -z ${1} ]]; then
+    echo --------------
+    echo ERROR: requires a parameter
+    exit 1
+fi
+
+cat >"$SERVICE" <<"EOF"
 [Unit]
 Description=adsbexchange-mlat2
 Wants=network.target
@@ -17,7 +25,7 @@ ExecStart=/usr/local/share/adsbexchange/venv/bin/mlat-client \
     --lon $LONGITUDE \
     --alt $ALTITUDE \
     $PRIVACY \
-    RESULTSLINE
+    $RESULTS
 Type=simple
 Restart=always
 RestartSec=30
@@ -30,8 +38,14 @@ Nice=-1
 WantedBy=default.target
 EOF
 
-sed -i -e "s/SERVERPORT/${1}/" /lib/systemd/system/adsbexchange-mlat2.service
-sed -i -e "s/RESULTSLINE/${2}/" /lib/systemd/system/adsbexchange-mlat2.service
+if [[ -f /boot/adsb-config.txt ]]; then
+    sed -i -e 's#EnvironmentFile.*#EnvironmentFile=/boot/adsbx-env\nEnvironmentFile=/boot/adsb-config.txt#' "$SERVICE"
+fi
+
+sed -i -e "s/SERVERPORT/${1}/" "$SERVICE"
+if [[ -n ${2} ]]; then
+    sed -i -e "s/\$RESULTS/${2}/" "$SERVICE"
+fi
 
 systemctl enable adsbexchange-mlat2
 systemctl restart adsbexchange-mlat2

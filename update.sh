@@ -69,11 +69,18 @@ mkdir -p $IPATH
 getGIT "$REPO" "$BRANCH" "$GIT"
 cd "$GIT"
 
+if diff "$GIT/update.sh" "$IPATH/update.sh" &>/dev/null; then
+    rm -f "$IPATH/update.sh"
+    cp "$GIT/update.sh" "$IPATH/update.sh"
+    bash "$IPATH/update.sh"
+    exit $?
+fi
+
 source /etc/default/adsbexchange
 if [[ -z $INPUT ]] || [[ -z $INPUT_TYPE ]] || [[ -z $USER ]] \
     || [[ -z $LATITUDE ]] || [[ -z $LONGITUDE ]] || [[ -z $ALTITUDE ]] \
     || [[ -z $MLATSERVER ]] || [[ -z $TARGET ]] || [[ -z $NET_OPTIONS ]]; then
-    bash "$IPATH/git/setup.sh"
+    bash "$GIT/setup.sh"
     exit 0
 fi
 
