@@ -28,7 +28,6 @@ sudo journalctl -u adsbexchange-feed --no-pager
 sudo journalctl -u adsbexchange-mlat --no-pager
 ```
 
-
 ### Display the configuration
 
 ```
@@ -44,6 +43,21 @@ otherwise this will also update the client which will take a moment.
 ```
 curl -L -o /tmp/axfeed.sh https://github.com/adsbxchange/adsb-exchange/raw/master/install.sh
 sudo bash /tmp/axfeed.sh
+```
+
+### Disable / Enable adsbexchange MLAT-results in your main decoder interface (readsb / dump1090-fa)
+
+- Disable:
+
+```
+sudo sed --follow-symlinks -i -e 's/RESULTS=.*/RESULTS=""/' /etc/default/adsbexchange
+sudo systemctl restart adsbexchange-mlat
+```
+- Enable:
+
+```
+sudo sed --follow-symlinks -i -e 's/RESULTS=.*/RESULTS="--results beast,connect,localhost:30104"/' /etc/default/adsbexchange
+sudo systemctl restart adsbexchange-mlat
 ```
 
 ### Other device as a data source (networked standalone receivers):
