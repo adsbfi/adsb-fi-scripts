@@ -319,21 +319,19 @@ echo "---------------------"
 ## SETUP COMPLETE
 
 ENDTEXT="
-Setup is now complete.
-
-You should now be feeding data to ADS-B Exchange.
-
-Thanks again for choosing to share your data with ADS-B Exchange!
+Thanks for choosing to share your data with ADS-B Exchange!
 
 If you're curious, check your feed status after 5 min:
 
 https://adsbexchange.com/myip/
 http://adsbx.org/sync
 
-If you have questions or encountered any issues while using this script feel free to post them to one of the following places:
-
+Question? Issues? Go here:
 https://www.adsbexchange.com/forum/threads/adsbexchange-setup-scripts.631609/
 https://discord.gg/n9dGbkTtZm
+
+Webinterface to show the data transmitted? Run this command:
+sudo bash /usr/local/share/adsbexchange/git/install-or-update-interface.sh
 "
 
 INPUT_IP=$(echo $INPUT | cut -d: -f1)

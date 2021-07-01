@@ -9,6 +9,17 @@ curl -L -o /tmp/axfeed.sh https://github.com/adsbxchange/adsb-exchange/raw/maste
 sudo bash /tmp/axfeed.sh
 ```
 
+### Optional: local interface for your data http://192.168.X.XX/ax
+
+Install / Update:
+```
+sudo bash /usr/local/share/adsbexchange/git/install-or-update-interface.sh
+```
+Remove:
+```
+sudo bash /usr/local/share/tar1090/uninstall.sh ax
+```
+
 ### Update the feed client without reconfiguring
 
 ```
