@@ -31,6 +31,10 @@ set -e
 trap 'echo "------------"; echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
 renice 10 $$ &>/dev/null
 
+if [[ $1 == reinstall ]]; then
+    REINSTALL=yes
+fi
+
 if [ "$(id -u)" != "0" ]; then
     echo -e "\033[33m"
     echo "This script must be ran using sudo or as root."
@@ -161,7 +165,7 @@ MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
 MLAT_BRANCH="master"
 MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1)"
 VENV=$IPATH/venv
-if ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version || ! [[ -f "$VENV/bin/mlat-client" ]]; then
+if [[ $REINSTALL == yes ]] || ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version || ! [[ -f "$VENV/bin/mlat-client" ]]; then
     echo
     echo "Installing mlat-client to virtual environment"
     echo
@@ -226,7 +230,7 @@ READSB_BRANCH="master"
 READSB_VERSION="$(git ls-remote $READSB_REPO $READSB_BRANCH | cut -f1)"
 READSB_GIT="$IPATH/readsb-git"
 READSB_BIN="$IPATH/feed-adsbx"
-if ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version || ! [[ -f "$READSB_BIN" ]]; then
+if [[ $REINSTALL == yes ]] || ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version || ! [[ -f "$READSB_BIN" ]]; then
     echo
     echo "Compiling / installing the readsb based feed client"
     echo
