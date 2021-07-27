@@ -368,7 +368,7 @@ https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
 "
 fi
 
-if ! nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; then
+if ! timeout 5 nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; then
     #whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT2" 24 73
     echo -e "$ENDTEXT2"
 else
