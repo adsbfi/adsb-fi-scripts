@@ -96,8 +96,16 @@ RECEIVERALTITUDE="$ALT"
 
 
 
-tee /etc/default/adsbexchange >/dev/null <<EOF
 INPUT="127.0.0.1:30005"
+INPUT_TYPE="dump1090"
+
+if [[ $(hostname) == "radarcape" ]] || pgrep rcd &>/dev/null; then
+    INPUT="127.0.0.1:10003"
+    INPUT_TYPE="radarcape_gps"
+fi
+
+tee /etc/default/adsbexchange >/dev/null <<EOF
+INPUT="$INPUT"
 REDUCE_INTERVAL="0.5"
 
 # feed name for checking MLAT sync (adsbx.org/sync)
@@ -116,7 +124,7 @@ RESULTS4="--results beast,connect,localhost:30154"
 # add --privacy between the quotes below to disable having the feed name shown on the mlat map
 # (position is never shown accurately no matter the settings)
 PRIVACY=""
-INPUT_TYPE="dump1090"
+INPUT_TYPE="$INPUT_TYPE"
 
 MLATSERVER="feed.adsbexchange.com:31090"
 TARGET="--net-connector feed.adsbexchange.com,30004,beast_reduce_out,feed.adsbexchange.com,64004"
