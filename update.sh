@@ -217,11 +217,19 @@ echo 50
 # copy adsbexchange-mlat service file
 cp "$GIT"/scripts/adsbexchange-mlat.service /lib/systemd/system
 
-# Enable adsbexchange-mlat service
-systemctl enable adsbexchange-mlat
-echo 60
-# Start or restart adsbexchange-mlat service
-systemctl restart adsbexchange-mlat || true
+if ! ls -l /etc/systemd/system/adsbexchange-mlat.service 2>&1 | grep '/dev/null' &>/dev/null; then
+    # Enable adsbexchange-mlat service
+    systemctl enable adsbexchange-mlat
+    echo 60
+    # Start or restart adsbexchange-mlat service
+    systemctl restart adsbexchange-mlat || true
+else
+    echo "--------------------"
+    echo "CAUTION, adsbexchange-mlat is masked and won't run!"
+    echo "If this is unexpected for you, please report this issue"
+    echo "--------------------"
+    sleep 3
+fi
 
 echo 70
 
@@ -266,17 +274,21 @@ fi
 cp "$GIT"/scripts/adsbexchange-feed.service /lib/systemd/system
 
 echo 82
-sleep 0.25
 
-# Enable adsbexchange-feed service
-systemctl enable adsbexchange-feed
+if ! ls -l /etc/systemd/system/adsbexchange-feed.service 2>&1 | grep '/dev/null' &>/dev/null; then
+    # Enable adsbexchange-feed service
+    systemctl enable adsbexchange-feed
+    echo 92
+    # Start or restart adsbexchange-feed service
+    systemctl restart adsbexchange-feed || true
+else
+    echo "--------------------"
+    echo "CAUTION, adsbexchange-feed.service is masked and won't run!"
+    echo "If this is unexpected for you, please report this issue"
+    echo "--------------------"
+    sleep 3
+fi
 
-echo 88
-sleep 0.25
-
-echo 92
-# Start or restart adsbexchange-feed service
-systemctl restart adsbexchange-feed || true
 echo 94
 
 systemctl is-active adsbexchange-feed || {
