@@ -163,10 +163,15 @@ hash -r
 echo
 bash "$IPATH/git/create-uuid.sh"
 
+VENV=$IPATH/venv
+if [[ -f /usr/local/share/adsbexchange/venv/bin/python3.7 ]] && command -v python3.9 &>/dev/null;
+then
+    rm -rf "$VENV"
+fi
+
 MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
 MLAT_BRANCH="master"
 MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1)"
-VENV=$IPATH/venv
 if [[ $REINSTALL == yes ]] || ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version || ! [[ -f "$VENV/bin/mlat-client" ]]; then
     echo
     echo "Installing mlat-client to virtual environment"
