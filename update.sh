@@ -82,7 +82,12 @@ if diff "$GIT/update.sh" "$IPATH/update.sh" &>/dev/null; then
     exit $?
 fi
 
-source /etc/default/adsbexchange
+if [ -f /boot/adsb-config.txt ]; then
+    source /boot/adsb-config.txt
+    source /boot/adsbx-env
+else
+    source /etc/default/adsbexchange
+fi
 if [[ -z $INPUT ]] || [[ -z $INPUT_TYPE ]] || [[ -z $USER ]] \
     || [[ -z $LATITUDE ]] || [[ -z $LONGITUDE ]] || [[ -z $ALTITUDE ]] \
     || [[ -z $MLATSERVER ]] || [[ -z $TARGET ]] || [[ -z $NET_OPTIONS ]]; then
@@ -222,18 +227,23 @@ echo 50
 # copy adsbexchange-mlat service file
 cp "$GIT"/scripts/adsbexchange-mlat.service /lib/systemd/system
 
-if ! ls -l /etc/systemd/system/adsbexchange-mlat.service 2>&1 | grep '/dev/null' &>/dev/null; then
-    # Enable adsbexchange-mlat service
-    systemctl enable adsbexchange-mlat
-    echo 60
-    # Start or restart adsbexchange-mlat service
-    systemctl restart adsbexchange-mlat || true
-else
+echo 60
+
+if ls -l /etc/systemd/system/adsbexchange-mlat.service 2>&1 | grep '/dev/null' &>/dev/null; then
     echo "--------------------"
     echo "CAUTION, adsbexchange-mlat is masked and won't run!"
     echo "If this is unexpected for you, please report this issue"
     echo "--------------------"
     sleep 3
+else
+    if [[ "$LATITUDE" == 0 ]] || [[ "$LONGITUDE" == 0 ]] || [[ "$USER" == 0 ]]; then
+        systemctl disable adsbexchange-mlat
+    else
+        # Enable adsbexchange-mlat service
+        systemctl enable adsbexchange-mlat
+        # Start or restart adsbexchange-mlat service
+        systemctl restart adsbexchange-mlat || true
+    fi
 fi
 
 echo 70

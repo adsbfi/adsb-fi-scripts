@@ -47,14 +47,20 @@ BACKTITLETEXT="ADS-B Exchange Setup Script"
 
 whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" --yesno "Thanks for choosing to share your data with ADS-B Exchange!\n\nADSBexchange.com is a co-op of ADS-B/Mode S/MLAT feeders from around the world. This script will configure your current your ADS-B receiver to share your feeders data with ADS-B Exchange.\n\nWould you like to continue setup?" 13 78 || abort
 
-ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name to be shown on the MLAT map (map.adsbexchange.com/mlat-map)(the pin will be offset for privacy)\n\nText and Numbers only - everything else will be removed.\nExample: \"william34-london\", \"william34-jersey\", etc." 12 78 3>&1 1>&2 2>&3) || abort
+ADSBEXCHANGEUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name to be shown on the MLAT map (map.adsbexchange.com/mlat-map)(the pin will be offset for privacy)\n\nExample: \"william34-london\", \"william34-jersey\", etc.\nDisable MLAT: enter a zero: 0" 12 78 3>&1 1>&2 2>&3) || abort
 
 NOSPACENAME="$(echo -n -e "${ADSBEXCHANGEUSERNAME}" | tr -c '[a-zA-Z0-9]_\- ' '_')"
 
-whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" \
-    --msgbox "For MLAT the precise location of your antenna is required.\
-    \n\nA small error of 15m/45ft will cause issues with MLAT!\
-    \n\nTo get your location, use any online map service or this website: https://www.mapcoordinates.net/en" 12 78 || abort
+if [[ "$NOSPACENAME" != 0 ]]; then
+    whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" \
+        --msgbox "For MLAT the precise location of your antenna is required.\
+        \n\nA small error of 15m/45ft will cause issues with MLAT!\
+        \n\nTo get your location, use any online map service or this website: https://www.mapcoordinates.net/en" 12 78 || abort
+else
+    whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" \
+        --msgbox "MLAT DISABLED!.\
+        \n\n For some local functions the approximate receiver location is still useful, it won't be sent to the server." 12 78 || abort
+fi
 
 #((-90 <= RECEIVERLATITUDE <= 90))
 LAT_OK=0
@@ -71,7 +77,8 @@ until [ $LON_OK -eq 1 ]; do
     LON_OK=`awk -v LON="$RECEIVERLONGITUDE" 'BEGIN {printf (LON<180 && LON>-180 ? "1" : "0")}'`
 done
 
-until [[ $ALT =~ ^(-?[0-9]*)ft$ ]] || [[ $ALT =~ ^(-?[0-9]*)m$ ]]; do
+ALT=0
+until [[ "$NOSPACENAME" == 0 ]] || [[ $ALT =~ ^(-?[0-9]*)ft$ ]] || [[ $ALT =~ ^(-?[0-9]*)m$ ]]; do
     ALT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Altitude above sea level (at the antenna):" \
         --nocancel --inputbox \
 "\nEnter your receivers altitude above sea level including the unit, no spaces:\n\n\
