@@ -49,9 +49,29 @@ if [ -f /boot/adsb-config.txt ]; then
     exit 1
 fi
 
-if ! command -v git &>/dev/null || ! command -v wget &>/dev/null || ! command -v unzip &>/dev/null; then
-    apt-get update || true; apt-get install -y --no-install-recommends --no-install-suggests git wget unzip || true
+function aptInstall() {
+    if ! apt install -y --no-install-recommends --no-install-suggests "$@"; then
+        apt update
+        if ! apt install -y --no-install-recommends --no-install-suggests "$@"; then
+            apt clean -y || true
+            apt --fix-broken install -y || true
+            apt install --no-install-recommends --no-install-suggests -y $packages
+        fi
+    fi
+}
+
+
+packages="git wget unzip curl build-essential python3-dev socat python3-venv libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
+
+if command -v apt &>/dev/null; then
+    aptInstall $packages
+elif command -v yum &>/dev/null; then
+    packages+="git curl socat python3-virtualenv python3-devel gcc make ncurses-devel nc uuid zlib-devel zlib"
+    yum install -y $packages
 fi
+
+hash -r
+
 function getGIT() {
     # getGIT $REPO $BRANCH $TARGET (directory)
     if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]]; then echo "getGIT wrong usage, check your script or tell the author!" 1>&2; return 1; fi
@@ -118,6 +138,7 @@ sleep 0.25
 
 # BUILD AND CONFIGURE THE MLAT-CLIENT PACKAGE
 
+progress=4
 echo "Checking and installing prerequesites ..."
 
 # Check that the prerequisite packages needed to build and install mlat-client are installed.
@@ -127,43 +148,6 @@ if ! systemctl status chrony &>/dev/null && ! systemctl status ntpsec &>/dev/nul
     required_packages="ntp "
 fi
 
-progress=4
-
-APT_UPDATED="false"
-
-if command -v apt &>/dev/null; then
-    required_packages+="git curl build-essential python3-dev socat python3-venv libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
-    APT_INSTALL="false"
-    INSTALLED="$(dpkg-query -W -f='${PACKAGE} ${STATUS}\n')"
-    packages=""
-    for package in $required_packages; do
-        #if [ $(dpkg-query -W -f='${STATUS}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-        if ! echo "$INSTALLED" | grep -qs -E -e "^$package install ok installed"; then
-            APT_INSTALL="true"
-            packages+=" $package"
-        fi
-        progress=$((progress+1))
-        echo $progress
-    done
-
-    if [[ "$APT_INSTALL" == "true" ]]; then
-        [[ "$APT_UPDATED" == "false" ]] && apt update && APT_UPDATED="true"
-        [[ "$APT_UPDATED" == "false" ]] && apt update  && APT_UPDATED="true"
-        [[ "$APT_UPDATED" == "false" ]] && apt update  && APT_UPDATED="true"
-        echo Installing $packages
-        if ! apt install --no-install-recommends --no-install-suggests -y $packages &> $LOGFILE; then
-            # retry
-            apt clean
-            apt --fix-broken install -y
-            apt install --no-install-recommends --no-install-suggests -y $packages
-        fi
-    fi
-elif command -v yum &>/dev/null; then
-    required_packages+="git curl socat python3-virtualenv python3-devel gcc make ncurses-devel nc uuid zlib-devel zlib"
-    yum install -y $required_packages
-fi
-
-hash -r
 
 echo
 bash "$IPATH/git/create-uuid.sh"

@@ -5,11 +5,16 @@ UUID_FILE="/boot/adsbx-uuid"
 # Let's make sure the UUID tools are installed...
 
 
+function aptInstall() {
+    if ! apt install -y --no-install-recommends --no-install-suggests "$@"; then
+        apt update
+        apt install -y --no-install-recommends --no-install-suggests "$@"
+    fi
+}
 function generateUUID() {
     if ! command -v uuidgen &>/dev/null; then
         echo "Can't find uuidgen in path, trying to install uuidgen..."
-        apt update
-        apt install -y --no-install-suggests --no-install-recommends uuid-runtime
+        aptInstall uuid-runtime
         if ! command -v uuidgen &>/dev/null; then
             echo "Failed to install uuid-runtime package - need manual intervention!"
             sleep 60
