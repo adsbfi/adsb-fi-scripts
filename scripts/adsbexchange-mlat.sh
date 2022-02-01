@@ -24,4 +24,5 @@ done
     --lon "$LONGITUDE" \
     --alt "$ALTITUDE" \
     $PRIVACY \
+    $UUID_FILE \
     $RESULTS $RESULTS1 $RESULTS2 $RESULTS3 $RESULTS4
