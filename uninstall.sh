@@ -15,7 +15,10 @@ rm -f /lib/systemd/system/adsbexchange-mlat.service
 rm -f /lib/systemd/system/adsbexchange-mlat2.service
 rm -f /lib/systemd/system/adsbexchange-feed.service
 
+cp -f "$IPATH/adsbx-uuid" /tmp/adsbx-uuid
 rm -rf "$IPATH"
+mkdir -p "$IPATH"
+mv -f /tmp/adsbx-uuid "$IPATH/adsbx-uuid"
 
 set +x
 
