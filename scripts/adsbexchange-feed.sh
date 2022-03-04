@@ -23,4 +23,4 @@ done
     --net-beast-reduce-interval $REDUCE_INTERVAL \
     $TARGET $NET_OPTIONS $SOURCE \
     --lat "$LATITUDE" --lon "$LONGITUDE" \
-    $UUID_FILE
+    $UUID_FILE $JSON_OPTIONS
