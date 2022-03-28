@@ -61,10 +61,13 @@ function aptInstall() {
 }
 
 
-packages="git wget unzip curl build-essential python3-dev socat python3-venv libncurses5-dev netcat uuid-runtime zlib1g-dev zlib1g"
+packages="git wget unzip curl build-essential python3-dev socat python3-venv libncurses5-dev uuid-runtime zlib1g-dev zlib1g"
 
 if command -v apt &>/dev/null; then
     aptInstall $packages
+    if ! command -v nc &>/dev/null; then
+        aptInstall netcat-openbsd || true
+    fi
 elif command -v yum &>/dev/null; then
     packages+="git curl socat python3-virtualenv python3-devel gcc make ncurses-devel nc uuid zlib-devel zlib"
     yum install -y $packages

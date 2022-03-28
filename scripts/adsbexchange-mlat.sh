@@ -10,12 +10,14 @@ fi
 INPUT_IP=$(echo $INPUT | cut -d: -f1)
 INPUT_PORT=$(echo $INPUT | cut -d: -f2)
 
+sleep 2
+
 while ! nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; do
-    echo "<3>Could not connect to $INPUT_IP:$INPUT_PORT, retry in 30 seconds."
-    sleep 30
+    echo "Could not connect to $INPUT_IP:$INPUT_PORT, retry in 10 seconds."
+    sleep 10
 done
 
-/usr/local/share/adsbexchange/venv/bin/mlat-client \
+exec /usr/local/share/adsbexchange/venv/bin/mlat-client \
     --input-type "$INPUT_TYPE" --no-udp \
     --input-connect "$INPUT" \
     --server "$MLATSERVER" \
