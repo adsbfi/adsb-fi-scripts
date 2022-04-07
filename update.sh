@@ -146,9 +146,9 @@ echo "Checking and installing prerequesites ..."
 
 # Check that the prerequisite packages needed to build and install mlat-client are installed.
 
-# only install ntp if chrony and ntpsec aren't running
-if ! systemctl status chrony &>/dev/null && ! systemctl status ntpsec &>/dev/null; then
-    required_packages="ntp "
+# only install chrony if chrony and ntp aren't running
+if ! systemctl status chrony &>/dev/null && ! systemctl status ntp &>/dev/null; then
+    required_packages="chrony "
 fi
 
 
