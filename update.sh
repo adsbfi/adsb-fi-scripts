@@ -294,6 +294,7 @@ fi
 echo 94
 
 systemctl is-active adsbexchange-feed || {
+    rm -f $IPATH/readsb_version
     echo "---------------------------------"
     journalctl -u adsbexchange-feed | tail -n10
     echo "---------------------------------"
@@ -305,6 +306,7 @@ systemctl is-active adsbexchange-feed || {
 
 echo 96
 systemctl is-active adsbexchange-mlat || {
+    rm -f $IPATH/mlat_version
     echo "---------------------------------"
     journalctl -u adsbexchange-mlat | tail -n10
     echo "---------------------------------"
