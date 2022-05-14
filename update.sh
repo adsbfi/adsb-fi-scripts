@@ -333,6 +333,10 @@ if grep -qs 'SERVER_HOSTPORT.*feed.adsbexchange.com' /etc/default/mlat-client &>
     systemctl disable --now mlat-client >> $LOGFILE 2>&1 || true
 fi
 
+if [[ -f /etc/default/adsbexchange ]]; then
+    sed -i -e 's/feed.adsbexchange.com,30004,beast_reduce_out,feed.adsbexchange.com,64004/feed1.adsbexchange.com,30004,beast_reduce_out,feed2.adsbexchange.com,64004/' /etc/default/adsbexchange || true
+fi
+
 
 echo 100
 echo "---------------------"
