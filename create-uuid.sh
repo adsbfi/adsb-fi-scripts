@@ -11,27 +11,10 @@ else
     fi
 fi
 
-function aptInstall() {
-    if ! apt install -y --no-install-recommends --no-install-suggests "$@"; then
-        apt update
-        apt install -y --no-install-recommends --no-install-suggests "$@"
-    fi
-}
 function generateUUID() {
-    # Let's make sure the UUID tools are installed...
-    if ! command -v uuidgen &>/dev/null; then
-        echo "Can't find uuidgen in path, trying to install uuidgen..."
-        aptInstall uuid-runtime
-        if ! command -v uuidgen &>/dev/null; then
-            echo "Failed to install uuid-runtime package - need manual intervention!"
-            sleep 60
-            exit 10
-        fi
-    fi
-
     rm -f $UUID_FILE
     sleep 0.$RANDOM; sleep 0.$RANDOM
-    UUID=$(uuidgen)
+    UUID=$(cat /proc/sys/kernel/random/uuid)
     echo New UUID: $UUID
     echo $UUID > $UUID_FILE
 }
