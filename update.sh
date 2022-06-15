@@ -224,10 +224,10 @@ if ls -l /etc/systemd/system/adsbexchange-mlat.service 2>&1 | grep '/dev/null' &
     sleep 3
 else
     if [[ "$LATITUDE" == 0 ]] || [[ "$LONGITUDE" == 0 ]] || [[ "$USER" == 0 ]]; then
-        systemctl disable adsbexchange-mlat
+        systemctl disable adsbexchange-mlat || true
     else
         # Enable adsbexchange-mlat service
-        systemctl enable adsbexchange-mlat
+        systemctl enable adsbexchange-mlat || true
         # Start or restart adsbexchange-mlat service
         systemctl restart adsbexchange-mlat || true
     fi
@@ -279,7 +279,7 @@ echo 82
 
 if ! ls -l /etc/systemd/system/adsbexchange-feed.service 2>&1 | grep '/dev/null' &>/dev/null; then
     # Enable adsbexchange-feed service
-    systemctl enable adsbexchange-feed
+    systemctl enable adsbexchange-feed || true
     echo 92
     # Start or restart adsbexchange-feed service
     systemctl restart adsbexchange-feed || true
