@@ -7,6 +7,10 @@ else
     source /etc/default/adsbexchange
 fi
 
+if ! [[ -d /run/adsbexchange-feed/ ]]; then
+    mkdir -p /run/adsbexchange-feed
+fi
+
 INPUT_IP=$(echo $INPUT | cut -d: -f1)
 INPUT_PORT=$(echo $INPUT | cut -d: -f2)
 SOURCE="--net-connector $INPUT_IP,$INPUT_PORT,beast_in"
