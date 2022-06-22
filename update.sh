@@ -164,7 +164,8 @@ fi
 MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
 MLAT_BRANCH="master"
 MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1)"
-if [[ $REINSTALL == yes ]] || ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version || ! grep -qs -e '#!' "$VENV/bin/mlat-client"; then
+if [[ $REINSTALL == yes ]] || ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version \
+    || ! grep -qs -e '#!' "$VENV/bin/mlat-client" || ! systemctl status adsbexchange-mlat &>/dev/null; then
     echo
     echo "Installing mlat-client to virtual environment"
     echo
@@ -242,7 +243,8 @@ READSB_BRANCH="master"
 READSB_VERSION="$(git ls-remote $READSB_REPO $READSB_BRANCH | cut -f1)"
 READSB_GIT="$IPATH/readsb-git"
 READSB_BIN="$IPATH/feed-adsbx"
-if [[ $REINSTALL == yes ]] || ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version || ! [[ -f "$READSB_BIN" ]]; then
+if [[ $REINSTALL == yes ]] || ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version \
+    || ! "$READSB_BIN" -V || ! systemctl status adsbexchange-feed &>/dev/null; then
     echo
     echo "Compiling / installing the readsb based feed client"
     echo
