@@ -67,7 +67,7 @@ sudo systemctl restart adsbexchange-mlat
 - Enable:
 
 ```
-sudo sed --follow-symlinks -i -e 's/RESULTS=.*/RESULTS="--results beast,connect,localhost:30104"/' /etc/default/adsbexchange
+sudo sed --follow-symlinks -i -e 's/RESULTS=.*/RESULTS="--results beast,connect,127.0.0.1:30104"/' /etc/default/adsbexchange
 sudo systemctl restart adsbexchange-mlat
 ```
 
