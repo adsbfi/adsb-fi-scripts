@@ -61,7 +61,7 @@ function aptInstall() {
 }
 
 
-packages="git wget unzip curl build-essential python3-dev socat python3-venv libncurses-dev uuid-runtime zlib1g-dev zlib1g"
+packages="git wget unzip curl build-essential python3-dev socat python3-venv libncurses-dev uuid-runtime libzstd-dev zlib1g-dev zlib1g"
 
 if command -v apt &>/dev/null; then
     aptInstall $packages
