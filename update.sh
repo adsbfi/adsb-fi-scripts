@@ -64,7 +64,7 @@ function aptInstall() {
 packages="git wget unzip curl build-essential python3-dev socat python3-venv libncurses-dev uuid-runtime libzstd-dev zlib1g-dev zlib1g"
 
 if command -v apt &>/dev/null; then
-    aptInstall $packages
+    aptInstall $packages > /dev/null
     if ! command -v nc &>/dev/null; then
         aptInstall netcat-openbsd || true
     fi
@@ -99,7 +99,11 @@ IPATH=/usr/local/share/adsbexchange
 GIT="$IPATH/git"
 mkdir -p $IPATH
 
-getGIT "$REPO" "$BRANCH" "$GIT"
+LOGFILE="$IPATH/lastlog"
+rm -f $LOGFILE
+touch $LOGFILE
+
+getGIT "$REPO" "$BRANCH" "$GIT" >> $LOGFILE
 cd "$GIT"
 
 if diff "$GIT/update.sh" "$IPATH/update.sh" &>/dev/null; then
@@ -122,13 +126,8 @@ if [[ -z $INPUT ]] || [[ -z $INPUT_TYPE ]] || [[ -z $USER ]] \
     exit 0
 fi
 
-
 # remove previously used folder to avoid confusion
 rm -rf /usr/local/share/adsb-exchange &>/dev/null
-
-LOGFILE="$IPATH/lastlog"
-rm -f $LOGFILE
-touch $LOGFILE
 
 cp "$GIT/uninstall.sh" "$IPATH"
 cp "$GIT"/scripts/*.sh "$IPATH"
@@ -168,8 +167,14 @@ fi
 MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
 MLAT_BRANCH="master"
 MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1 || echo $RANDOM-$RANDOM )"
-if [[ $REINSTALL == yes ]] || ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version \
-    || ! grep -qs -e '#!' "$VENV/bin/mlat-client" || ! systemctl status adsbexchange-mlat &>/dev/null; then
+if [[ $REINSTALL != yes ]] && grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version \
+    && grep -qs -e '#!' "$VENV/bin/mlat-client" && systemctl is-active adsbexchange-mlat &>/dev/null
+then
+    echo
+    echo "mlat-client already installed, git hash:"
+    cat $IPATH/mlat_version
+    echo
+else
     echo
     echo "Installing mlat-client to virtual environment"
     echo
@@ -178,7 +183,7 @@ if [[ $REINSTALL == yes ]] || ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version 
     MLAT_GIT="$IPATH/mlat-client-git"
 
     # getGIT $REPO $BRANCH $TARGET-DIR
-    getGIT $MLAT_REPO $MLAT_BRANCH $MLAT_GIT
+    getGIT $MLAT_REPO $MLAT_BRANCH $MLAT_GIT &> $LOGFILE
 
     cd $MLAT_GIT
 
@@ -207,11 +212,6 @@ if [[ $REINSTALL == yes ]] || ! grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version 
         echo "Please repot this error to the adsbexchange forums or discord."
         echo "--------------------"
     fi
-else
-    echo
-    echo "mlat-client already installed, git hash:"
-    cat $IPATH/mlat_version
-    echo
 fi
 
 echo 50
@@ -232,7 +232,7 @@ else
         systemctl disable adsbexchange-mlat || true
     else
         # Enable adsbexchange-mlat service
-        systemctl enable adsbexchange-mlat || true
+        systemctl enable adsbexchange-mlat >> $LOGFILE || true
         # Start or restart adsbexchange-mlat service
         systemctl restart adsbexchange-mlat || true
     fi
@@ -247,8 +247,14 @@ READSB_BRANCH="master"
 READSB_VERSION="$(git ls-remote $READSB_REPO $READSB_BRANCH | cut -f1 || echo $RANDOM-$RANDOM )"
 READSB_GIT="$IPATH/readsb-git"
 READSB_BIN="$IPATH/feed-adsbx"
-if [[ $REINSTALL == yes ]] || ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_version \
-    || ! "$READSB_BIN" -V || ! systemctl status adsbexchange-feed &>/dev/null; then
+if [[ $REINSTALL != yes ]] && grep -e "$READSB_VERSION" -qs $IPATH/readsb_version \
+    && "$READSB_BIN" -V && systemctl is-active adsbexchange-feed &>/dev/null
+then
+    echo
+    echo "Feed client already installed, git hash:"
+    cat $IPATH/readsb_version
+    echo
+else
     echo
     echo "Compiling / installing the readsb based feed client"
     echo
@@ -257,7 +263,7 @@ if [[ $REINSTALL == yes ]] || ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_vers
     echo 72
 
     # getGIT $REPO $BRANCH $TARGET-DIR
-    getGIT "$READSB_REPO" "$READSB_BRANCH" "$READSB_GIT"
+    getGIT "$READSB_REPO" "$READSB_BRANCH" "$READSB_GIT" &> $LOGFILE
 
     cd "$READSB_GIT"
 
@@ -270,11 +276,6 @@ if [[ $REINSTALL == yes ]] || ! grep -e "$READSB_VERSION" -qs $IPATH/readsb_vers
     revision > $IPATH/readsb_version || rm -f $IPATH/readsb_version
 
     echo
-else
-    echo
-    echo "Feed client already installed, git hash:"
-    cat $IPATH/readsb_version
-    echo
 fi
 
 #end compile readsb
@@ -285,7 +286,7 @@ echo 82
 
 if ! ls -l /etc/systemd/system/adsbexchange-feed.service 2>&1 | grep '/dev/null' &>/dev/null; then
     # Enable adsbexchange-feed service
-    systemctl enable adsbexchange-feed || true
+    systemctl enable adsbexchange-feed >> $LOGFILE || true
     echo 92
     # Start or restart adsbexchange-feed service
     systemctl restart adsbexchange-feed || true
@@ -299,7 +300,7 @@ fi
 
 echo 94
 
-systemctl is-active adsbexchange-feed || {
+systemctl is-active adsbexchange-feed &>/dev/null || {
     rm -f $IPATH/readsb_version
     echo "---------------------------------"
     journalctl -u adsbexchange-feed | tail -n10
@@ -311,7 +312,7 @@ systemctl is-active adsbexchange-feed || {
 }
 
 echo 96
-systemctl is-active adsbexchange-mlat || {
+systemctl is-active adsbexchange-mlat &>/dev/null || {
     rm -f $IPATH/mlat_version
     echo "---------------------------------"
     journalctl -u adsbexchange-mlat | tail -n10
