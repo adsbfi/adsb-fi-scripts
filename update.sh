@@ -133,11 +133,11 @@ rm -rf /usr/local/share/adsb-exchange &>/dev/null
 cp "$GIT/uninstall.sh" "$IPATH"
 cp "$GIT"/scripts/*.sh "$IPATH"
 
-USER=adsbexchange
-if ! id -u "${USER}" &>/dev/null
+UNAME=adsbexchange
+if ! id -u "${UNAME}" &>/dev/null
 then
     # 2nd syntax is for fedora / centos
-    adduser --system --home "$IPATH" --no-create-home --quiet "$USER" || adduser --system --home-dir "$IPATH" --no-create-home "$USER"
+    adduser --system --home "$IPATH" --no-create-home --quiet "$UNAME" || adduser --system --home-dir "$IPATH" --no-create-home "$UNAME"
 fi
 
 echo 4
@@ -229,6 +229,12 @@ if ls -l /etc/systemd/system/adsbexchange-mlat.service 2>&1 | grep '/dev/null' &
     echo "--------------------"
     sleep 3
 else
+    if [ -f /boot/adsb-config.txt ]; then
+        source /boot/adsb-config.txt
+        source /boot/adsbx-env
+    else
+        source /etc/default/adsbexchange
+    fi
     if [[ "$LATITUDE" == 0 ]] || [[ "$LONGITUDE" == 0 ]] || [[ "$USER" == 0 ]]; then
         systemctl disable adsbexchange-mlat || true
     else
