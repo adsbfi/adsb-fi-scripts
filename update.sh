@@ -127,6 +127,13 @@ if [[ -z $INPUT ]] || [[ -z $INPUT_TYPE ]] || [[ -z $USER ]] \
     exit 0
 fi
 
+
+if [[ "$LATITUDE" == 0 ]] || [[ "$LONGITUDE" == 0 ]] || [[ "$USER" == 0 ]]; then
+    MLAT_DISABLED=1
+else
+    MLAT_DISABLED=0
+fi
+
 # remove previously used folder to avoid confusion
 rm -rf /usr/local/share/adsb-exchange &>/dev/null
 
@@ -169,7 +176,7 @@ MLAT_REPO="https://github.com/adsbxchange/mlat-client.git"
 MLAT_BRANCH="master"
 MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1 || echo $RANDOM-$RANDOM )"
 if [[ $REINSTALL != yes ]] && grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version \
-    && grep -qs -e '#!' "$VENV/bin/mlat-client" && systemctl is-active adsbexchange-mlat &>/dev/null
+    && grep -qs -e '#!' "$VENV/bin/mlat-client" && { systemctl is-active adsbexchange-mlat &>/dev/null || [[ "${MLAT_DISABLED}" == "1" ]]; }
 then
     echo
     echo "mlat-client already installed, git hash:"
@@ -229,14 +236,9 @@ if ls -l /etc/systemd/system/adsbexchange-mlat.service 2>&1 | grep '/dev/null' &
     echo "--------------------"
     sleep 3
 else
-    if [ -f /boot/adsb-config.txt ]; then
-        source /boot/adsb-config.txt
-        source /boot/adsbx-env
-    else
-        source /etc/default/adsbexchange
-    fi
-    if [[ "$LATITUDE" == 0 ]] || [[ "$LONGITUDE" == 0 ]] || [[ "$USER" == 0 ]]; then
+    if [[ "${MLAT_DISABLED}" == "1" ]]; then
         systemctl disable adsbexchange-mlat || true
+        systemctl stop adsbexchange-mlat || true
     else
         # Enable adsbexchange-mlat service
         systemctl enable adsbexchange-mlat >> $LOGFILE || true
@@ -320,7 +322,7 @@ systemctl is-active adsbexchange-feed &>/dev/null || {
 }
 
 echo 96
-systemctl is-active adsbexchange-mlat &>/dev/null || {
+[[ "${MLAT_DISABLED}" == "1" ]] || systemctl is-active adsbexchange-mlat &>/dev/null || {
     rm -f $IPATH/mlat_version
     echo "---------------------------------"
     journalctl -u adsbexchange-mlat | tail -n10

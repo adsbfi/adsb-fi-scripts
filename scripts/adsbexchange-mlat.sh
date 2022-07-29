@@ -7,6 +7,12 @@ else
     source /etc/default/adsbexchange
 fi
 
+if [[ "$LATITUDE" == 0 ]] || [[ "$LONGITUDE" == 0 ]] || [[ "$USER" == 0 ]]; then
+    echo MLAT DISABLED
+    sleep 3600
+    exit
+fi
+
 INPUT_IP=$(echo $INPUT | cut -d: -f1)
 INPUT_PORT=$(echo $INPUT | cut -d: -f2)
 
