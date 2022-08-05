@@ -1,4 +1,4 @@
-# ADS-B Exchange Setup Scripts :airplane:
+# ADS-B Exchange feed client
 
 - These scripts aid in setting up your current ADS-B receiver to feed ADS-B Exchange.
 - They will not disrupt any existing feed clients already present
