@@ -1,6 +1,7 @@
 # ADS-B Exchange Setup Scripts :airplane:
 
-These scripts aid in setting up your current ADS-B receiver to feed ADS-B Exchange.
+- These scripts aid in setting up your current ADS-B receiver to feed ADS-B Exchange.
+- They will not disrupt any existing feed clients already present
 
 ## 1: Find coordinates / elevation:
 
