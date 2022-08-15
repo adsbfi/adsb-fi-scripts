@@ -93,7 +93,7 @@ function getGIT() {
     rm -rf "$tmp" "$tmp.folder"; popd > /dev/null; return 1;
 }
 
-REPO="https://github.com/adsbxchange/adsb-exchange.git"
+REPO="https://github.com/adsbexchange/feedclient.git"
 BRANCH="master"
 
 IPATH=/usr/local/share/adsbexchange

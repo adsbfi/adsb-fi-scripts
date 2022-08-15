@@ -68,7 +68,7 @@ If the client is up to date it should not take as long as the original installat
 otherwise this will also update the client which will take a moment.
 
 ```
-curl -L -o /tmp/axfeed.sh https://github.com/adsbxchange/adsb-exchange/raw/master/install.sh
+curl -L -o /tmp/axfeed.sh https://adsbexchange.com/feed.sh
 sudo bash /tmp/axfeed.sh
 ```
 
