@@ -124,6 +124,10 @@ LONGITUDE="$RECEIVERLONGITUDE"
 
 ALTITUDE="$RECEIVERALTITUDE"
 
+# this is the source for 978 data, use port 30978 from dump978 --raw-port
+# if you're not receiving 978, don't worry about it, not doing any harm!
+UAT_INPUT="127.0.0.1:30978"
+
 RESULTS="--results beast,connect,127.0.0.1:30104"
 RESULTS2="--results basestation,listen,31003"
 RESULTS3="--results beast,listen,30157"

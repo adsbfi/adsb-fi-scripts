@@ -104,7 +104,12 @@ LOGFILE="$IPATH/lastlog"
 rm -f $LOGFILE
 touch $LOGFILE
 
-getGIT "$REPO" "$BRANCH" "$GIT" >> $LOGFILE
+if [[ "$1" == "test" ]]; then
+    cp -T -a ./ /tmp/ax_test
+    GIT=/tmp/ax_test
+else
+    getGIT "$REPO" "$BRANCH" "$GIT" >> $LOGFILE
+fi
 cd "$GIT"
 
 if diff "$GIT/update.sh" "$IPATH/update.sh" &>/dev/null; then
@@ -119,6 +124,14 @@ if [ -f /boot/adsb-config.txt ]; then
     source /boot/adsbx-env
 else
     source /etc/default/adsbexchange
+    if ! grep -qs -e UAT_INPUT /etc/default/adsbexchange; then
+        cat >> /etc/default/adsbexchange <<"EOF"
+
+# this is the source for 978 data, use port 30978 from dump978 --raw-port
+# if you're not receiving 978, don't worry about it, not doing any harm!
+UAT_INPUT="127.0.0.1:30978"
+EOF
+    fi
 fi
 if [[ -z $INPUT ]] || [[ -z $INPUT_TYPE ]] || [[ -z $USER ]] \
     || [[ -z $LATITUDE ]] || [[ -z $LONGITUDE ]] || [[ -z $ALTITUDE ]] \

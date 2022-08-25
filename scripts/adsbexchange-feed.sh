@@ -11,20 +11,31 @@ if ! [[ -d /run/adsbexchange-feed/ ]]; then
     mkdir -p /run/adsbexchange-feed
 fi
 
+if [[ -z $INPUT ]]; then
+    INPUT="127.0.0.1:30005"
+fi
+
 INPUT_IP=$(echo $INPUT | cut -d: -f1)
 INPUT_PORT=$(echo $INPUT | cut -d: -f2)
-SOURCE="--net-connector $INPUT_IP,$INPUT_PORT,beast_in"
+SOURCE="--net-connector $INPUT_IP,$INPUT_PORT,beast_in,silent_fail"
 
-sleep 2
+if [[ -z $UAT_INPUT ]]; then
+    UAT_INPUT="127.0.0.1:30978"
+fi
 
-while ! nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; do
-    echo "Could not connect to $INPUT_IP:$INPUT_PORT, retry in 10 seconds."
-    sleep 10
-done
+UAT_IP=$(echo $UAT_INPUT | cut -d: -f1)
+UAT_PORT=$(echo $UAT_INPUT | cut -d: -f2)
+UAT_SOURCE="--net-connector $UAT_IP,$UAT_PORT,uat_in,silent_fail"
 
-exec /usr/local/share/adsbexchange/feed-adsbx --net --net-only --debug=n --quiet \
+
+exec /usr/local/share/adsbexchange/feed-adsbx --net --net-only --quiet \
     --write-json /run/adsbexchange-feed \
     --net-beast-reduce-interval $REDUCE_INTERVAL \
-    $TARGET $NET_OPTIONS $SOURCE \
+    $TARGET $NET_OPTIONS \
     --lat "$LATITUDE" --lon "$LONGITUDE" \
-    $UUID_FILE $JSON_OPTIONS
+    $UUID_FILE $JSON_OPTIONS \
+    $UAT_SOURCE \
+    $SOURCE \
+
+
+
