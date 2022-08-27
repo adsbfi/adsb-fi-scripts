@@ -7,7 +7,7 @@ else
     source /etc/default/adsbexchange
 fi
 
-if [[ "$LATITUDE" == 0 ]] || [[ "$LONGITUDE" == 0 ]] || [[ "$USER" == 0 ]]; then
+if [[ "$LATITUDE" == 0 ]] || [[ "$LONGITUDE" == 0 ]] || [[ "$USER" == 0 ]] || [[ "$USER" == "disable" ]]; then
     echo MLAT DISABLED
     sleep 3600
     exit
