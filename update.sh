@@ -82,15 +82,14 @@ function revision() {
 function getGIT() {
     # getGIT $REPO $BRANCH $TARGET (directory)
     if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]]; then echo "getGIT wrong usage, check your script or tell the author!" 1>&2; return 1; fi
-    REPO="$1"; BRANCH="$2"; TARGET="$3"; pushd . >/dev/null
-    if cd "$TARGET" &>/dev/null && git fetch --depth 1 origin "$BRANCH" 2>/dev/null && git reset --hard FETCH_HEAD; then popd >/dev/null && return 0; fi
-    if ! cd /tmp || ! rm -rf "$TARGET"; then popd > /dev/null; return 1; fi
-    if git clone --depth 1 --single-branch --branch "$BRANCH" "$REPO" "$TARGET"; then popd > /dev/null; return 0; fi
-    rm -rf "$TARGET"; tmp=/tmp/getGIT-tmp.$RANDOM.$RANDOM
-    if wget -O "$tmp" "$REPO/archive/refs/heads/$BRANCH.zip" && unzip "$tmp" -d "$tmp.folder" >/dev/null; then
-        if mv -fT "$tmp.folder/$(ls "$tmp.folder")" "$TARGET"; then rm -rf "$tmp" "$tmp.folder"; popd > /dev/null; return 0; fi
+    REPO="$1"; BRANCH="$2"; TARGET="$3"; pushd .; tmp=/tmp/getGIT-tmp.$RANDOM.$RANDOM
+    if cd "$TARGET" &>/dev/null && [[ $(git remote get-url origin) == "$REPO" ]] && git fetch --depth 1 origin "$BRANCH" && git reset --hard FETCH_HEAD; then popd && return 0; fi
+    popd; if ! cd /tmp || ! rm -rf "$TARGET"; then return 1; fi
+    if git clone --depth 1 --single-branch --branch "$2" "$1" "$3"; then return 0; fi
+    if wget -O "$tmp" "${REPO%".git"}/archive/$BRANCH.zip" && unzip "$tmp" -d "$tmp.folder"; then
+        if mv -fT "$tmp.folder/$(ls $tmp.folder)" "$TARGET"; then rm -rf "$tmp" "$tmp.folder"; return 0; fi
     fi
-    rm -rf "$tmp" "$tmp.folder"; popd > /dev/null; return 1;
+    rm -rf "$tmp" "$tmp.folder"; return 1
 }
 
 REPO="https://github.com/adsbexchange/feedclient.git"
