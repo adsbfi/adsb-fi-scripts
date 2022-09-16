@@ -61,7 +61,10 @@ function aptInstall() {
 }
 
 
-packages="git wget unzip curl build-essential python3-dev socat python3-venv ncurses-dev ncurses-bin uuid-runtime libzstd-dev libzstd1 zlib1g-dev zlib1g"
+packages="git wget unzip curl build-essential python3-dev socat python3-venv ncurses-dev ncurses-bin uuid-runtime zlib1g-dev zlib1g"
+if ! grep -E 'wheezy|jessie' /etc/os-release -qs; then
+    packages+=" libzstd-dev libzstd1"
+fi
 
 if command -v apt &>/dev/null; then
     aptInstall $packages
@@ -265,6 +268,9 @@ echo 70
 
 READSB_REPO="https://github.com/adsbxchange/readsb.git"
 READSB_BRANCH="master"
+if grep -E 'wheezy|jessie' /etc/os-release -qs; then
+    READSB_BRANCH="jessie"
+fi
 READSB_VERSION="$(git ls-remote $READSB_REPO $READSB_BRANCH | cut -f1 || echo $RANDOM-$RANDOM )"
 READSB_GIT="$IPATH/readsb-git"
 READSB_BIN="$IPATH/feed-adsbx"
