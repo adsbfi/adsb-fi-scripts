@@ -188,7 +188,7 @@ then
 fi
 
 MLAT_REPO="https://github.com/makrsmark/mlat-client.git"
-MLAT_BRANCH="master"
+MLAT_BRANCH="adsbfi"
 MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1 || echo $RANDOM-$RANDOM )"
 if [[ $REINSTALL != yes ]] && grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version \
     && grep -qs -e '#!' "$VENV/bin/mlat-client" && { systemctl is-active adsbfi-mlat &>/dev/null || [[ "${MLAT_DISABLED}" == "1" ]]; }
@@ -266,7 +266,7 @@ echo 70
 
 # SETUP FEEDER TO SEND DUMP1090 DATA TO ADSB.fi
 
-READSB_REPO="https://github.com/makrsmark/readsb.git"
+READSB_REPO="https://github.com/wiedehopf/readsb.git"
 READSB_BRANCH="master"
 if grep -E 'wheezy|jessie' /etc/os-release -qs; then
     READSB_BRANCH="jessie"
