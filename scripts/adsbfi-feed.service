@@ -1,6 +1,6 @@
 
 [Unit]
-Description=adsb.fi-feed
+Description=adsbfi-feed
 Wants=network.target
 After=network.target
 
