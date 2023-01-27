@@ -380,10 +380,8 @@ echo "---------------------"
 ENDTEXT="
 Thanks for choosing to share your data with ADS-B.FI!
 
-If you're curious, check your feed status after 5 min:
-
-https://adsb.fi/myip/
-http://adsb.fi/sync
+Your feed should be active within 5 minutes, you can confirm by running the following command and looking for the IP address 65.109.2.208
+netstat -t -n | grep -E '30004|31090'
 
 Question? Issues? Go here:
 https://discord.gg/n9dGbkTtZm
