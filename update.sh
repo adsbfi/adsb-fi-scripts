@@ -149,9 +149,6 @@ else
     MLAT_DISABLED=0
 fi
 
-# remove previously used folder to avoid confusion
-rm -rf /usr/local/share/adsbfi &>/dev/null
-
 cp "$GIT/uninstall.sh" "$IPATH"
 cp "$GIT"/scripts/*.sh "$IPATH"
 
@@ -187,7 +184,7 @@ then
     rm -rf "$VENV"
 fi
 
-MLAT_REPO="https://github.com/adsbxchange/mlat-client"
+MLAT_REPO="https://github.com/adsb-exchange/mlat-client.git"
 MLAT_BRANCH="master"
 MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1 || echo $RANDOM-$RANDOM )"
 if [[ $REINSTALL != yes ]] && grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version \
