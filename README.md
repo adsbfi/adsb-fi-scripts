@@ -10,7 +10,7 @@
 ## 2: Install the adsbfi feed client
 
 ```
-curl -L -o /tmp/axfeed.sh https://adsb.fi/feed.sh
+curl -L -o /tmp/axfeed.sh https://raw.githubusercontent.com/makrsmark/feedclient/adsbfi/feed.sh
 sudo bash /tmp/axfeed.sh
 ```
 
@@ -22,13 +22,13 @@ sudo bash /tmp/axfeed.sh
 ## 4: Optional: Install the stats package for an online map that shows only planes received by you:
 
 ```
-curl -L -o /tmp/axstats.sh https://adsb.fi/stats.sh
+curl -L -o /tmp/axstats.sh https://raw.githubusercontent.com/makrsmark/feedclient/adsbfi/stats.sh
 sudo bash /tmp/axstats.sh
 
 adsbfi-showurl
 ```
 
-### Optional: local interface for your data http://192.168.X.XX/adsbfi
+### Optional: local interface for your data http://192.168.X.XX/adsbx
 
 Install / Update:
 ```
@@ -36,13 +36,13 @@ sudo bash /usr/local/share/adsbfi/git/install-or-update-interface.sh
 ```
 Remove:
 ```
-sudo bash /usr/local/share/tar1090/uninstall.sh adsbfi
+sudo bash /usr/local/share/tar1090/uninstall.sh adsbx
 ```
 
 ### Update the feed client without reconfiguring
 
 ```
-curl -L -o /tmp/axupdate.sh https://adsb.fi/feed-update.sh
+curl -L -o /tmp/axupdate.sh https://raw.githubusercontent.com/makrsmark/feedclient/adsbfi/feed-update.sh
 sudo bash /tmp/axupdate.sh
 ```
 
@@ -68,7 +68,7 @@ If the client is up to date it should not take as long as the original installat
 otherwise this will also update the client which will take a moment.
 
 ```
-curl -L -o /tmp/axfeed.sh https://adsb.fi/feed.sh
+curl -L -o /tmp/axfeed.sh https://raw.githubusercontent.com/makrsmark/feedclient/adsbfi/feed.sh
 sudo bash /tmp/axfeed.sh
 ```
 
@@ -89,7 +89,7 @@ sudo systemctl restart adsbfi-mlat
 
 ### Other device as a data source (networked standalone receivers):
 
-~~https://github.com/adsbfichange/wiki/wiki/Datasource-other-device~~
+~~https://github.com/adsbxchange/wiki/wiki/Datasource-other-device~~
 
 ### Restart
 

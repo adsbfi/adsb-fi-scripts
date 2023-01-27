@@ -5,7 +5,7 @@
 #####################################################################################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                                   #
-# Copyright (c) 2020 adsbfi                                                          #
+# Copyright (c) 2020 ADSBx                                                          #
 #                                                                                   #
 # Permission is hereby granted, free of charge, to any person obtaining a copy      #
 # of this software and associated documentation files (the "Software"), to deal     #
@@ -44,7 +44,7 @@ fi
 
 if [ -f /boot/adsb-config.txt ]; then
     echo --------
-    echo "You are using the adsbfi image, the feed setup script does not need to be installed."
+    echo "You are using the adsbx image, the feed setup script does not need to be installed."
     echo --------
     exit 1
 fi
@@ -123,7 +123,7 @@ fi
 
 if [ -f /boot/adsb-config.txt ]; then
     source /boot/adsb-config.txt
-    source /boot/adsbfi-env
+    source /boot/adsbx-env
 else
     source /etc/default/adsbfi
     if ! grep -qs -e UAT_INPUT /etc/default/adsbfi; then
@@ -273,7 +273,7 @@ if grep -E 'wheezy|jessie' /etc/os-release -qs; then
 fi
 READSB_VERSION="$(git ls-remote $READSB_REPO $READSB_BRANCH | cut -f1 || echo $RANDOM-$RANDOM )"
 READSB_GIT="$IPATH/readsb-git"
-READSB_BIN="$IPATH/feed-adsbfi"
+READSB_BIN="$IPATH/feed-adsbx"
 if [[ $REINSTALL != yes ]] && grep -e "$READSB_VERSION" -qs $IPATH/readsb_version \
     && "$READSB_BIN" -V && systemctl is-active adsbfi-feed &>/dev/null
 then
@@ -384,8 +384,8 @@ Thanks for choosing to share your data with ADS-B Exchange!
 
 If you're curious, check your feed status after 5 min:
 
-https://adsb.fi/myip/
-http://adsbfi.org/sync
+https://raw.githubusercontent.com/makrsmark/feedclient/adsbfi/myip/
+http://adsbx.org/sync
 
 Question? Issues? Go here:
 https://www.adsb.fi/forum/threads/adsbfi-setup-scripts.631609/
@@ -403,7 +403,7 @@ ENDTEXT2="
 No data available from IP $INPUT_IP on port $INPUT_PORT!
 ---------------------
 If your data source is another device / receiver, see the advice here:
-https://github.com/adsbfichange/wiki/wiki/Datasource-other-device
+https://github.com/adsbxchange/wiki/wiki/Datasource-other-device
 "
 if [ -f /etc/fr24feed.ini ] || [ -f /etc/rb24.ini ]; then
     ENDTEXT2+="

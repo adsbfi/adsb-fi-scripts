@@ -5,7 +5,7 @@
 #####################################################################################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                                   #
-# Copyright (c) 2020 adsbfi                                                          #
+# Copyright (c) 2020 ADSBx                                                          #
 #                                                                                   #
 # Permission is hereby granted, free of charge, to any person obtaining a copy      #
 # of this software and associated documentation files (the "Software"), to deal     #
@@ -39,12 +39,12 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-## REFUSE INSTALLATION ON adsbfi IMAGE
+## REFUSE INSTALLATION ON ADSBX IMAGE
 
 if [ -f /boot/adsb-config.txt ]; then
     echo --------
-    echo "You are using the adsbfi image, the feed setup script does not need to be installed."
-    echo "You should already be feeding, check here: https://adsb.fi/myip/"
+    echo "You are using the adsbx image, the feed setup script does not need to be installed."
+    echo "You should already be feeding, check here: https://raw.githubusercontent.com/makrsmark/feedclient/adsbfi/myip/"
     echo "If the feed isn't working, check/correct the configuration using nano:"
     echo --------
     echo "sudo nano /boot/adsb-config.txt"
