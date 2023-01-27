@@ -44,7 +44,7 @@ fi
 if [ -f /boot/adsb-config.txt ]; then
     echo --------
     echo "You are using the adsb.fi image, the feed setup script does not need to be installed."
-    echo "You should already be feeding, check here: https://adsb.fi/myip/"
+    echo "You should already be feeding."
     echo "If the feed isn't working, check/correct the configuration using nano:"
     echo --------
     echo "sudo nano /boot/adsb-config.txt"

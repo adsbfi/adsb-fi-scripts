@@ -14,10 +14,17 @@ curl -L -o /tmp/axfeed.sh https://raw.githubusercontent.com/d4rken/adsb-fi-scrip
 sudo bash /tmp/axfeed.sh
 ```
 
-## 3: Check these two URLs to check if your feed is working
+## 3: Check netstat to check if your feed is working
+The feed IP for ADSB.fi is 65.109.2.208
 
-- <https://www.adsb.fi/myip>
-- <https://map.adsb.fi/mlat-map>
+```
+netstat -t -n | grep -E '30004|31090'
+```
+Expected Output:
+```
+tcp        0    182 localhost:43530     65.109.2.208:31090      ESTABLISHED
+tcp        0    410 localhost:47332     65.109.2.208:30004      ESTABLISHED
+```
 
 ## 4: Optional: Install the stats package for an online map that shows only planes received by you:
 

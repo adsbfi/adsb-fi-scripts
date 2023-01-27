@@ -47,7 +47,7 @@ BACKTITLETEXT="ADSB.fi Setup Script"
 
 whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" --yesno "Thanks for choosing to share your data with ADSB.fi!\n\nADSB.fi is a co-op of ADS-B/Mode S/MLAT feeders from around the world. This script will configure your current your ADS-B receiver to share your feeders data with ADSB.fi.\n\nWould you like to continue setup?" 13 78 || abort
 
-ADSBFIUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name to be shown on the MLAT map (map.adsb.fi/mlat-map)(the pin will be offset for privacy)\n\nExample: \"william34-london\", \"william34-jersey\", etc.\nDisable MLAT: enter a zero: 0" 12 78 3>&1 1>&2 2>&3) || abort
+ADSBFIUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name to be shown on the MLAT map (the pin will be offset for privacy)\n\nExample: \"william34-london\", \"william34-jersey\", etc.\nDisable MLAT: enter a zero: 0" 12 78 3>&1 1>&2 2>&3) || abort
 
 NOSPACENAME="$(echo -n -e "${ADSBFIUSERNAME}" | tr -c '[a-zA-Z0-9]_\- ' '_')"
 
@@ -115,8 +115,8 @@ tee /etc/default/adsbfi >/dev/null <<EOF
 INPUT="$INPUT"
 REDUCE_INTERVAL="0.5"
 
-# feed name for checking MLAT sync (adsb.fi/sync)
-# also displayed on the MLAT map: map.adsb.fi/mlat-map
+# feed name for checking MLAT sync 
+# also displayed on the MLAT map
 USER="$NOSPACENAME"
 
 LATITUDE="$RECEIVERLATITUDE"
