@@ -1,6 +1,6 @@
-# ADS-B.FI feed client
+# ADSB.fi feed client
 
-- These scripts aid in setting up your current ADS-B receiver to feed ADS-B.FI.
+- These scripts aid in setting up your current ADS-B receiver to feed ADSB.fi.
 - They will not disrupt any existing feed clients already present
 
 ## 1: Find coordinates / elevation:
@@ -18,6 +18,26 @@ sudo bash /tmp/axfeed.sh
 
 - <https://www.adsb.fi/myip>
 - <https://map.adsb.fi/mlat-map>
+
+## 4: Optional: Install the stats package for an online map that shows only planes received by you:
+
+```
+curl -L -o /tmp/axstats.sh https://raw.githubusercontent.com/d4rken/adsb-fi-scripts/master/stats.sh
+sudo bash /tmp/axstats.sh
+
+adsbfi-showurl
+```
+
+### Optional: local interface for your data http://192.168.X.XX/adsbfi
+
+Install / Update:
+```
+sudo bash /usr/local/share/adsbfi/git/install-or-update-interface.sh
+```
+Remove:
+```
+sudo bash /usr/local/share/tar1090/uninstall.sh adsbfi
+```
 
 ### Update the feed client without reconfiguring
 

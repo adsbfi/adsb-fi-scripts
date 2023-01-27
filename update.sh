@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #####################################################################################
-#                        ADS-B.FI SETUP SCRIPT                                #
+#                        ADSB.fi SETUP SCRIPT                                       #
 #####################################################################################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                                   #
@@ -184,8 +184,9 @@ then
     rm -rf "$VENV"
 fi
 
-MLAT_REPO="https://github.com/adsbxchange/mlat-client"
-MLAT_BRANCH="master"
+
+MLAT_REPO="https://github.com/makrsmark/mlat-client.git"
+MLAT_BRANCH="adsbfi"
 MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1 || echo $RANDOM-$RANDOM )"
 if [[ $REINSTALL != yes ]] && grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version \
     && grep -qs -e '#!' "$VENV/bin/mlat-client" && { systemctl is-active adsbfi-mlat &>/dev/null || [[ "${MLAT_DISABLED}" == "1" ]]; }
@@ -261,7 +262,7 @@ fi
 
 echo 70
 
-# SETUP FEEDER TO SEND DUMP1090 DATA TO ADS-B.FI
+# SETUP FEEDER TO SEND DUMP1090 DATA TO ADSB.fi
 
 READSB_REPO="https://github.com/wiedehopf/readsb.git"
 READSB_BRANCH="master"
@@ -422,10 +423,10 @@ https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
 fi
 
 if ! timeout 5 nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; then
-    #whiptail --title "ADS-B.FI Setup Script" --msgbox "$ENDTEXT2" 24 73
+    #whiptail --title "ADSB.fi Setup Script" --msgbox "$ENDTEXT2" 24 73
     echo -e "$ENDTEXT2"
 else
     # Display the thank you message box.
-    #whiptail --title "ADS-B.FI Setup Script" --msgbox "$ENDTEXT" 24 73
+    #whiptail --title "ADSB.fi Setup Script" --msgbox "$ENDTEXT" 24 73
     echo -e "$ENDTEXT"
 fi
