@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #####################################################################################
-#                        ADS-B EXCHANGE SETUP SCRIPT                                #
+#                        ADSB.fi SETUP SCRIPT                                #
 #####################################################################################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                                   #
@@ -264,7 +264,7 @@ fi
 
 echo 70
 
-# SETUP FEEDER TO SEND DUMP1090 DATA TO ADS-B EXCHANGE
+# SETUP FEEDER TO SEND DUMP1090 DATA TO ADSB.fi
 
 READSB_REPO="https://github.com/makrsmark/readsb.git"
 READSB_BRANCH="master"
@@ -380,7 +380,7 @@ echo "---------------------"
 ## SETUP COMPLETE
 
 ENDTEXT="
-Thanks for choosing to share your data with ADS-B Exchange!
+Thanks for choosing to share your data with ADSB.fi!
 
 If you're curious, check your feed status after 5 min:
 
@@ -426,10 +426,10 @@ https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
 fi
 
 if ! timeout 5 nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; then
-    #whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT2" 24 73
+    #whiptail --title "ADSB.fi Setup Script" --msgbox "$ENDTEXT2" 24 73
     echo -e "$ENDTEXT2"
 else
     # Display the thank you message box.
-    #whiptail --title "ADS-B Exchange Setup Script" --msgbox "$ENDTEXT" 24 73
+    #whiptail --title "ADSB.fi Setup Script" --msgbox "$ENDTEXT" 24 73
     echo -e "$ENDTEXT"
 fi

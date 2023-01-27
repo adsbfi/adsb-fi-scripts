@@ -1,6 +1,6 @@
-# ADS-B Exchange feed client
+# ADSB.fi feed client
 
-- These scripts aid in setting up your current ADS-B receiver to feed ADS-B Exchange.
+- These scripts aid in setting up your current ADS-B receiver to feed ADSB.fi.
 - They will not disrupt any existing feed clients already present
 
 ## 1: Find coordinates / elevation:
@@ -10,7 +10,7 @@
 ## 2: Install the adsbfi feed client
 
 ```
-curl -L -o /tmp/axfeed.sh https://raw.githubusercontent.com/makrsmark/feedclient/adsbfi/feed.sh
+curl -L -o /tmp/axfeed.sh https://raw.githubusercontent.com/makrsmark/feedclient/adsbfi/setup.sh
 sudo bash /tmp/axfeed.sh
 ```
 
