@@ -96,7 +96,7 @@ function getGIT() {
 }
 
 REPO="https://github.com/makrsmark/feedclient.git"
-BRANCH="master"
+BRANCH="adsbfi"
 
 IPATH=/usr/local/share/adsbfi
 GIT="$IPATH/git"
