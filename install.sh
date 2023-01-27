@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-REPO="https://github.com/adsbexchange/feedclient.git"
+REPO="https://github.com/d4rken/adsb-fi-scripts.git"
 BRANCH="master"
-IPATH=/usr/local/share/adsbexchange
+IPATH=/usr/local/share/adsbfi
 mkdir -p $IPATH
 
 if [ "$(id -u)" != "0" ]; then
