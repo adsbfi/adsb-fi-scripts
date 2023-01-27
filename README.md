@@ -10,7 +10,7 @@
 ## 2: Install the adsbfi feed client
 
 ```
-curl -L -o /tmp/axfeed.sh https://raw.githubusercontent.com/makrsmark/feedclient/adsbfi/setup.sh
+curl -L -o /tmp/axfeed.sh https://raw.githubusercontent.com/makrsmark/feedclient/adsbfi/install.sh
 sudo bash /tmp/axfeed.sh
 ```
 

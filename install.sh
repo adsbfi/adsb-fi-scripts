@@ -2,7 +2,7 @@
 set -e
 
 REPO="https://github.com/makrsmark/feedclient.git"
-BRANCH="master"
+BRANCH="adsbfi"
 IPATH=/usr/local/share/adsbfi
 mkdir -p $IPATH
 
