@@ -22,7 +22,7 @@ sudo bash /tmp/axfeed.sh
 ### Update the feed client without reconfiguring
 
 ```
-curl -L -o /tmp/axupdate.sh https://raw.githubusercontent.com/d4rken/adsb-fi-scripts/master/install-or-update-interface.sh
+curl -L -o /tmp/axupdate.sh https://raw.githubusercontent.com/d4rken/adsb-fi-scripts/master/update.sh
 sudo bash /tmp/axupdate.sh
 ```
 
