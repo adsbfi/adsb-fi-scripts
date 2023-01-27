@@ -5,7 +5,7 @@
 #####################################################################################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                                   #
-# Copyright (c) 2020 ADSBx                                                          #
+# Copyright (c) 2020 adsbfi                                                          #
 #                                                                                   #
 # Permission is hereby granted, free of charge, to any person obtaining a copy      #
 # of this software and associated documentation files (the "Software"), to deal     #
@@ -29,7 +29,7 @@
 
 set -e
 
-IPATH=/usr/local/share/adsbexchange
+IPATH=/usr/local/share/adsbfi
 
 ## we need to install stuff that require root, check for that
 if [ "$(id -u)" != "0" ]; then
@@ -39,12 +39,12 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-## REFUSE INSTALLATION ON ADSBX IMAGE
+## REFUSE INSTALLATION ON adsbfi IMAGE
 
 if [ -f /boot/adsb-config.txt ]; then
     echo --------
-    echo "You are using the adsbx image, the feed setup script does not need to be installed."
-    echo "You should already be feeding, check here: https://adsbexchange.com/myip/"
+    echo "You are using the adsbfi image, the feed setup script does not need to be installed."
+    echo "You should already be feeding, check here: https://adsb.fi/myip/"
     echo "If the feed isn't working, check/correct the configuration using nano:"
     echo --------
     echo "sudo nano /boot/adsb-config.txt"

@@ -1,14 +1,14 @@
 #!/bin/bash
 
-if grep -qs -e 'LATITUDE' /boot/adsb-config.txt &>/dev/null && [[ -f /boot/adsbx-env ]]; then
+if grep -qs -e 'LATITUDE' /boot/adsb-config.txt &>/dev/null && [[ -f /boot/adsbfi-env ]]; then
     source /boot/adsb-config.txt
-    source /boot/adsbx-env
+    source /boot/adsbfi-env
 else
-    source /etc/default/adsbexchange
+    source /etc/default/adsbfi
 fi
 
-if ! [[ -d /run/adsbexchange-feed/ ]]; then
-    mkdir -p /run/adsbexchange-feed
+if ! [[ -d /run/adsbfi-feed/ ]]; then
+    mkdir -p /run/adsbfi-feed
 fi
 
 if [[ -z $INPUT ]]; then
@@ -28,8 +28,8 @@ UAT_PORT=$(echo $UAT_INPUT | cut -d: -f2)
 UAT_SOURCE="--net-connector $UAT_IP,$UAT_PORT,uat_in,silent_fail"
 
 
-exec /usr/local/share/adsbexchange/feed-adsbx --net --net-only --quiet \
-    --write-json /run/adsbexchange-feed \
+exec /usr/local/share/adsbfi/feed-adsbfi --net --net-only --quiet \
+    --write-json /run/adsbfi-feed \
     --net-beast-reduce-interval $REDUCE_INTERVAL \
     $TARGET $NET_OPTIONS \
     --lat "$LATITUDE" --lon "$LONGITUDE" \

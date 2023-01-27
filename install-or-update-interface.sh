@@ -23,4 +23,4 @@ GIT="/usr/local/share/tar1090/git"
 
 getGIT "$REPO" "$BRANCH" "$GIT"
 
-bash "$GIT/install.sh" "/run/adsbexchange-feed" "adsbx"
+bash "$GIT/install.sh" "/run/adsbfi-feed" "adsbfi"
