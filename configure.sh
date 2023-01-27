@@ -138,7 +138,7 @@ PRIVACY=""
 INPUT_TYPE="$INPUT_TYPE"
 
 MLATSERVER="feed.adsb.fi:31090"
-TARGET="--net-connector feed1.adsb.fi,30004,beast_reduce_out,feed2.adsb.fi,64004"
+TARGET="--net-connector feed.adsb.fi,30004,beast_reduce_out,feed.adsb.fi,64004"
 NET_OPTIONS="--net-heartbeat 60 --net-ro-size 1280 --net-ro-interval 0.2 --net-ro-port 0 --net-sbs-port 0 --net-bi-port 30154 --net-bo-port 0 --net-ri-port 0 --write-json-every 1"
 JSON_OPTIONS="--max-range 450 --json-location-accuracy 2 --range-outline-hours 24"
 EOF
