@@ -28,7 +28,7 @@ sudo bash /tmp/axstats.sh
 adsbfi-showurl
 ```
 
-### Optional: local interface for your data http://192.168.X.XX/adsbx
+### Optional: local interface for your data http://192.168.X.XX/adsbfi
 
 Install / Update:
 ```
@@ -36,7 +36,7 @@ sudo bash /usr/local/share/adsbfi/git/install-or-update-interface.sh
 ```
 Remove:
 ```
-sudo bash /usr/local/share/tar1090/uninstall.sh adsbx
+sudo bash /usr/local/share/tar1090/uninstall.sh adsbfi
 ```
 
 ### Update the feed client without reconfiguring
