@@ -40,7 +40,7 @@ WantedBy=default.target
 EOF
 
 if [[ -f /boot/adsb-config.txt ]]; then
-    sed -i -e 's#EnvironmentFile.*#EnvironmentFile=/boot/adsbfi-env\nEnvironmentFile=/boot/adsb-config.txt#' "$SERVICE"
+    sed -i -e 's#EnvironmentFile.*#EnvironmentFile=/boot/adsbx-env\nEnvironmentFile=/boot/adsb-config.txt#' "$SERVICE"
 fi
 
 sed -i -e "s/SERVERPORT/${1}/" "$SERVICE"

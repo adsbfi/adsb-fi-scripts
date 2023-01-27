@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if grep -qs -e 'LATITUDE' /boot/adsb-config.txt &>/dev/null && [[ -f /boot/adsbfi-env ]]; then
+if grep -qs -e 'LATITUDE' /boot/adsb-config.txt &>/dev/null && [[ -f /boot/adsbx-env ]]; then
     source /boot/adsb-config.txt
-    source /boot/adsbfi-env
+    source /boot/adsbx-env
 else
     source /etc/default/adsbfi
 fi
@@ -28,7 +28,7 @@ UAT_PORT=$(echo $UAT_INPUT | cut -d: -f2)
 UAT_SOURCE="--net-connector $UAT_IP,$UAT_PORT,uat_in,silent_fail"
 
 
-exec /usr/local/share/adsbfi/feed-adsbfi --net --net-only --quiet \
+exec /usr/local/share/adsbfi/feed-adsbx --net --net-only --quiet \
     --write-json /run/adsbfi-feed \
     --net-beast-reduce-interval $REDUCE_INTERVAL \
     $TARGET $NET_OPTIONS \
