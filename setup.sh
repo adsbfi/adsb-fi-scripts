@@ -41,13 +41,13 @@ fi
 
 ## REFUSE INSTALLATION ON ADSBX IMAGE
 
-if [ -f /boot/adsb-config.txt ]; then
+if [ -f /boot/adsbfi-config.txt ]; then
     echo --------
     echo "You are using the adsb.fi image, the feed setup script does not need to be installed."
     echo "You should already be feeding."
     echo "If the feed isn't working, check/correct the configuration using nano:"
     echo --------
-    echo "sudo nano /boot/adsb-config.txt"
+    echo "sudo nano /boot/adsbfi-config.txt"
     echo --------
     echo "Hint for using nano: Ctrl-X to exit, Y(yes) and Enter to save."
     echo --------
