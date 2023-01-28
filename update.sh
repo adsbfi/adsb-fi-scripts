@@ -42,7 +42,7 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-if [ -f /boot/adsb-config.txt ]; then
+if [ -f /boot/adsbfi-config.txt ]; then
     echo --------
     echo "You are using the adsb.fi image, the feed setup script does not need to be installed."
     echo --------
