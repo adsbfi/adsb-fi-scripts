@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #####################################################################################
-#                        ADSB.fi SETUP SCRIPT                                       #
+#                        adsb.fi SETUP SCRIPT                                       #
 #####################################################################################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                                   #
@@ -262,7 +262,7 @@ fi
 
 echo 70
 
-# SETUP FEEDER TO SEND DUMP1090 DATA TO ADSB.fi
+# SETUP FEEDER TO SEND DUMP1090 DATA TO adsb.fi
 
 READSB_REPO="https://github.com/wiedehopf/readsb.git"
 READSB_BRANCH="master"
@@ -378,7 +378,7 @@ echo "---------------------"
 ## SETUP COMPLETE
 
 ENDTEXT="
-Thanks for choosing to share your data with ADS-B.FI!
+Thanks for choosing to share your data with adsb.fi!
 
 Your feed should be active within 5 minutes, you can confirm by running the following command and looking for the IP address 65.109.2.208
 netstat -t -n | grep -E '30004|31090'
@@ -421,10 +421,10 @@ https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
 fi
 
 if ! timeout 5 nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; then
-    #whiptail --title "ADSB.fi Setup Script" --msgbox "$ENDTEXT2" 24 73
+    #whiptail --title "adsb.fi Setup Script" --msgbox "$ENDTEXT2" 24 73
     echo -e "$ENDTEXT2"
 else
     # Display the thank you message box.
-    #whiptail --title "ADSB.fi Setup Script" --msgbox "$ENDTEXT" 24 73
+    #whiptail --title "adsb.fi Setup Script" --msgbox "$ENDTEXT" 24 73
     echo -e "$ENDTEXT"
 fi
