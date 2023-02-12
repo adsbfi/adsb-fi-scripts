@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #####################################################################################
-#                        ADSB.fi SETUP SCRIPT                                       #
+#                        adsb.fi SETUP SCRIPT                                       #
 #####################################################################################
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                                   #
@@ -230,7 +230,7 @@ else
         echo "--------------------"
         echo "Installing mlat-client failed, if there was an old version it has been restored."
         echo "Will continue installation to try and get at least the feed client working."
-        echo "Please repot this error to the adsbfi forums or discord."
+        echo "Please report this error on Discord."
         echo "--------------------"
     fi
 fi
@@ -245,7 +245,7 @@ echo 60
 if ls -l /etc/systemd/system/adsbfi-mlat.service 2>&1 | grep '/dev/null' &>/dev/null; then
     echo "--------------------"
     echo "CAUTION, adsbfi-mlat is masked and won't run!"
-    echo "If this is unexpected for you, please report this issue"
+    echo "If this is unexpected for you, please report this issue."
     echo "--------------------"
     sleep 3
 else
@@ -262,7 +262,7 @@ fi
 
 echo 70
 
-# SETUP FEEDER TO SEND DUMP1090 DATA TO ADSB.fi
+# SETUP FEEDER TO SEND DUMP1090 DATA TO adsb.fi
 
 READSB_REPO="https://github.com/wiedehopf/readsb.git"
 READSB_BRANCH="master"
@@ -319,7 +319,7 @@ if ! ls -l /etc/systemd/system/adsbfi-feed.service 2>&1 | grep '/dev/null' &>/de
 else
     echo "--------------------"
     echo "CAUTION, adsbfi-feed.service is masked and won't run!"
-    echo "If this is unexpected for you, please report this issue"
+    echo "If this is unexpected for you, please report this issue."
     echo "--------------------"
     sleep 3
 fi
@@ -331,7 +331,7 @@ systemctl is-active adsbfi-feed &>/dev/null || {
     echo "---------------------------------"
     journalctl -u adsbfi-feed | tail -n10
     echo "---------------------------------"
-    echo "adsbfi-feed service couldn't be started, please report this error to the adsbfi forum or discord."
+    echo "adsbfi-feed service couldn't be started, please report this error on Discord."
     echo "Try an copy as much of the output above and include it in your report, thank you!"
     echo "---------------------------------"
     exit 1
@@ -343,7 +343,7 @@ echo 96
     echo "---------------------------------"
     journalctl -u adsbfi-mlat | tail -n10
     echo "---------------------------------"
-    echo "adsbfi-mlat service couldn't be started, please report this error to the adsb.fi discord."
+    echo "adsbfi-mlat service couldn't be started, please report this error on Discord."
     echo "Try an copy as much of the output above and include it in your report, thank you!"
     echo "---------------------------------"
     exit 1
@@ -378,15 +378,15 @@ echo "---------------------"
 ## SETUP COMPLETE
 
 ENDTEXT="
-Thanks for choosing to share your data with ADS-B.FI!
+Thanks for choosing to share your data with adsb.fi!
 
 Your feed should be active within 5 minutes, you can confirm by running the following command and looking for the IP address 65.109.2.208
 netstat -t -n | grep -E '30004|31090'
 
 Question? Issues? Go here:
-https://discord.gg/n9dGbkTtZm
+https://discord.gg/jfVRF2XRwF
 
-Webinterface to show the data transmitted? Run this command:
+Web interface to show the data transmitted? Run this command:
 sudo bash /usr/local/share/adsbfi/git/install-or-update-interface.sh
 "
 
@@ -421,10 +421,10 @@ https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
 fi
 
 if ! timeout 5 nc -z "$INPUT_IP" "$INPUT_PORT" && command -v nc &>/dev/null; then
-    #whiptail --title "ADSB.fi Setup Script" --msgbox "$ENDTEXT2" 24 73
+    #whiptail --title "adsb.fi Setup Script" --msgbox "$ENDTEXT2" 24 73
     echo -e "$ENDTEXT2"
 else
     # Display the thank you message box.
-    #whiptail --title "ADSB.fi Setup Script" --msgbox "$ENDTEXT" 24 73
+    #whiptail --title "adsb.fi Setup Script" --msgbox "$ENDTEXT" 24 73
     echo -e "$ENDTEXT"
 fi
