@@ -3,6 +3,10 @@
 set -e
 trap 'echo "------------"; echo "[ERROR] Error in line $LINENO when executing: $BASH_COMMAND"' ERR
 
+if ! command -v lighttpd &>/dev/null; then
+    apt-get update || true; apt-get install -y --no-install-recommends --no-install-suggests lighttpd || true
+fi
+
 function getGIT() {
     # getGIT $REPO $BRANCH $TARGET-DIR
     if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]]; then
