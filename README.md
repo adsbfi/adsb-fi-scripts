@@ -26,7 +26,10 @@ tcp        0    182 localhost:43530     65.109.2.208:31090      ESTABLISHED
 tcp        0    410 localhost:47332     65.109.2.208:30004      ESTABLISHED
 ```
 
-## 4: Optional: Install local interface for your data http://192.168.X.XX/adsbfi
+## 4: Optional: Install [local interface](https://github.com/wiedehopf/tar1090) for your data
+
+The interface will be available at http://192.168.X.XX/adsbfi  
+Replace the IP address with the address of your Raspberry Pi.
 
 Install / Update:
 ```
@@ -69,6 +72,8 @@ sudo bash /tmp/feed.sh
 ```
 
 ### Disable / Enable adsb.fi MLAT-results in your main decoder interface (readsb / dump1090-fa)
+
+This is enabled by default. You probably don't need to change that.
 
 - Disable:
 
