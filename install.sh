@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-REPO="https://github.com/d4rken/adsb-fi-scripts.git"
+REPO="https://github.com/adsbfi/adsb-fi-scripts.git"
 BRANCH="master"
 IPATH=/usr/local/share/adsbfi
 mkdir -p $IPATH
