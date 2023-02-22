@@ -95,7 +95,7 @@ function getGIT() {
     rm -rf "$tmp" "$tmp.folder"; return 1
 }
 
-REPO="https://github.com/d4rken/adsb-fi-scripts.git"
+REPO="https://github.com/adsbfi/adsb-fi-scripts.git"
 BRANCH="master"
 
 IPATH=/usr/local/share/adsbfi
@@ -122,7 +122,6 @@ if diff "$GIT/update.sh" "$IPATH/update.sh" &>/dev/null; then
 fi
 
 if [ -f /boot/adsbfi-env ]; then
-#    source /boot/adsb-config.txt
     source /boot/adsbfi-env
 else
     source /etc/default/adsbfi
@@ -397,8 +396,6 @@ ENDTEXT2="
 ---------------------
 No data available from IP $INPUT_IP on port $INPUT_PORT!
 ---------------------
-If your data source is another device / receiver, see the advice here:
-https://github.com/adsbxchange/wiki/wiki/Datasource-other-device
 "
 if [ -f /etc/fr24feed.ini ] || [ -f /etc/rb24.ini ]; then
     ENDTEXT2+="
