@@ -10,7 +10,7 @@
 ## 2: Install the feed client
 
 ```
-curl -L -o /tmp/feed.sh https://raw.githubusercontent.com/d4rken/adsb-fi-scripts/master/install.sh
+curl -L -o /tmp/feed.sh https://raw.githubusercontent.com/adsbfi/adsb-fi-scripts/master/install.sh
 sudo bash /tmp/feed.sh
 ```
 
