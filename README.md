@@ -43,7 +43,7 @@ sudo bash /usr/local/share/tar1090/uninstall.sh adsbfi
 ### Update the feed client without reconfiguring
 
 ```
-curl -L -o /tmp/update.sh https://raw.githubusercontent.com/d4rken/adsb-fi-scripts/master/update.sh
+curl -L -o /tmp/update.sh https://raw.githubusercontent.com/adsbfi/adsb-fi-scripts/master/update.sh
 sudo bash /tmp/update.sh
 ```
 
@@ -67,7 +67,7 @@ If the client is up to date it should not take as long as the original installat
 otherwise this will also update the client which will take a moment.
 
 ```
-curl -L -o /tmp/feed.sh https://raw.githubusercontent.com/d4rken/adsb-fi-scripts/master/install.sh
+curl -L -o /tmp/feed.sh https://raw.githubusercontent.com/adsbfi/adsb-fi-scripts/master/install.sh
 sudo bash /tmp/feed.sh
 ```
 
