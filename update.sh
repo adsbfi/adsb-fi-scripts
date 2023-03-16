@@ -297,13 +297,9 @@ else
 
     cd "$READSB_GIT"
     
-    echo
-    echo "----- safe to ignore git fatal error -----"
-    echo $READSB_REPO
-    echo $READSB_BRANCH
-    echo $READSB_GIT
-    echo "----- compiling code can take a few minutes -----"
-    echo
+    echo "-----------------------------------------------" 
+    echo "Now compiling code can take a few minutes"
+    echo "-----------------------------------------------"
 
     echo 74
 
