@@ -290,12 +290,10 @@ else
     getGIT "$READSB_REPO" "$READSB_BRANCH" "$READSB_GIT" &> $LOGFILE
 
     cd "$READSB_GIT"
+    git init $READSB_GIT
     
     echo
     echo "----- safe to ignore git fatal error -----"
-    echo $READSB_GIT
-    echo $READSB_REPO
-    echo $READSB_BRANCH
     echo "----- compiling code can take a few minutes -----"
     echo
 
