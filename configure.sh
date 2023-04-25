@@ -81,7 +81,7 @@ ALT=0
 until [[ "$NOSPACENAME" == 0 ]] || [[ $ALT =~ ^(-?[0-9]*)ft$ ]] || [[ $ALT =~ ^(-?[0-9]*)m$ ]]; do
     ALT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Altitude above sea level (at the antenna):" \
         --nocancel --inputbox \
-"\nEnter your antennas altitude above sea level including the unit, no spaces:\n\n\
+"\nEnter the altitude of your antenna, above sea level, including the unit with no spaces:\n\n\
 in feet like this:                   255ft\n\
 or in meters like this:               78m\n" \
         12 78 3>&1 1>&2 2>&3) || abort
