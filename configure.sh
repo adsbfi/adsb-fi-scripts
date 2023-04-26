@@ -45,7 +45,7 @@ function abort() {
 
 BACKTITLETEXT="adsb.fi Setup Script"
 
-whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" --yesno "Thanks for choosing to share your data with adsb.fi!\n\nadsb.fi is a co-op of ADS-B/Mode S/MLAT feeders from around the world. This script will configure your current your ADS-B receiver to share your feeders data with adsb.fi.\n\nWould you like to continue setup?" 13 78 || abort
+whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" --yesno "Thanks for choosing to share your data with adsb.fi!\n\nadsb.fi is a co-op of ADS-B/Mode S/MLAT feeders from around the world. This script will configure your current ADS-B receiver to share your feeders data with adsb.fi.\n\nWould you like to continue setup?" 13 78 || abort
 
 ADSBFIUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name to be shown on the MLAT map (the pin will be offset for privacy)\n\nExample: \"william34-london\", \"william34-jersey\", etc.\nDisable MLAT: enter a zero: 0" 12 78 3>&1 1>&2 2>&3) || abort
 
@@ -59,13 +59,13 @@ if [[ "$NOSPACENAME" != 0 ]]; then
 else
     whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" \
         --msgbox "MLAT DISABLED!.\
-        \n\n For some local functions the approximate receiver location is still useful, it won't be sent to the server." 12 78 || abort
+        \n\n For some local functions the approximate location is still useful, it won't be sent to the server." 12 78 || abort
 fi
 
 #((-90 <= RECEIVERLATITUDE <= 90))
 LAT_OK=0
 until [ $LAT_OK -eq 1 ]; do
-    RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Latitude ${RECEIVERLATITUDE}" --nocancel --inputbox "\nEnter your receivers precise latitude in degrees with 5 decimal places.\n(Example: 32.36291)" 12 78 3>&1 1>&2 2>&3) || abort
+    RECEIVERLATITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Antenna Latitude ${RECEIVERLATITUDE}" --nocancel --inputbox "\nEnter the latitude of your antenna in degrees with 5 decimal places.\n(Example: 32.36291)" 12 78 3>&1 1>&2 2>&3) || abort
     LAT_OK=`awk -v LAT="$RECEIVERLATITUDE" 'BEGIN {printf (LAT<90 && LAT>-90 ? "1" : "0")}'`
 done
 
@@ -73,7 +73,7 @@ done
 #((-180<= RECEIVERLONGITUDE <= 180))
 LON_OK=0
 until [ $LON_OK -eq 1 ]; do
-    RECEIVERLONGITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Receiver Longitude ${RECEIVERLONGITUDE}" --nocancel --inputbox "\nEnter your receivers longitude in degrees with 5 decimal places.\n(Example: -64.71492)" 12 78 3>&1 1>&2 2>&3) || abort
+    RECEIVERLONGITUDE=$(whiptail --backtitle "$BACKTITLETEXT" --title "Antenna Longitude ${RECEIVERLONGITUDE}" --nocancel --inputbox "\nEnter the longitude of your antenna in degrees with 5 decimal places.\n(Example: -64.71492)" 12 78 3>&1 1>&2 2>&3) || abort
     LON_OK=`awk -v LON="$RECEIVERLONGITUDE" 'BEGIN {printf (LON<180 && LON>-180 ? "1" : "0")}'`
 done
 
@@ -81,7 +81,7 @@ ALT=0
 until [[ "$NOSPACENAME" == 0 ]] || [[ $ALT =~ ^(-?[0-9]*)ft$ ]] || [[ $ALT =~ ^(-?[0-9]*)m$ ]]; do
     ALT=$(whiptail --backtitle "$BACKTITLETEXT" --title "Altitude above sea level (at the antenna):" \
         --nocancel --inputbox \
-"\nEnter your receivers altitude above sea level including the unit, no spaces:\n\n\
+"\nEnter the altitude of your antenna, above sea level, including the unit with no spaces:\n\n\
 in feet like this:                   255ft\n\
 or in meters like this:               78m\n" \
         12 78 3>&1 1>&2 2>&3) || abort
