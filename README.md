@@ -3,7 +3,7 @@
 - These scripts aid in setting up your current ADS-B receiver to feed [adsb.fi](https://adsb.fi/).
 - They will not disrupt any existing feed clients already present.
 
-## 1: Find coordinates and elevation
+## 1: Find antenna coordinates and elevation
 
 <https://www.freemaptools.com/elevation-finder.htm>
 
