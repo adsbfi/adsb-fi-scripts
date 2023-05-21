@@ -4,7 +4,7 @@
 - This will not disrupt any existing feed clients already present.
 - When setting up new feeders, a decoder such as [readsb](https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb) must be installed separately.
 
-## 1: Find coordinates and elevation
+## 1: Find antenna coordinates and elevation
 
 <https://www.freemaptools.com/elevation-finder.htm>
 
