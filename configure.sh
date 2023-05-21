@@ -45,7 +45,7 @@ function abort() {
 
 BACKTITLETEXT="adsb.fi Setup Script"
 
-whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" --yesno "Thanks for choosing to share your data with adsb.fi!\n\nadsb.fi is a co-op of ADS-B/Mode S/MLAT feeders from around the world. This script will configure your current ADS-B receiver to share your feeder's data with adsb.fi.\n\nWould you like to continue setup?" 13 78 || abort
+whiptail --backtitle "$BACKTITLETEXT" --title "$BACKTITLETEXT" --yesno "Thanks for choosing to share your data with adsb.fi!\n\nadsb.fi is a co-op of ADS-B/Mode S/MLAT feeders from around the world. This script will configure your current ADS-B receiver to feed data to adsb.fi.\n\nWould you like to continue setup?" 13 78 || abort
 
 ADSBFIUSERNAME=$(whiptail --backtitle "$BACKTITLETEXT" --title "Feeder MLAT Name" --nocancel --inputbox "\nPlease enter a unique name to be shown on the MLAT map (the pin will be offset for privacy)\n\nExample: \"william34-london\", \"william34-jersey\", etc.\nDisable MLAT: enter a zero: 0" 12 78 3>&1 1>&2 2>&3) || abort
 
