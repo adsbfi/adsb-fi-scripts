@@ -1,7 +1,8 @@
 # adsb.fi feed client
 
 - These scripts aid in setting up your current ADS-B receiver to feed [adsb.fi](https://adsb.fi/).
-- They will not disrupt any existing feed clients already present.
+- This will not disrupt any existing feed clients already present.
+- When setting up new feeders, a decoder such as [readsb](https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb) must be installed separately.
 
 ## 1: Find coordinates and elevation
 
