@@ -190,7 +190,7 @@ then
 fi
 
 
-MLAT_REPO="https://github.com/adsbfi/mlat-client"
+MLAT_REPO="https://github.com/adsbfi/mlat-client-adsbfi"
 MLAT_BRANCH="master"
 MLAT_VERSION="$(git ls-remote $MLAT_REPO $MLAT_BRANCH | cut -f1 || echo $RANDOM-$RANDOM )"
 if [[ $REINSTALL != yes ]] && grep -e "$MLAT_VERSION" -qs $IPATH/mlat_version \
