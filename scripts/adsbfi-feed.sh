@@ -33,7 +33,7 @@ exec /usr/local/share/adsbfi/feed-adsbfi --net --net-only --quiet \
     --net-beast-reduce-interval $REDUCE_INTERVAL \
     $TARGET $NET_OPTIONS \
     --lat "$LATITUDE" --lon "$LONGITUDE" \
-    $UUID_FILE $JSON_OPTIONS \
+    $JSON_OPTIONS \
     $UAT_SOURCE \
     $SOURCE \
 
