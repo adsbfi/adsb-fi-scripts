@@ -13,8 +13,8 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-if ! command -v git &>/dev/null || ! command -v wget &>/dev/null || ! command -v unzip &>/dev/null; then
-    apt-get update || true; apt-get install -y --no-install-recommends --no-install-suggests git wget unzip || true
+if ! command -v git &>/dev/null || ! command -v wget &>/dev/null || ! command -v unzip &>/dev/null || ! command -v whiptail &>/dev/null; then
+    apt-get update || true; apt-get install -y --no-install-recommends --no-install-suggests git wget unzip whiptail || true
 fi
 function getGIT() {
     # getGIT $REPO $BRANCH $TARGET (directory)
