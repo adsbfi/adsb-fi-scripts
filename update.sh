@@ -389,7 +389,7 @@ echo "---------------------"
 ENDTEXT="
 Thanks for choosing to share your data with adsb.fi!
 
-Your feed should be active within 5 minutes, you can confirm by running the following command and looking for the IP address 65.109.2.208
+Your feed should be active within 5 minutes, you can confirm by running the following command and looking for the IP address 103.196.37.90
 netstat -t -n | grep -E '30004|31090'
 
 Question? Issues? Go here:
