@@ -65,8 +65,12 @@ cat /etc/default/adsbfi
 
 If your feeder is on a separate device from the one this script is installed.
 Edit `/etc/default/adsbfi` and change the IP on the following lines to point to your feeder device's IP:
-`INPUT="127.0.0.1:30005"`
-`UAT_INPUT="127.0.0.1:30978"`
+
+```
+INPUT="127.0.0.1:30005"
+...
+UAT_INPUT="127.0.0.1:30978"
+```
 
 ### Changing the configuration
 
