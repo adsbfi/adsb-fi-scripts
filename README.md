@@ -16,7 +16,6 @@ sudo bash /tmp/feed.sh
 ```
 
 ## 3: Use netstat to check that your feed is working
-The feed IP for adsb.fi is 103.196.37.90
 
 ```
 netstat -t -n | grep -E '30004|31090'
