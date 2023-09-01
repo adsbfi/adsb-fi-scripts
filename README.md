@@ -2,7 +2,7 @@
 
 - These scripts aid in setting up your current ADS-B receiver to feed [adsb.fi](https://adsb.fi/).
 - This will not disrupt any existing feed clients already present.
-- When setting up new feeders, a decoder such as [readsb](https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb) must be installed separately.
+- When setting up new feeders, a decoder such as [readsb](https://github.com/adsbfi/adsb-scripts/wiki/Automatic-installation-for-readsb) must be installed separately.
 
 ## 1: Find antenna coordinates and elevation
 
@@ -22,8 +22,8 @@ netstat -t -n | grep -E '30004|31090'
 ```
 Expected Output:
 ```
-tcp        0    182 localhost:43530     49.13.48.214:31090      ESTABLISHED
-tcp        0    410 localhost:47332     49.13.48.214:30004      ESTABLISHED
+tcp        0    182 localhost:43530     116.202.4.168:31090      ESTABLISHED
+tcp        0    410 localhost:47332     116.202.4.168:30004      ESTABLISHED
 ```
 
 ## 4: Optional: Install [local interface](https://github.com/wiedehopf/tar1090) for your data
