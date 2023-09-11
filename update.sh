@@ -393,7 +393,7 @@ Your feed should be active within 5 minutes, you can confirm by running the foll
 netstat -t -n | grep -E '30004|31090'
 
 Question? Issues? Go here:
-https://discord.gg/jfVRF2XRwF
+https://discord.gg/mzRugsPSEF
 
 Web interface to show the data transmitted? Run this command:
 sudo bash /usr/local/share/adsbfi/git/install-or-update-interface.sh
