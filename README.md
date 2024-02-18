@@ -22,8 +22,8 @@ netstat -t -n | grep -E '30004|31090'
 ```
 Expected Output:
 ```
-tcp        0    182 localhost:43530     116.202.4.168:31090      ESTABLISHED
-tcp        0    410 localhost:47332     116.202.4.168:30004      ESTABLISHED
+tcp        0    182 localhost:43530     65.109.2.208:31090      ESTABLISHED
+tcp        0    410 localhost:47332     65.109.2.208:30004      ESTABLISHED
 ```
 
 ## 4: Optional: Install [local interface](https://github.com/wiedehopf/tar1090) for your data
