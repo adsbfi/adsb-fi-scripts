@@ -70,7 +70,6 @@ INPUT="127.0.0.1:30005"
 ...
 UAT_INPUT="127.0.0.1:30978"
 ```
-
 Then restart the feed client:
 ```
 sudo systemctl restart adsbfi-feed
@@ -86,6 +85,12 @@ otherwise this will also update the client which will take a moment.
 ```
 curl -L -o /tmp/feed.sh https://raw.githubusercontent.com/adsbfi/adsb-fi-scripts/master/install.sh
 sudo bash /tmp/feed.sh
+```
+Alternatively edit the config directly and restart the feed client
+```
+sudo nano /etc/default/adsbfi
+sudo systemctl restart adsbfi-feed
+sudo systemctl restart adsbfi-mlat
 ```
 
 ### Disable / Enable adsb.fi MLAT-results in your main decoder interface (readsb / dump1090-fa)
