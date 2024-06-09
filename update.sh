@@ -61,7 +61,7 @@ function aptInstall() {
 }
 
 
-packages="git wget unzip curl build-essential python3-dev socat python3-venv ncurses-dev ncurses-bin uuid-runtime zlib1g-dev zlib1g"
+packages="git wget unzip curl build-essential python3-dev socat python3-venv ncurses-dev ncurses-bin uuid-runtime zlib1g-dev zlib1g pkg-config"
 if ! grep -E 'wheezy|jessie' /etc/os-release -qs; then
     packages+=" libzstd-dev libzstd1"
 fi
